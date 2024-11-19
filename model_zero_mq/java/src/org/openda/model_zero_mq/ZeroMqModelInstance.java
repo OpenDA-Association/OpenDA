@@ -102,19 +102,19 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 		}
 	}
 
-	public ZeroMqModelInstance(int modelInstanceNumber, ZMQ.Socket socket, File modelRunDir, String modelConfigFile, double missingValue, ArrayList<ZeroMqModelForcingConfig> forcingConfiguration, ArrayList<ZeroMqModelForcingConfig> staticLimitConfiguration, List<ZeroMqModelFactory.ZeroMqModelStateExchangeItemsInfo> modelStateExchangeItemInfos, String inputStateDirectory, String outputStateDirectory) {
+	public ZeroMqModelInstance(int modelInstanceNumber, ZMQ.Socket socket, ModelDirectories modelDirectories, ModelConfigurations modelConfigurations, double missingValue, List<ZeroMqModelFactory.ZeroMqModelStateExchangeItemsInfo> modelStateExchangeItemInfos) {
 		this.modelInstanceNumber = modelInstanceNumber;
 		this.socket = socket;
-		this.modelRunDir = modelRunDir;
-		this.modelConfigFile = modelConfigFile;
-		this.inputStateDir = new File(modelRunDir, inputStateDirectory);
-		this.outputStateDir = new File(modelRunDir, outputStateDirectory);
+		this.modelRunDir = modelDirectories.getModelRunDir();
+		this.modelConfigFile = modelConfigurations.getModelConfigFile();
+		this.inputStateDir = new File(modelRunDir, modelDirectories.getInputStateDirectory());
+		this.outputStateDir = new File(modelRunDir, modelDirectories.getOutputStateDirectory());
 		if (!inputStateDir.exists() && !inputStateDir.mkdirs()) throw new RuntimeException(getClass().getSimpleName() + ": Cannot create input state directory " + inputStateDir.getAbsolutePath());
 
 		initializeModel();
 
 
-		staticLimitExchangeItems = createForcingExchangeItems(staticLimitConfiguration);
+		staticLimitExchangeItems = createForcingExchangeItems(modelConfigurations.getStaticLimitConfiguration());
 		modelStateExchangeItems = new LinkedHashMap<>();
 		ArrayList<IExchangeItem> analysisExchangeItems = new ArrayList<>();
 		for (ZeroMqModelFactory.ZeroMqModelStateExchangeItemsInfo modelStateExchangeItemInfo : modelStateExchangeItemInfos) {
@@ -139,12 +139,12 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 		}
 		exchangeItems = createExchangeItems(missingValue, analysisExchangeItems);
 
-		forcingExchangeItems = createForcingExchangeItems(forcingConfiguration);
+		forcingExchangeItems = createForcingExchangeItems(modelConfigurations.getForcingConfiguration());
 
 		this.analysisDataWriter = new AnalysisDataWriter(analysisExchangeItems, modelRunDir);
 	}
 
-	private Map<String, IExchangeItem> createForcingExchangeItems(ArrayList<ZeroMqModelForcingConfig> bmiModelForcingConfigs) {
+	private Map<String, IExchangeItem> createForcingExchangeItems(List<ZeroMqModelForcingConfig> bmiModelForcingConfigs) {
 		Map<String, IExchangeItem> result = new HashMap<>();
 
 		for (ZeroMqModelForcingConfig forcingConfig : bmiModelForcingConfigs) {

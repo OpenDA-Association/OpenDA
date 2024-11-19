@@ -66,7 +66,9 @@ public class ZeroMqModelFactory implements IModelFactory {
 
 			socket.connect(addressBuilder.toString());
 
-			return new ZeroMqModelInstance(this.currentModelInstanceNumber.val(), socket, instanceDirectory, modelConfigFile, missingValue, forcingConfiguration, staticLimitConfiguration, modelStateExchangeItemInfos, inputStateDirectory, outputStateDirectory);
+			ModelDirectories modelDirectories = new ModelDirectories(instanceDirectory, inputStateDirectory, outputStateDirectory);
+			ModelConfigurations modelConfigurations = new ModelConfigurations(modelConfigFile, forcingConfiguration, staticLimitConfiguration);
+			return new ZeroMqModelInstance(this.currentModelInstanceNumber.val(), socket, modelDirectories, modelConfigurations, missingValue, modelStateExchangeItemInfos);
 		} catch (Exception e) {
 			LOGGER.error("failed to create instance", e);
 			throw new RuntimeException(e);
