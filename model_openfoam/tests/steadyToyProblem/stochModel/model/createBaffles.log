@@ -1,0 +1,70 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1712                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : v1712
+Arch   : "LSB;label=32;scalar=64"
+Exec   : createBaffles -case /results/34_e7d070f4f8534a27b2692aad04a61def/steadyToyProblem -overwrite
+Date   : Jul 07 2020
+Time   : 12:08:39
+Host   : "293cbf513829"
+PID    : 1188
+I/O    : uncollated
+Case   : /results/34_e7d070f4f8534a27b2692aad04a61def/steadyToyProblem
+nProcs : 1
+trapFpe: Floating point exception trapping enabled (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 10)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Create mesh for time = 0
+
+Reading baffle criteria from createBafflesDict
+
+Not converting faces on non-coupled patches.
+
+Reading geometric fields
+
+Created zone tileX0Y0 at index 0 with 4 faces
+Created zone tileX0Y1 at index 1 with 4 faces
+Created zone tileX1Y0 at index 2 with 4 faces
+Created zone tileX1Y1 at index 3 with 4 faces
+Created zone tileX2Y0 at index 4 with 4 faces
+Created zone tileX2Y1 at index 5 with 4 faces
+Created zone tileX3Y0 at index 6 with 4 faces
+Created zone tileX3Y1 at index 7 with 4 faces
+Converted 32 faces into boundary faces in patches 
+16
+(
+tileX0Y0_master
+tileX0Y0_slave
+tileX0Y1_master
+tileX0Y1_slave
+tileX1Y0_master
+tileX1Y0_slave
+tileX1Y1_master
+tileX1Y1_slave
+tileX2Y0_master
+tileX2Y0_slave
+tileX2Y1_master
+tileX2Y1_slave
+tileX3Y0_master
+tileX3Y0_slave
+tileX3Y1_master
+tileX3Y1_slave
+)
+
+
+--> FOAM Warning : 
+    From function int main(int, char**)
+    in file createBaffles.C at line 848
+    Setting field on boundary faces to zero.
+You might have to edit these fields.
+Writing mesh to 0
+End
+
