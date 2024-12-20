@@ -22,6 +22,7 @@ package org.openda.utils.io;
 
 import org.openda.exchange.dataobjects.NetcdfUtils;
 import org.openda.interfaces.IExchangeItem;
+import org.openda.interfaces.IGeometryInfo;
 import org.openda.utils.geometry.GeometryUtils;
 
 import java.io.File;
@@ -54,11 +55,13 @@ public class AnalysisDataWriter {
 		List<IExchangeItem> scalarItems = new ArrayList<>();
 		List<IExchangeItem> gridItems = new ArrayList<>();
 		for (IExchangeItem item : exchangeItems) {
-			if (GeometryUtils.isScalar(item.getGeometryInfo())) {//if scalar.
+			IGeometryInfo geometryInfo = item.getGeometryInfo();
+			if (GeometryUtils.isScalar(geometryInfo)) {
 				scalarItems.add(item);
-			} else {//if grid.
-				gridItems.add(item);
+				continue;
 			}
+			if (GeometryUtils.getGridCellCount(geometryInfo) == 0) continue;
+			gridItems.add(item);
 		}
 
 		if (scalarItems.isEmpty()) {
