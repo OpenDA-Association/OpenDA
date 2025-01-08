@@ -48,7 +48,13 @@ C
       REAL,ALLOCATABLE,DIMENSION(:,:)::DELCZ  
       REAL,ALLOCATABLE,DIMENSION(:,:)::FQCPAD  
       REAL,ALLOCATABLE,DIMENSION(:,:)::QSUMNAD  
-      REAL,ALLOCATABLE,DIMENSION(:,:)::QSUMPAD  
+      REAL,ALLOCATABLE,DIMENSION(:,:)::QSUMPAD
+      REAL CSTARP
+      REAL CSTARN
+      REAL CTMP
+      CSTARP=0.0
+      CSTARN=0.0
+      CTMP=0.0  
 
       IF(.NOT.ALLOCATED(CONCX))THEN
 		ALLOCATE(CONCX(LCM,KCM))
@@ -514,7 +520,7 @@ C
       ENDDO
       ENDDO
 C
- 1069 FORMAT(I8,10E13.5)
+C1069 FORMAT(I8,10E13.5)
 C
       DO K=1,KS
       DO L=2,LA
@@ -779,7 +785,7 @@ C
       ENDDO
       ENDDO
 C
- 6001 FORMAT('N,K,CBTS = ',2I10,F12.3)
+C6001 FORMAT('N,K,CBTS = ',2I10,F12.3)
 C
 C----------------------------------------------------------------------C
 C
@@ -901,7 +907,7 @@ C
       ENDDO
       ENDDO
 C
- 6002 FORMAT('N,K,CBTN = ',2I10,F12.3)
+C6002 FORMAT('N,K,CBTN = ',2I10,F12.3)
 C
 C**********************************************************************C
 C

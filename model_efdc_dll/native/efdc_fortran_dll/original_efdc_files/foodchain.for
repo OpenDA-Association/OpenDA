@@ -22,6 +22,7 @@ C
 C**********************************************************************C
 C
       USE GLOBAL
+      USE MPI
 C
       ! *** DSLLC BEGIN
       INTEGER,ALLOCATABLE,DIMENSION(:)::KBFC  
@@ -64,6 +65,8 @@ C
       REAL,ALLOCATABLE,DIMENSION(:,:)::FDCHTXBC
       REAL,ALLOCATABLE,DIMENSION(:,:)::FDCHTXBP
       REAL,ALLOCATABLE,DIMENSION(:,:)::FDCHTXBD
+      INTEGER JSFDCH
+      JSFDCH=0
 C
       IF(.NOT.ALLOCATED(KBFC))THEN
         ALLOCATE(KBFC(LCM))  
@@ -157,7 +160,7 @@ C
 C
 C      WRITE(8,*)' FIRST ENTRY TO FOODCHAIN.FOR '
 C
-      IF(DEBUG)THEN
+      IF(DEBUG.AND.MYRANK.EQ.0)THEN
         OPEN(1,FILE='FOODCHAIN.OUT')
         CLOSE(1,STATUS='DELETE')
         OPEN(1,FILE='FOODCHAIN.OUT')
@@ -484,7 +487,7 @@ C###############################################################################
         ENDIF
       ENDDO
 C
-      IF(JSFDCH.EQ.1.AND.DEBUG)THEN
+      IF(JSFDCH.EQ.1.AND.DEBUG.AND.MYRANK.EQ.0)THEN
         OPEN(1,FILE='FOODCHAIN.DIA')
         CLOSE(1,STATUS='DELETE')
         OPEN(1,FILE='FOODCHAIN.DIA')
@@ -662,7 +665,7 @@ C###############################################################################
       ENDDO
       ENDDO
 C
-      IF(DEBUG)THEN
+      IF(DEBUG.AND.MYRANK.EQ.0)THEN
         OPEN(1,FILE='FOODCHAIN.OUT',POSITION='APPEND')
 C
         WRITE(1,101)TIME,NTOX,NFDCHZ,TIMFDCH
@@ -715,9 +718,9 @@ C
   112 FORMAT(20X,10F10.4)
   101 FORMAT(F12.4,2I7,F12.3)
   102 FORMAT(1X,2I6,10E13.5)
-  103 FORMAT('              TXWF         TXWC         TXWP',
-     &       '         DOCW         POCW         TXBF         TXBC',
-     &       '         TXBP (roc)   DOCB         POCB        TXBPD (r)')
+C 103 FORMAT('              TXWF         TXWC         TXWP',
+C    &       '         DOCW         POCW         TXBF         TXBC',
+C    &       '         TXBP (roc)   DOCB         POCB        TXBPD (r)')
   121 FORMAT('DATA: OUTPUT TIME (DAYS), NTOX, NZONES, ',
      &       'AERAGING PERIOD (SECS)')
   122 FORMAT('DATA: NT    NZ   TXWF         TXWC         TXWP',

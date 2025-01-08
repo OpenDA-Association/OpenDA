@@ -35,17 +35,16 @@ public class BcFileTest extends TestCase
 {
 	OpenDaTestSupport testData = null;
 	private File testBcFileDir;
-	private String bcFileNameOriginal = "BoundaryConditions.bc";
-	private String bcFileNameGenerated = "BoundaryConditions_generated.bc";
-	private String bcFileNameTimeSeriesValuesHalved = "BoundaryConditions_TimeSeriesValuesHalved.bc";
+	private final String bcFileNameOriginal = "BoundaryConditions.bc";
+	private final String bcFileNameGenerated = "BoundaryConditions_generated.bc";
+	private final String bcFileNameTimeSeriesValuesHalved = "BoundaryConditions_TimeSeriesValuesHalved.bc";
 
+	@Override
 	protected void setUp()
 	{
 		testData = new OpenDaTestSupport(BcFileTest.class, "model_dflowfm_blackbox");
 		testBcFileDir = new File(testData.getTestRunDataDir(), "BcFile");
 	}
-
-	protected void tearDown(){}
 
 	public void testBcFileUpdatesCategoriesCorrectly_MultiplyValues()
 	{
@@ -59,7 +58,7 @@ public class BcFileTest extends TestCase
 		{
 			IExchangeItem exchangeItem = bcFile.getDataObjectExchangeItem(id);
 			double[] multiplicationFactors = new double[exchangeItem.getValuesAsDoubles().length];
-			for(int i = 0; i < multiplicationFactors.length; i++){	multiplicationFactors[i] = 0.5; }
+			Arrays.fill(multiplicationFactors, 0.5);
 			exchangeItem.multiplyValues(multiplicationFactors);
 		}
 
@@ -102,7 +101,15 @@ public class BcFileTest extends TestCase
 		String[] arguments = {"WaterLevel.bc", rewrittenFileName};
 		bcFile.initialize(testBcFileDir, arguments);
 
-		List<BcCategory> categories = bcFile.getCategories();
+		// Step 2: Alter ExchangeItem Values
+		String[] exchangeItemIDs = bcFile.getExchangeItemIDs();
+		for(String id : exchangeItemIDs)
+		{
+			IExchangeItem exchangeItem = bcFile.getDataObjectExchangeItem(id);
+			double[] multiplicationFactors = new double[exchangeItem.getValuesAsDoubles().length];
+			Arrays.fill(multiplicationFactors, 0.5);
+			exchangeItem.multiplyValues(multiplicationFactors);
+		}
 
 		//Step 3: Write test file
 		bcFile.finish();
@@ -112,10 +119,10 @@ public class BcFileTest extends TestCase
 		BcFile bcFileAgain = new BcFile();
 		bcFileAgain.initialize(testBcFileDir, args);
 
+		List<BcCategory> categories = bcFile.getCategories();
 		List<BcCategory> categoriesAgain = bcFileAgain.getCategories();
 
 		assertEquals(3, categories.size());
-
 		assertEquals(3, categoriesAgain.size());
 
 		for (int i = 0; i < categories.size(); i++) {
@@ -150,7 +157,7 @@ public class BcFileTest extends TestCase
 		{
 			IExchangeItem exchangeItem = bcFile.getDataObjectExchangeItem(id);
 			double[] axpyValues = new double[exchangeItem.getValuesAsDoubles().length];
-			for(int i = 0; i < axpyValues.length; i++){	axpyValues[i] = 0.5; }
+			Arrays.fill(axpyValues, 0.5);
 			exchangeItem.axpyOnValues(1.0, axpyValues);
 		}
 
@@ -158,8 +165,8 @@ public class BcFileTest extends TestCase
 		bcFile.finish();
 
 		// Step 4: Compare written file to expected results
-        assertTrue(!FileComparer.CompareIniFiles(new File(testBcFileDir, bcFileNameOriginal),
-				new File(testBcFileDir, bcFileNameGenerated)));
+		assertFalse(FileComparer.CompareIniFiles(new File(testBcFileDir, bcFileNameOriginal),
+			new File(testBcFileDir, bcFileNameGenerated)));
 	}
 
 	public void testBcFileUpdatesCategoriesCorrectly_SetValuesAsDoubles()

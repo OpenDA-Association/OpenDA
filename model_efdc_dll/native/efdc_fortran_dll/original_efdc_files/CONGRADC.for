@@ -6,7 +6,7 @@ C **  GRADIENT SCHEME
 C  
       USE GLOBAL  
 
-      REAL TTMP, SECNDS
+      REAL TTMP, T1TMP
 
       ! *** DSLLC
       REAL,SAVE,ALLOCATABLE,DIMENSION(:)::PNORTH  
@@ -22,7 +22,7 @@ C
 	ENDIF
       ! *** DSLLC
 C  
-      TTMP=SECNDS(0.0)  
+      CALL CPU_TIME(TTMP)  
       DO L=2,LA  
         PNORTH(L)=P(LNC(L))  
         PSOUTH(L)=P(LSC(L))  
@@ -173,7 +173,8 @@ C
         ENDDO  
       ENDIF
       ! *** DSLLC END BLOCK
-      TCONG=TCONG+SECNDS(TTMP)  
+      CALL CPU_TIME(T1TMP)
+      TCONG=TCONG+T1TMP-TTMP
   800 FORMAT(2I6,6E13.4)  
       RETURN  
       END  

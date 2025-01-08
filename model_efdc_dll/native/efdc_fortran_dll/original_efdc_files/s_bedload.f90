@@ -36,7 +36,8 @@ SUBROUTINE BEDLOADJ
            PSUS(L,1:NSCM)=0.0
         ELSEWHERE                              
            BLFLAG(L,1:NSCM)=1
-           PSUS(L,1:NSCM)=MAX((LOG(USW(L,1:NSCM))-LOG(SQRT(TCRSUS(1:NSCM))/DWS(1:NSCM)))/(LOG(4.0)-LOG(SQRT(TCRSUS(1:NSCM))/DWS(1:NSCM))),0.D0)
+           PSUS(L,1:NSCM)=MAX((LOG(USW(L,1:NSCM))-LOG(SQRT(TCRSUS(1:NSCM))/DWS(1:NSCM)))&
+                              /(LOG(4.0)-LOG(SQRT(TCRSUS(1:NSCM))/DWS(1:NSCM))),0.0)
         ENDWHERE
      ELSEWHERE
         BLFLAG(L,1:NSCM)=0

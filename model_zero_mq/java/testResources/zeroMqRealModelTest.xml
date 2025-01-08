@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zeroMqModelFactoryConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org//zeroMqModelFactoryConfig.xsd">
+  <modelTemplateDirectory>template-directory</modelTemplateDirectory>
+  <modelConfigFile>java/testResources/real-config-file.toml</modelConfigFile>
+  <inputStateDirectory>input-state-directory</inputStateDirectory>
+  <outputStateDirectory>output-state-directory</outputStateDirectory>
+  <executable>julia</executable>
+  <executableArguments>
+    <argument>--project=D:/Git_projects/Wflow.jl/server/.</argument>
+    <argument>D:/Git_projects/Wflow.jl/server/src/WflowBmiServer.jl</argument>
+  </executableArguments>
+  <host>localhost</host>
+  <firstPortNumber>5555</firstPortNumber>
+  <zeroMqModelStateExchangeItems>
+    <limitedExchangeItem>
+      <exchangeItemId>1</exchangeItemId>
+    </limitedExchangeItem>
+  </zeroMqModelStateExchangeItems>
+  <missingValue>-999.0</missingValue>
+</zeroMqModelFactoryConfig>

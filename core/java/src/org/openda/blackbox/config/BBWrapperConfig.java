@@ -81,6 +81,9 @@ public class BBWrapperConfig {
         for (BBAction action : computeActions) {
             action.validate();
         }
+        for (BBAction action : additionalComputeActions) {
+            action.validate();
+        }
         for (BBAction action : finalizeActions) {
             action.validate();
         }
