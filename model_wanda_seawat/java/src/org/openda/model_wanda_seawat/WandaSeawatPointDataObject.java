@@ -20,6 +20,7 @@ public class WandaSeawatPointDataObject extends AbstractDataObject {
 	private List<Double> heights;
 	private List<Double> radii;
 	private TreeMap<String, File> fileNamesToFiles;
+	private String filePrefix;
 
 	@Override
 	public void initialize(File workingDir, String[] arguments) {
@@ -32,7 +33,7 @@ public class WandaSeawatPointDataObject extends AbstractDataObject {
 		}
 
 		String subDirString = arguments[0];
-		String filePrefix = arguments[1];
+		filePrefix = arguments[1];
 		File fileDirectory = new File(workingDir, subDirString);
 
 		if (!fileDirectory.exists() || !fileDirectory.isDirectory()) throw new RuntimeException(fileDirectory + " does not exist or is not a directory");
@@ -123,7 +124,6 @@ public class WandaSeawatPointDataObject extends AbstractDataObject {
 
 	@Override
 	public void finish() {
-		if (true) return;
 		DecimalFormat decimalFormat = new DecimalFormat(".00000000E00", new DecimalFormatSymbols(Locale.UK));
 
 		int fileCount = 0;
@@ -135,7 +135,7 @@ public class WandaSeawatPointDataObject extends AbstractDataObject {
 					bufferedWriter.write(String.format("%10s", String.format(Locale.UK, "%5.4f", height)));
 
 					for (Double radius : radii) {
-						String key = String.format("depth%s_radius%s", height, radius);
+						String key = String.format("%sdepth%s_radius%s", filePrefix, height, radius);
 						DoublesExchangeItem doublesExchangeItem = (DoublesExchangeItem) exchangeItems.get(key);
 						String formattedNumber = "0" + decimalFormat.format(doublesExchangeItem.getValuesAsDoubles()[fileCount]);
 						if (!formattedNumber.contains("E-")) {

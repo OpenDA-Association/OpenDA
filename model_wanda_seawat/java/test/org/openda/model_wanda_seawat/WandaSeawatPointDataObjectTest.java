@@ -23,10 +23,10 @@ public class WandaSeawatPointDataObjectTest extends TestCase {
 	public void test_givenWandaSeawatData_whenInitialized_thenExchangeItemsLoaded() throws IOException {
 		File file = new File(testRunDataDir, "HTO_TEMP_");
 		WandaSeawatPointDataObject wandaSeawatPointDataObject = new WandaSeawatPointDataObject();
-		wandaSeawatPointDataObject.initialize(testRunDataDir, new String[]{file.getName()});
+		wandaSeawatPointDataObject.initialize(testRunDataDir, new String[]{"HTO_001", file.getName()});
 		assertEquals("Exchange items all loaded", 2160, wandaSeawatPointDataObject.getExchangeItemIDs().length);
 		String key = wandaSeawatPointDataObject.getExchangeItemIDs()[19 * 72 + 1];
-		assertEquals("Get key from 20th row of 30 and 2nd column of 72", "depth-298.0_radius0.7624999881", key);
+		assertEquals("Get key from 20th row of 30 and 2nd column of 72", "HTO_TEMP_depth-298.0_radius0.7624999881", key);
 		Object exchangeItemObject = wandaSeawatPointDataObject.getDataObjectExchangeItem(key);
 		assertTrue(exchangeItemObject instanceof DoublesExchangeItem);
 		DoublesExchangeItem doublesExchangeItem = (DoublesExchangeItem) exchangeItemObject;
@@ -38,13 +38,13 @@ public class WandaSeawatPointDataObjectTest extends TestCase {
 
 		double[] times = timeInfo.getTimes();
 		assertEquals(2, times.length);
-		assertEquals(59729.91736111111, times[0], 0.0000001d);
-		assertEquals(59729.91805555555, times[1], 0.0000001d);
+		assertEquals(59730.00069444445, times[0], 0.0000001d);
+		assertEquals(59730.00138888889, times[1], 0.0000001d);
 
 		doublesExchangeItem.setValuesAsDoubles(new double[]{0.10554802E+02, 0.65432100E+02});
 		wandaSeawatPointDataObject.finish();
 
-		File output = new File(testRunDataDir, "HTO_TEMP_20220531000200.ASC");
+		File output = new File(testRunDataDir, "HTO_001/HTO_TEMP_20220531000200.ASC");
 		try (Stream<String> stream = Files.lines(output.toPath())) {
 			String lines = stream.collect(Collectors.joining("\n"));
 			assertTrue("Updated value present in ini file", lines.contains(" -298.0000          0.16334927E+02          0.65432100E+02          0.10028160E+02"));

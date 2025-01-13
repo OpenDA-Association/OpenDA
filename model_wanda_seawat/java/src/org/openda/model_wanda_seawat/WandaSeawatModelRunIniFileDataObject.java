@@ -30,7 +30,8 @@ public class WandaSeawatModelRunIniFileDataObject extends AbstractDataObject {
 		DoubleExchangeItem startTimeExchangeItem = (DoubleExchangeItem) exchangeItems.get(OPTION_START_DATE_TIME);
 		ini.put(SECTION_RUN, OPTION_START_DATE_TIME, TimeUtils.mjdToString(startTimeExchangeItem.getValue(), datePattern));
 		DoubleExchangeItem endTimeExchangeItem = (DoubleExchangeItem) exchangeItems.get(OPTION_END_DATE_TIME);
-		ini.put(SECTION_RUN, OPTION_END_DATE_TIME, TimeUtils.mjdToString(endTimeExchangeItem.getValue(), datePattern));
+		double endTime = endTimeExchangeItem.getValue();
+		ini.put(SECTION_RUN, OPTION_END_DATE_TIME, TimeUtils.mjdToString(endTime, datePattern));
 		Profile.Section optionsFromParameters = ini.get(SECTION_PARAMETERS);
 		for (String option : optionsFromParameters.keySet()) {
 			IExchangeItem exchangeItem = exchangeItems.get(option);
@@ -47,6 +48,11 @@ public class WandaSeawatModelRunIniFileDataObject extends AbstractDataObject {
 				} catch (IOException e) {
 					throw new RuntimeException(e);
 				}
+				continue;
+			}
+			if (exchangeItem instanceof WandaSeawatConstantAsTimeSeriesExchangeItem) {
+				double[] values = exchangeItem.getValuesAsDoubles();
+				ini.put(SECTION_PARAMETERS, option, values[values.length - 1]);
 				continue;
 			}
 			DoubleExchangeItem parameterExchangeItem = (DoubleExchangeItem) exchangeItem;
@@ -66,8 +72,8 @@ public class WandaSeawatModelRunIniFileDataObject extends AbstractDataObject {
 		ini.getConfig().setEscape(false);
 		try {
 			ini.load(file);
-			dateTimeExchangeItem(ini, OPTION_START_DATE_TIME, OPTION_START_DATE_TIME);
-			dateTimeExchangeItem(ini, OPTION_END_DATE_TIME, OPTION_END_DATE_TIME);
+			double startDateTime = dateTimeExchangeItem(ini, OPTION_START_DATE_TIME, OPTION_START_DATE_TIME);
+			double endDateTime = dateTimeExchangeItem(ini, OPTION_END_DATE_TIME, OPTION_END_DATE_TIME);
 			Profile.Section optionsFromParameters = ini.get(SECTION_PARAMETERS);
 			for (String option : optionsFromParameters.keySet()) {
 				String valueString = ini.get(SECTION_PARAMETERS, option);
@@ -75,8 +81,12 @@ public class WandaSeawatModelRunIniFileDataObject extends AbstractDataObject {
 					createTimeSeriesExchangeItem(workingDir, option, valueString);
 					continue;
 				}
-				DoubleExchangeItem doubleExchangeItem = new DoubleExchangeItem(option, IExchangeItem.Role.InOut, Double.parseDouble(valueString));
-				exchangeItems.putIfAbsent(option, doubleExchangeItem);
+				String timeStep = ini.get(SECTION_RUN, "timeStep");
+
+				double timeStepInSeconds = Double.parseDouble(timeStep);
+				double value = Double.parseDouble(valueString);
+				WandaSeawatConstantAsTimeSeriesExchangeItem constantAsTimeSeriesExchangeItem = new WandaSeawatConstantAsTimeSeriesExchangeItem(option, value, timeStepInSeconds, startDateTime, endDateTime);
+				exchangeItems.putIfAbsent(option, constantAsTimeSeriesExchangeItem);
 			}
 		} catch (IOException | ParseException exception) {
 			throw new RuntimeException(exception);
@@ -99,11 +109,12 @@ public class WandaSeawatModelRunIniFileDataObject extends AbstractDataObject {
 		exchangeItems.put(option, timeSeriesExchangeItem);
 	}
 
-	private void dateTimeExchangeItem(Ini ini, String optionName, String id) throws ParseException {
+	private double dateTimeExchangeItem(Ini ini, String optionName, String id) throws ParseException {
 		String valueString = ini.get(SECTION_RUN, optionName);
 		double dateTime = TimeUtils.date2Mjd(valueString);
 		DoubleExchangeItem doubleExchangeItem = new DoubleExchangeItem(id, IExchangeItem.Role.InOut, dateTime);
 		exchangeItems.putIfAbsent(id, doubleExchangeItem);
+		return dateTime;
 	}
 
 }

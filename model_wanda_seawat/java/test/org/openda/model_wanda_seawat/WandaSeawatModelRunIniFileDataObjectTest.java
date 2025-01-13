@@ -9,6 +9,7 @@ import org.openda.utils.OpenDaTestSupport;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -22,8 +23,6 @@ public class WandaSeawatModelRunIniFileDataObjectTest extends TestCase {
 	}
 
 	public void test_givenWandaSeawatIniFile_whenInitialized_thenExchangeItemsLoaded() throws IOException {
-		// TODO: write start date time end date time according to dateformat
-		// TODO prevent new line wandaModel = .....
 		File file = new File(testRunDataDir, "example.ini");
 		WandaSeawatModelRunIniFileDataObject wandaSeawatModelRunIniFileDataObject = new WandaSeawatModelRunIniFileDataObject();
 		wandaSeawatModelRunIniFileDataObject.initialize(testRunDataDir, new String[]{file.getName()});
@@ -40,19 +39,22 @@ public class WandaSeawatModelRunIniFileDataObjectTest extends TestCase {
 		assertEquals("The end date time (20240102000000) is 60311.0", 60311.0, endDateTimeExchangeItem.getValue());
 
 		Object bulkDensityExchangeItemObject = wandaSeawatModelRunIniFileDataObject.getDataObjectExchangeItem("HTGEOFIL H1.Geoformations.Bulk density formation.kleilaag 1");
-		assertTrue(bulkDensityExchangeItemObject instanceof DoubleExchangeItem);
-		DoubleExchangeItem bulkDensityExchangeItem = (DoubleExchangeItem) bulkDensityExchangeItemObject;
-		assertEquals("The bulk density is 0.998754", 0.998754, bulkDensityExchangeItem.getValue());
+		assertTrue(bulkDensityExchangeItemObject instanceof WandaSeawatConstantAsTimeSeriesExchangeItem);
+		WandaSeawatConstantAsTimeSeriesExchangeItem bulkDensityExchangeItem = (WandaSeawatConstantAsTimeSeriesExchangeItem) bulkDensityExchangeItemObject;
+		double[] bulkDensityValues = bulkDensityExchangeItem.getValuesAsDoubles();
+		assertEquals("The bulk density is 0.998754", 0.998754, bulkDensityValues[bulkDensityValues.length - 1]);
 
 		Object porosityExchangeItemObject = wandaSeawatModelRunIniFileDataObject.getDataObjectExchangeItem("HTGEOFIL H1.Geoformations.Porosity formation.kleilaag 1");
-		assertTrue(porosityExchangeItemObject instanceof DoubleExchangeItem);
-		DoubleExchangeItem porosityExchangeItem = (DoubleExchangeItem) porosityExchangeItemObject;
-		assertEquals("The porosity is 0.6", 0.6, porosityExchangeItem.getValue());
+		assertTrue(porosityExchangeItemObject instanceof WandaSeawatConstantAsTimeSeriesExchangeItem);
+		WandaSeawatConstantAsTimeSeriesExchangeItem porosityExchangeItem = (WandaSeawatConstantAsTimeSeriesExchangeItem) porosityExchangeItemObject;
+		double[] porosityValues = porosityExchangeItem.getValuesAsDoubles();
+		assertEquals("The porosity is 0.6", 0.6, porosityValues[porosityValues.length - 1]);
 
 		Object maxYearlyWaterVolumeExchangeItemObject = wandaSeawatModelRunIniFileDataObject.getDataObjectExchangeItem("HTGEOFIL H1.Max yearly water volume");
-		assertTrue(maxYearlyWaterVolumeExchangeItemObject instanceof DoubleExchangeItem);
-		DoubleExchangeItem maxYearlyWaterVolumeExchangeItem = (DoubleExchangeItem) maxYearlyWaterVolumeExchangeItemObject;
-		assertEquals("The max yearly water volume is 65484", 65484.0, maxYearlyWaterVolumeExchangeItem.getValue());
+		assertTrue(maxYearlyWaterVolumeExchangeItemObject instanceof WandaSeawatConstantAsTimeSeriesExchangeItem);
+		WandaSeawatConstantAsTimeSeriesExchangeItem maxYearlyWaterVolumeExchangeItem = (WandaSeawatConstantAsTimeSeriesExchangeItem) maxYearlyWaterVolumeExchangeItemObject;
+		double[] maxYearlyWaterVolumeValues = maxYearlyWaterVolumeExchangeItem.getValuesAsDoubles();
+		assertEquals("The max yearly water volume is 65484", 65484.0, maxYearlyWaterVolumeValues[maxYearlyWaterVolumeValues.length - 1]);
 
 		IExchangeItem timeSeriesEI = wandaSeawatModelRunIniFileDataObject.getDataObjectExchangeItem("timeseries");
 		assertNotNull(timeSeriesEI);
@@ -76,12 +78,14 @@ public class WandaSeawatModelRunIniFileDataObjectTest extends TestCase {
 		values[48] = 1.48;
 		timeSeriesEI.setValuesAsDoubles(values);
 
-		porosityExchangeItem.setValue(5.4);
+		double[] axpyValues = new double[porosityValues.length];
+		Arrays.fill(axpyValues, 1);
+		porosityExchangeItem.axpyOnValues(1.1, axpyValues);
 		wandaSeawatModelRunIniFileDataObject.finish();
 
 		try (Stream<String> stream = Files.lines(file.toPath())) {
 			String lines = stream.collect(Collectors.joining("\n"));
-			assertTrue("Updated value present in ini file", lines.contains("HTGEOFIL H1.Geoformations.Porosity formation.kleilaag 1 = 5.4"));
+			assertTrue("Updated value present in ini file", lines.contains("HTGEOFIL H1.Geoformations.Porosity formation.kleilaag 1 = 1.7000000000000002"));
 		}
 
 		WandaSeawatModelRunIniFileDataObject wandaSeawatModelRunIniFileDataObject2 = new WandaSeawatModelRunIniFileDataObject();
