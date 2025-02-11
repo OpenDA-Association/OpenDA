@@ -195,3 +195,20 @@ The argument ``allowTimeIndependentItems=true/false`` determines whether
 time-independent exchange items should be created. Time-independent
 exchange items can be created for variables that do not depend on a time
 dimension. Default is false.
+
+
+Key-value pairs: ``stationIdVarName`` and ``stationDimensionVarName``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The arguments ``stationIdVarName=<varName>`` and ``stationDimensionVarName=<varName>`` can be used to overrule the default names for the station id and station dimension variables.
+The default names are ``station_id`` and ``stations`` respectively.
+
+The XML config for overruling ``stationDimensionVarName`` with ``station`` (this is needed for D-Flow FM 2024.3 and newer) will look as follows::
+
+  <dataObject className="org.openda.exchange.dataobjects.NetCDFDataObject">
+      <file>scalar.nc</file>
+      <id>dataObjectId</id>
+      <arg>true</arg>
+      <arg>false</arg>
+      <arg>stationDimensionVarName=station</arg>
+  </dataObject>
