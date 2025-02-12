@@ -1,13 +1,18 @@
 Release Notes
 =============
 
-OpenDA - Version X.X
+OpenDA - Version 3.3.0
 ----------------------
 
 ### Improvements
-<!--Add any improvements in this version here -->
+
+- Fixed time rounding issues
+- Fixed exe reference in additional compute actions
+- Support multiple state vectors in writing kalman gain to netcdf_cf
+- Improved logging efficiency when printing many parameters
+- Documentation improvements
 
 ### New functionalities
-<!--Add any new functionailities in this version here -->
 
-<!-- Add any related release notes of earlier versions below>
+- Added support for overruling station variable and dimension in NetcdfDataObject
+- Added support for Astronomical Components in D-FLow FM .bc files
