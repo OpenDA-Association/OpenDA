@@ -20,74 +20,78 @@
 
 package org.openda.resultwriters;
 
+import java.io.File;
+import java.util.HashMap;
+
 import org.openda.costa.CtaObject;
 import org.openda.costa.CtaTreeVector;
 import org.openda.costa.CtaVector;
-import org.openda.interfaces.*;
-
-import java.io.File;
-import java.util.HashMap;
+import org.openda.interfaces.IInstance;
+import org.openda.interfaces.IMatrix;
+import org.openda.interfaces.IResultWriter;
+import org.openda.interfaces.ITreeVector;
+import org.openda.interfaces.IVector;
 
 /**
  * Result writer that produces output in a netcdf file.
  */
 public class NetcdfResultWriter extends CtaObject implements IResultWriter {
 
-    private HashMap<String, Integer> iter = new HashMap<String, Integer>();
+	private HashMap<String, Integer> iter = new HashMap<String, Integer>();
 
-    // A list that contains the opened netcdf files: each variable (id),
-    // needs its own netcdfile. The netcdffile should be opened before/during first writing ,
-    // All netcdf files should be closed together in a finalize call.
+	// A list that contains the opened netcdf files: each variable (id),
+	// needs its own netcdfile. The netcdffile should be opened before/during first writing ,
+	// All netcdf files should be closed together in a finalize call.
 
-    private HashMap<String, Integer> idlist = new HashMap<String, Integer>();
+	private HashMap<String, Integer> idlist = new HashMap<String, Integer>();
 
-    private String netcdfnameprefix = " ";
-    private int ctaFilehandle = 0;
-    private int defaultMaxSize = Integer.MAX_VALUE;
+	private String netcdfnameprefix = " ";
+	private int ctaFilehandle = 0;
+	private final int defaultMaxSize = Integer.MAX_VALUE;
 
-    public NetcdfResultWriter(File workingDir, String configString) {
-        if (configString.startsWith("<xml")) {  // TODO: right prefix
-            // TODO: read from config file
-        	throw new RuntimeException("NetcdfResultWriter: expecting a filename, but found xml-code");
-        } else {
-            if (configString.toLowerCase().endsWith(".nc")) {
-                String prefixname = configString.substring(0, configString.length() - 3);
-                netcdfnameprefix = new File(workingDir, prefixname).getAbsolutePath();
-            }else{
-            	throw new RuntimeException("NetcdfResultWriter: expecting a filename ending on .nc,"
-            			+" but found "+configString);
-            }
-        }
-    }
+	public NetcdfResultWriter(File workingDir, String configString) {
+		if (configString.startsWith("<xml")) {  // TODO: right prefix
+			// TODO: read from config file
+			throw new RuntimeException("NetcdfResultWriter: expecting a filename, but found xml-code");
+		} else {
+			if (configString.toLowerCase().endsWith(".nc")) {
+				String prefixname = configString.substring(0, configString.length() - 3);
+				netcdfnameprefix = new File(workingDir, prefixname).getAbsolutePath();
+			}else{
+				throw new RuntimeException("NetcdfResultWriter: expecting a filename ending on .nc,"
+						+" but found "+configString);
+			}
+		}
+	}
 
 	public void putMessage(Source source, String comment) {
-        // NO ACTION NEEDED (TOOD: can messages be added to netcdf file?
-    }
+		// NO ACTION NEEDED (TOOD: can messages be added to netcdf file?
+	}
 
-    public void putMessage(IInstance source, String comment) {
-        // NO ACTION NEEDED (TOOD: can messages be added to netcdf file?
-    }
+	public void putMessage(IInstance source, String comment) {
+		// NO ACTION NEEDED (TOOD: can messages be added to netcdf file?
+	}
 
 	public void putValue(Source source, String id, Object result, OutputLevel outputLevel, String context, int iteration) {
-        // TODO create a counter for time being; one counter per id
-        Integer currentIter = 0;
-        if (this.iter.containsKey(id)) {
-            currentIter = this.iter.get(id);
-        }
-        this.iter.put(id, currentIter + 1);
+		// TODO create a counter for time being; one counter per id
+		Integer currentIter = 0;
+		if (this.iter.containsKey(id)) {
+			currentIter = this.iter.get(id);
+		}
+		this.iter.put(id, currentIter + 1);
 
-        // Administration for opening a netcdf file:
-        if (this.idlist.containsKey(id)) {
-            // the variable has already written before; get filehandle
-            ctaFilehandle = this.idlist.get(id);
-        } else {
-            // first time this variable occurs; first initialize the netcdffile!
+		// Administration for opening a netcdf file:
+		if (this.idlist.containsKey(id)) {
+			// the variable has already written before; get filehandle
+			ctaFilehandle = this.idlist.get(id);
+		} else {
+			// first time this variable occurs; first initialize the netcdffile!
 
-            String netcdfnamevar = netcdfnameprefix.concat(id);
-            netcdfnamevar = netcdfnamevar.concat(".nc");
-            ctaFilehandle = ctaNetcdfInit(netcdfnamevar,"w");
-            this.idlist.put(id, ctaFilehandle);
-        }
+			String netcdfnamevar = netcdfnameprefix.concat(id);
+			netcdfnamevar = netcdfnamevar.concat(".nc");
+			ctaFilehandle = ctaNetcdfInit(netcdfnamevar,"w");
+			this.idlist.put(id, ctaFilehandle);
+		}
 		writeObjectToNetCdfFile(ctaFilehandle, result);
 	}
 
@@ -156,34 +160,34 @@ public class NetcdfResultWriter extends CtaObject implements IResultWriter {
 	}
 
 	public void putIterationReport(IInstance source, int iteration, double cost, IVector parameters) {
-    }
-
-    
-    public int getDefaultMaxSize() {
-        return defaultMaxSize;
-    }
-
-    public void free() {
-        // Get list of all Keys;
-
-        for (String key2 : idlist.keySet()) {
-
-            ctaFilehandle = idlist.get(key2);
-            int retval = ctaNetcdfClose(ctaFilehandle);
-
-            if (retval != 0) {
-                throw new RuntimeException("NetcdfResultWriter: closing the netcdf file has not succeeded ");
-
-            }
-        }
-        idlist.clear();
+	}
 
 
-    }
+	public int getDefaultMaxSize() {
+		return defaultMaxSize;
+	}
 
-    public native int ctaNetcdfInit(String netcdfname, String action);
+	public void free() {
+		// Get list of all Keys;
 
-    public native int ctaNetcdfClose(int ctafilehandle);
+		for (String key2 : idlist.keySet()) {
+
+			ctaFilehandle = idlist.get(key2);
+			int retval = ctaNetcdfClose(ctaFilehandle);
+
+			if (retval != 0) {
+				throw new RuntimeException("NetcdfResultWriter: closing the netcdf file has not succeeded ");
+
+			}
+		}
+		idlist.clear();
+
+
+	}
+
+	public native int ctaNetcdfInit(String netcdfname, String action);
+
+	public native int ctaNetcdfClose(int ctafilehandle);
 
 	public static int createNetCdfHandle(String netcdfname, String action) {
 		NetcdfResultWriter writer = new NetcdfResultWriter();
