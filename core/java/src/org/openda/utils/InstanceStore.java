@@ -116,24 +116,23 @@ public class InstanceStore implements IResultWriter {
         }
     }
 
-    private static String printParameters(IVector parameters) {
-        String printString = "";
+	private static String printParameters(IVector parameters) {
+		if (!(parameters instanceof TreeVector)) return "";
 
-        if (parameters instanceof TreeVector) {
-			TreeVector parametersAsTreeVector = (TreeVector) parameters;
-			ArrayList<String> parNames = parametersAsTreeVector.getSubTreeVectorIds();
-			for (int p = 0; p < parNames.size(); p++) {
-				String parName = parNames.get(p);
-				if (p>0) printString += "; ";
-				printString += parName;
-				double[] values = parametersAsTreeVector.getSubTreeVector(parName).getValues();
-				for (int i = 0; i < values.length; i++) {
-					printString += " " + PrintNumber.printNumberExtended(values[i]);
-				}
+		StringBuilder stringBuilder = new StringBuilder();
+		TreeVector parametersAsTreeVector = (TreeVector) parameters;
+		ArrayList<String> parNames = parametersAsTreeVector.getSubTreeVectorIds();
+		for (int p = 0; p < parNames.size(); p++) {
+			String parName = parNames.get(p);
+			if (p > 0) stringBuilder.append("; ");
+			stringBuilder.append(parName);
+			double[] values = parametersAsTreeVector.getSubTreeVector(parName).getValues();
+			for (double value : values) {
+				stringBuilder.append(" ").append(PrintNumber.printNumberExtended(value));
 			}
-        }
-        return printString;
-    }
+		}
+		return stringBuilder.toString();
+	}
 
     public static void resetRegisterFile() {
         delete = true;

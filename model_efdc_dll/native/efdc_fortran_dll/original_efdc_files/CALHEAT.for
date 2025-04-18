@@ -85,6 +85,16 @@ C
       !REAL,SAVE ::    PTIME
       !REAL,SAVE ::    PMCTOL
       REAL            K_ABOVE
+      REAL WQCHLS_ABOVE
+      REAL TSSS_ABOVE
+      REAL POMS_ABOVE
+      REAL EXPBOT
+      REAL CSHE
+      WQCHLS_ABOVE = 0.0
+      TSSS_ABOVE = 0.0
+      POMS_ABOVE = 0.0
+      EXPBOT = 0.0
+      CSHE = 0.0
 C
       IF(.NOT.ALLOCATED(NETRAD))THEN
         ALLOCATE(NETRAD(LCM,KCM))
@@ -628,7 +638,7 @@ c
       enddo
       ENDIF  
 
-  600 FORMAT(4I5,2E12.4)  
+C 600 FORMAT(4I5,2E12.4)  
 
       RETURN  
       END  

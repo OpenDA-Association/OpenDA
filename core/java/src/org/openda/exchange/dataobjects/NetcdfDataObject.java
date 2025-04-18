@@ -57,6 +57,8 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 	public static final String ALLOW_TIME_INDEPENDENT_ITEMS = "allowTimeIndependentItems";
 	public static final String REQUIRED_EXCHANGE_ITEM_ID = "requiredExchangeItemId";
 	public static final String LAYER_DIMENSION_NAME = "layerDimensionName";
+	public static final String STATION_ID_VAR_NAME_KEY = "stationIdVarName";
+	public static final String STATION_DIMENSION_VAR_NAME_KEY = "stationDimensionVarName";
 
 	public enum GridStartCorner {NORTH_WEST, SOUTH_WEST, UNKNOWN}
 
@@ -138,8 +140,14 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 				case LAYER_DIMENSION_NAME:
 					this.layerDimensionName = value;
 					continue;
+				case STATION_ID_VAR_NAME_KEY:
+					this.stationIdVarName = value;
+					continue;
+				case STATION_DIMENSION_VAR_NAME_KEY:
+					this.stationDimensionVarName = value;
+					continue;
 				default:
-					throw new RuntimeException("Unknown key " + key + ". Please specify only [" + ALLOW_TIME_INDEPENDENT_ITEMS + ", " + REQUIRED_EXCHANGE_ITEM_ID + ", " + LAYER_DIMENSION_NAME  + "] as key=value pair");
+					throw new RuntimeException("Unknown key " + key + ". Please specify only [" + ALLOW_TIME_INDEPENDENT_ITEMS + ", " + REQUIRED_EXCHANGE_ITEM_ID + ", " + LAYER_DIMENSION_NAME + ", " + STATION_ID_VAR_NAME_KEY + ", " + STATION_DIMENSION_VAR_NAME_KEY  + "] as key=value pair");
 			}
 		}
 

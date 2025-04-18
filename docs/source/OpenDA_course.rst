@@ -1,3 +1,5 @@
+.. _course:
+
 ===================
 OpenDA course
 ===================
@@ -9,11 +11,12 @@ A course is available to learn much more about OpenDA:
 Some keywords: 
 
 - Configuration files
+- Calibration
 - Ensemble of model runs
-- Observations
+- Observability/controllability
 - Ensemble Kalman filtering
 - Localization techniques
 - Black-box model
-- Writing wrappers
-- Twin experiment
+- Twin experiments
+- Parallel computing
 - Postprocessing in Python: time-series plots, movies

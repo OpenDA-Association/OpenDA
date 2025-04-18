@@ -23,10 +23,12 @@ Index
    OpenDA_course
 
 .. toctree::
-   :caption: Inside information
+   :caption: Additional information
    :maxdepth: 2
 
    data_objects.rst
+   localization.rst
+   continuing.rst
 
 .. toctree::
    :caption: Contributing to the source

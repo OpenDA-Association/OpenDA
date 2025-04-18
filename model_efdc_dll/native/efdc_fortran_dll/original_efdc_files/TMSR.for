@@ -7,6 +7,7 @@ C **  VELOCITY, CONCENTRATION, AND VOLUME SOURCES AT SPECIFIED
 C **  (I,J) POINTS  
 C  
       USE GLOBAL  
+      USE MPI
 
       CHARACTER*80 TITLE1,TITLE2,TITLE3,TITLE4,TITLE5,TITLE6,TITLE7,  
      &    TITLE11,TITLE12,TITLE13,TITLE14,TITLE15,TITLE16,TITLE17,  
@@ -259,6 +260,7 @@ C
         IF(MTMSRC(MLTM).EQ.1)THEN
           IF(ISTRAN(1).GE.1)THEN
             FNSAL(MLTM)='SALTS' // CNTMSR(MLTM) // '.OUT'
+            IF(MYRANK.EQ.0)THEN
             OPEN(11,FILE=FNSAL(MLTM),STATUS='UNKNOWN')
             CLOSE(11,STATUS='DELETE')
             OPEN(11,FILE=FNSAL(MLTM),STATUS='UNKNOWN')
@@ -268,8 +270,10 @@ C
             WRITE (11,102) CTUNIT
             CLOSE(11)
           ENDIF
+          ENDIF
           IF(ISTRAN(2).GE.1)THEN
             FNTEM(MLTM)='TEMTS' // CNTMSR(MLTM) // '.OUT'
+            IF(MYRANK.EQ.0)THEN
             OPEN(21,FILE=FNTEM(MLTM),STATUS='UNKNOWN')
             CLOSE(21,STATUS='DELETE')
             OPEN(21,FILE=FNTEM(MLTM),STATUS='UNKNOWN')
@@ -279,8 +283,10 @@ C
             WRITE (21,102) CTUNIT
             CLOSE(21)
           ENDIF
+          ENDIF
           IF(ISTRAN(3).GE.1)THEN
             FNDYE(MLTM)='DYETS' // CNTMSR(MLTM) // '.OUT'
+            IF(MYRANK.EQ.0)THEN
             OPEN(31,FILE=FNDYE(MLTM),STATUS='UNKNOWN')
             CLOSE(31,STATUS='DELETE')
             OPEN(31,FILE=FNDYE(MLTM),STATUS='UNKNOWN')
@@ -289,9 +295,11 @@ C
             WRITE (31,103)ILTMSR(MLTM),JLTMSR(MLTM)
             WRITE (31,102) CTUNIT
             CLOSE(31)
+          ENDIF
           ENDIF
           IF(ISTRAN(4).GE.1)THEN
             FNDYE(MLTM)='SFLTS' // CNTMSR(MLTM) // '.OUT'
+            IF(MYRANK.EQ.0)THEN
             OPEN(31,FILE=FNSFL(MLTM),STATUS='UNKNOWN')
             CLOSE(31,STATUS='DELETE')
             OPEN(31,FILE=FNSFL(MLTM),STATUS='UNKNOWN')
@@ -301,8 +309,10 @@ C
             WRITE (31,102) CTUNIT
             CLOSE(31)
           ENDIF
+          ENDIF
           IF(ISTRAN(6).GE.1)THEN
             FNSED(MLTM)='SEDTS' // CNTMSR(MLTM) // '.OUT'
+            IF(MYRANK.EQ.0)THEN
             OPEN(41,FILE=FNSED(MLTM),STATUS='UNKNOWN')
             CLOSE(41,STATUS='DELETE')
             OPEN(41,FILE=FNSED(MLTM),STATUS='UNKNOWN')
@@ -311,11 +321,13 @@ C
             WRITE (41,103)ILTMSR(MLTM),JLTMSR(MLTM)
             WRITE (41,102) CTUNIT
             CLOSE(41)
+          ENDIF
           ENDIF
           IF(ISTRAN(7).GE.1)THEN
             DO NX=1,NSND
             FNSND(MLTM,NX)='SND'// CNSND(NX) // 'TS' // 
      &                        CNTMSR(MLTM) // '.OUT'
+            IF(MYRANK.EQ.0)THEN
             OPEN(41,FILE=FNSND(MLTM,NX),STATUS='UNKNOWN')
             CLOSE(41,STATUS='DELETE')
             OPEN(41,FILE=FNSND(MLTM,NX),STATUS='UNKNOWN')
@@ -324,10 +336,12 @@ C
             WRITE (41,103)ILTMSR(MLTM),JLTMSR(MLTM)
             WRITE (41,102) CTUNIT
             CLOSE(41)
+            ENDIF
             ENDDO
             DO NX=1,NSND
             FNSBL(MLTM,NX)='SBL'// CNSBL(NX) // 'TS' // 
      &                        CNTMSR(MLTM) // '.OUT'
+            IF(MYRANK.EQ.0)THEN
             OPEN(41,FILE=FNSBL(MLTM,NX),STATUS='UNKNOWN')
             CLOSE(41,STATUS='DELETE')
             OPEN(41,FILE=FNSBL(MLTM,NX),STATUS='UNKNOWN')
@@ -336,19 +350,12 @@ C
             WRITE (41,103)ILTMSR(MLTM),JLTMSR(MLTM)
             WRITE (41,102) CTUNIT
             CLOSE(41)
+            ENDIF
             ENDDO
-C            FNSND(MLTM)='SNDTS' // CNTMSR(MLTM) // '.OUT'
-C            OPEN(41,FILE=FNSND(MLTM),STATUS='UNKNOWN')
-C            CLOSE(41,STATUS='DELETE')
-C            OPEN(41,FILE=FNSND(MLTM),STATUS='UNKNOWN')
-C            WRITE (41,100) TITLE4
-C            WRITE (41,101) CLTMSR(MLTM)
-C            WRITE (41,103)ILTMSR(MLTM),JLTMSR(MLTM)
-C            WRITE (41,102) CTUNIT
-C            CLOSE(41)
           ENDIF
           IF(ISTRAN(6).GE.1.OR.ISTRAN(7).GE.1)THEN
             FNBED(MLTM)='BEDTS' // CNTMSR(MLTM) // '.OUT'
+            IF(MYRANK.EQ.0)THEN
             OPEN(41,FILE=FNBED(MLTM),STATUS='UNKNOWN')
             CLOSE(41,STATUS='DELETE')
             OPEN(41,FILE=FNBED(MLTM),STATUS='UNKNOWN')
@@ -358,8 +365,10 @@ C            CLOSE(41)
             WRITE (41,102) CTUNIT
             CLOSE(41)
           ENDIF
+          ENDIF
           IF(ISTRAN(8).GE.1)THEN
             FNDOX(MLTM)='DOXTS' // CNTMSR(MLTM) // '.OUT'
+            IF(MYRANK.EQ.0)THEN
             OPEN(41,FILE=FNDOX(MLTM),STATUS='UNKNOWN')
             CLOSE(41,STATUS='DELETE')
             OPEN(41,FILE=FNDOX(MLTM),STATUS='UNKNOWN')
@@ -368,7 +377,9 @@ C            CLOSE(41)
             WRITE (41,103)ILTMSR(MLTM),JLTMSR(MLTM)
             WRITE (41,102) CTUNIT
             CLOSE(41)
+            ENDIF
             FNTOC(MLTM)='TOCTS' // CNTMSR(MLTM) // '.OUT'
+            IF(MYRANK.EQ.0)THEN
             OPEN(42,FILE=FNTOC(MLTM),STATUS='UNKNOWN')
             CLOSE(42,STATUS='DELETE')
             OPEN(42,FILE=FNTOC(MLTM),STATUS='UNKNOWN')
@@ -377,7 +388,9 @@ C            CLOSE(41)
             WRITE (42,103)ILTMSR(MLTM),JLTMSR(MLTM)
             WRITE (42,102) CTUNIT
             CLOSE(42)
+            ENDIF
             FNNHX(MLTM)='NHXTS' // CNTMSR(MLTM) // '.OUT'
+            IF(MYRANK.EQ.0)THEN
             OPEN(43,FILE=FNNHX(MLTM),STATUS='UNKNOWN')
             CLOSE(43,STATUS='DELETE')
             OPEN(43,FILE=FNNHX(MLTM),STATUS='UNKNOWN')
@@ -387,10 +400,12 @@ C            CLOSE(41)
             WRITE (43,102) CTUNIT
             CLOSE(43)
           ENDIF
+          ENDIF
           IF(ISTRAN(5).GE.1)THEN
             DO NT=1,NTOX
               FNTOX(MLTM,NT)='TOX' // CNTOX(NT) // 'TS' // 
      &                           CNTMSR(MLTM) // '.OUT'
+              IF(MYRANK.EQ.0)THEN
               OPEN(51,FILE=FNTOX(MLTM,NT),STATUS='UNKNOWN')
               CLOSE(51,STATUS='DELETE')
               OPEN(51,FILE=FNTOX(MLTM,NT),STATUS='UNKNOWN')
@@ -399,8 +414,10 @@ C            CLOSE(41)
               WRITE (51,103)ILTMSR(MLTM),JLTMSR(MLTM)
               WRITE (51,102) CTUNIT
               CLOSE(51)
+              ENDIF
               FNTXWT(MLTM,NT)='TXWT' // CNTOX(NT) // 'TS' // 
      &                           CNTMSR(MLTM) // '.OUT'
+              IF(MYRANK.EQ.0)THEN
               OPEN(51,FILE=FNTXWT(MLTM,NT),STATUS='UNKNOWN')
               CLOSE(51,STATUS='DELETE')
               OPEN(51,FILE=FNTXWT(MLTM,NT),STATUS='UNKNOWN')
@@ -409,8 +426,10 @@ C            CLOSE(41)
               WRITE (51,103)ILTMSR(MLTM),JLTMSR(MLTM)
               WRITE (51,102) CTUNIT
               CLOSE(51)
+              ENDIF
               FNTXWF(MLTM,NT)='TXWF' // CNTOX(NT) // 'TS' // 
      &                           CNTMSR(MLTM) // '.OUT'
+              IF(MYRANK.EQ.0)THEN
               OPEN(51,FILE=FNTXWF(MLTM,NT),STATUS='UNKNOWN')
               CLOSE(51,STATUS='DELETE')
               OPEN(51,FILE=FNTXWF(MLTM,NT),STATUS='UNKNOWN')
@@ -419,8 +438,10 @@ C            CLOSE(41)
               WRITE (51,103)ILTMSR(MLTM),JLTMSR(MLTM)
               WRITE (51,102) CTUNIT
               CLOSE(51)
+              ENDIF
               FNTXWC(MLTM,NT)='TXWC' // CNTOX(NT) // 'TS' // 
      &                           CNTMSR(MLTM) // '.OUT'
+              IF(MYRANK.EQ.0)THEN
               OPEN(51,FILE=FNTXWC(MLTM,NT),STATUS='UNKNOWN')
               CLOSE(51,STATUS='DELETE')
               OPEN(51,FILE=FNTXWC(MLTM,NT),STATUS='UNKNOWN')
@@ -429,8 +450,10 @@ C            CLOSE(41)
               WRITE (51,103)ILTMSR(MLTM),JLTMSR(MLTM)
               WRITE (51,102) CTUNIT
               CLOSE(51)
+              ENDIF
               FNTXWP(MLTM,NT)='TXWP' // CNTOX(NT) // 'TS' // 
      &                           CNTMSR(MLTM) // '.OUT'
+              IF(MYRANK.EQ.0)THEN
               OPEN(51,FILE=FNTXWP(MLTM,NT),STATUS='UNKNOWN')
               CLOSE(51,STATUS='DELETE')
               OPEN(51,FILE=FNTXWP(MLTM,NT),STATUS='UNKNOWN')
@@ -439,8 +462,10 @@ C            CLOSE(41)
               WRITE (51,103)ILTMSR(MLTM),JLTMSR(MLTM)
               WRITE (51,102) CTUNIT
               CLOSE(51)
+              ENDIF
               FNTXBT(MLTM,NT)='TXBT' // CNTOX(NT) // 'TS' // 
      &                           CNTMSR(MLTM) // '.OUT'
+              IF(MYRANK.EQ.0)THEN
               OPEN(51,FILE=FNTXBT(MLTM,NT),STATUS='UNKNOWN')
               CLOSE(51,STATUS='DELETE')
               OPEN(51,FILE=FNTXBT(MLTM,NT),STATUS='UNKNOWN')
@@ -449,8 +474,10 @@ C            CLOSE(41)
               WRITE (51,103)ILTMSR(MLTM),JLTMSR(MLTM)
               WRITE (51,102) CTUNIT
               CLOSE(51)
+              ENDIF
               FNTXBF(MLTM,NT)='TXBF' // CNTOX(NT) // 'TS' // 
      &                           CNTMSR(MLTM) // '.OUT'
+              IF(MYRANK.EQ.0)THEN
               OPEN(51,FILE=FNTXBF(MLTM,NT),STATUS='UNKNOWN')
               CLOSE(51,STATUS='DELETE')
               OPEN(51,FILE=FNTXBF(MLTM,NT),STATUS='UNKNOWN')
@@ -459,8 +486,10 @@ C            CLOSE(41)
               WRITE (51,103)ILTMSR(MLTM),JLTMSR(MLTM)
               WRITE (51,102) CTUNIT
               CLOSE(51)
+              ENDIF
               FNTXBC(MLTM,NT)='TXBC' // CNTOX(NT) // 'TS' // 
      &                           CNTMSR(MLTM) // '.OUT'
+              IF(MYRANK.EQ.0)THEN
               OPEN(51,FILE=FNTXBC(MLTM,NT),STATUS='UNKNOWN')
               CLOSE(51,STATUS='DELETE')
               OPEN(51,FILE=FNTXBC(MLTM,NT),STATUS='UNKNOWN')
@@ -469,8 +498,10 @@ C            CLOSE(41)
               WRITE (51,103)ILTMSR(MLTM),JLTMSR(MLTM)
               WRITE (51,102) CTUNIT
               CLOSE(51)
+              ENDIF
               FNTXBP(MLTM,NT)='TXBP' // CNTOX(NT) // 'TS' // 
      &                           CNTMSR(MLTM) // '.OUT'
+              IF(MYRANK.EQ.0)THEN
               OPEN(51,FILE=FNTXBP(MLTM,NT),STATUS='UNKNOWN')
               CLOSE(51,STATUS='DELETE')
               OPEN(51,FILE=FNTXBP(MLTM,NT),STATUS='UNKNOWN')
@@ -479,11 +510,13 @@ C            CLOSE(41)
               WRITE (51,103)ILTMSR(MLTM),JLTMSR(MLTM)
               WRITE (51,102) CTUNIT
               CLOSE(51)
+              ENDIF
             ENDDO
           ENDIF
         ENDIF
         IF(MTMSRA(MLTM).EQ.1)THEN
           FNAVV(MLTM)='AVVTS' // CNTMSR(MLTM) // '.OUT'
+          IF(MYRANK.EQ.0)THEN
           OPEN(61,FILE=FNAVV(MLTM),STATUS='UNKNOWN')
           CLOSE(61,STATUS='DELETE')
           OPEN(61,FILE=FNAVV(MLTM),STATUS='UNKNOWN')
@@ -492,7 +525,9 @@ C            CLOSE(41)
           WRITE (61,103)ILTMSR(MLTM),JLTMSR(MLTM)
           WRITE (61,102) CTUNIT
           CLOSE(61)
+          ENDIF
           FNAVB(MLTM)='AVBTS' // CNTMSR(MLTM) // '.OUT'
+          IF(MYRANK.EQ.0)THEN
           OPEN(71,FILE=FNAVB(MLTM),STATUS='UNKNOWN')
           CLOSE(71,STATUS='DELETE')
           OPEN(71,FILE=FNAVB(MLTM),STATUS='UNKNOWN')
@@ -502,8 +537,10 @@ C            CLOSE(41)
           WRITE (71,102) CTUNIT
           CLOSE(71)
         ENDIF
+        ENDIF
         IF(MTMSRP(MLTM).EQ.1)THEN
           FNSEL(MLTM)='SELTS' // CNTMSR(MLTM) // '.OUT'
+          IF(MYRANK.EQ.0)THEN
           OPEN(11,FILE=FNSEL(MLTM),STATUS='UNKNOWN')
           CLOSE(11,STATUS='DELETE')
           OPEN(11,FILE=FNSEL(MLTM),STATUS='UNKNOWN')
@@ -513,8 +550,10 @@ C            CLOSE(41)
           WRITE (11,102) CTUNIT
           CLOSE(11)
         ENDIF 
+        ENDIF 
         IF(MTMSRUE(MLTM).EQ.1)THEN
           FNUVE(MLTM)='UVETS' // CNTMSR(MLTM) // '.OUT'
+          IF(MYRANK.EQ.0)THEN
           OPEN(21,FILE=FNUVE(MLTM),STATUS='UNKNOWN')
           CLOSE(21,STATUS='DELETE')
           OPEN(21,FILE=FNUVE(MLTM),STATUS='UNKNOWN')
@@ -524,8 +563,10 @@ C            CLOSE(41)
           WRITE (21,102) CTUNIT
           CLOSE(21)
         ENDIF
+        ENDIF
         IF(MTMSRUT(MLTM).EQ.1)THEN
           FNUVT(MLTM)='UVTTS' // CNTMSR(MLTM) // '.OUT'
+          IF(MYRANK.EQ.0)THEN
           OPEN(31,FILE=FNUVT(MLTM),STATUS='UNKNOWN')
           CLOSE(31,STATUS='DELETE')
           OPEN(31,FILE=FNUVT(MLTM),STATUS='UNKNOWN')
@@ -535,8 +576,10 @@ C            CLOSE(41)
           WRITE (31,102) CTUNIT
           CLOSE(31)
         ENDIF
+        ENDIF
         IF(MTMSRU(MLTM).EQ.1)THEN
           FNU3D(MLTM)='U3DTS' // CNTMSR(MLTM) // '.OUT'
+          IF(MYRANK.EQ.0)THEN
           OPEN(41,FILE=FNU3D(MLTM),STATUS='UNKNOWN')
           CLOSE(41,STATUS='DELETE')
           OPEN(41,FILE=FNU3D(MLTM),STATUS='UNKNOWN')
@@ -545,7 +588,9 @@ C            CLOSE(41)
           WRITE (41,103)ILTMSR(MLTM),JLTMSR(MLTM)
           WRITE (41,102) CTUNIT
           CLOSE(41)
+          ENDIF
           FNV3D(MLTM)='V3DTS' // CNTMSR(MLTM) // '.OUT'
+          IF(MYRANK.EQ.0)THEN
           OPEN(51,FILE=FNV3D(MLTM),STATUS='UNKNOWN')
           CLOSE(51,STATUS='DELETE')
           OPEN(51,FILE=FNV3D(MLTM),STATUS='UNKNOWN')
@@ -555,8 +600,10 @@ C            CLOSE(41)
           WRITE (51,102) CTUNIT
           CLOSE(51)
         ENDIF
+        ENDIF
         IF(MTMSRQE(MLTM).EQ.1)THEN
           FNQQE(MLTM)='QQETS' // CNTMSR(MLTM) // '.OUT'
+          IF(MYRANK.EQ.0)THEN
           OPEN(61,FILE=FNQQE(MLTM),STATUS='UNKNOWN')
           CLOSE(61,STATUS='DELETE')
           OPEN(61,FILE=FNQQE(MLTM),STATUS='UNKNOWN')
@@ -566,8 +613,10 @@ C            CLOSE(41)
           WRITE (61,102) CTUNIT
           CLOSE(61)
         ENDIF
+        ENDIF
         IF(MTMSRQ(MLTM).EQ.1)THEN
           FNQ3D(MLTM)='Q3DTS' // CNTMSR(MLTM) // '.OUT'
+          IF(MYRANK.EQ.0)THEN
           OPEN(71,FILE=FNQ3D(MLTM),STATUS='UNKNOWN')
           CLOSE(71,STATUS='DELETE')
           OPEN(71,FILE=FNQ3D(MLTM),STATUS='UNKNOWN')
@@ -576,6 +625,7 @@ C            CLOSE(41)
           WRITE (71,103)ILTMSR(MLTM),JLTMSR(MLTM)
           WRITE (71,102) CTUNIT
           CLOSE(71)
+        ENDIF
         ENDIF
       ENDDO
 C

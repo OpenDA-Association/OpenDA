@@ -10,9 +10,9 @@
                 <check>
                         <file removeBeforeTest="yes" >../threedvar_results.m</file>
 			<!-- last line looks like:
-			x_f_central{102}	=[5.966491565457382,8.692450416903643,...
+			x_f_central{51}	=[6.370087895252388,8.373780710465734, ...
 			-->
-			<regex>x_f_central\{102\}(.*)\[5.96(.*)8.69(.*)</regex>
+			<regex>x_f_central\{51\}(.*)\[6.37(.*)8.37(.*)</regex>
                 </check>
         </checks>
 </testConfig>

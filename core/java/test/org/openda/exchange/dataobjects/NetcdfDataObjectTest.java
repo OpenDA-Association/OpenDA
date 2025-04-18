@@ -84,6 +84,21 @@ public class NetcdfDataObjectTest extends TestCase {
 		}
 	}
 
+	public void testConfigurableStationVariable() {
+		NetcdfDataObject dataObject = new NetcdfDataObject();
+		dataObject.initialize(this.testRunDataDir, new String[]{"structures.nc", "true", "false", "stationIdVarName=structure_id", "stationDimensionVarName=id"});
+		String[] itemIds = dataObject.getExchangeItemIDs();
+		assertEquals(260, itemIds.length);
+		assertEquals("03_Wehr_Kobl~~2.crest_level", itemIds[5]);
+		assertEquals("06_Wehr_Ahl~~2.crest_level", itemIds[20]);
+		assertEquals("Mai_32_Wehr_Grie~~2.water_level", itemIds[259]);
+		IExchangeItem crestLevelEI = dataObject.getDataObjectExchangeItem("06_Wehr_Ahl~~2.crest_level");
+		double[] crestLevels = crestLevelEI.getValuesAsDoubles();
+		assertEquals(601, crestLevels.length);
+		assertEquals(69.4000015d, crestLevels[33], 1e-7);
+		assertEquals(69.4000015d, crestLevels[192], 1e-7);
+	}
+
 	public void testMultipleLayers() {
 		NetcdfDataObject dataObject = new NetcdfDataObject();
 		File testRunDataDir = new File(this.testRunDataDir, "multipleLayers");

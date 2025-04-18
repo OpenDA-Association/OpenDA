@@ -2,7 +2,7 @@
 SUBROUTINE SEDZLJ_MAIN
   USE GLOBAL
   IMPLICIT NONE
-  DOUBLE PRECISION,DIMENSION(LCM)::WVEL,CLEFT,CRIGHT,GRADSED,SEDAVG,CRNUM,CRAIG
+  DOUBLE PRECISION,DIMENSION(LCM)::WVEL,CLEFT,CRIGHT,GRADSED,SEDAVG,CRNUM
   INTEGER::L,K,NS
   DOUBLE PRECISION::AA11,AA12,AA21,AA22,BB11,BB22,DETI
   ! PT: real values are written in DOUBLE PRECISION. 7/16/08
@@ -16,7 +16,6 @@ SUBROUTINE SEDZLJ_MAIN
 
 !**********************************************************************!
 !
-
         DO NS=1,NSED
           DO K=1,KC
             DO L=2,LA
@@ -32,7 +31,9 @@ SUBROUTINE SEDZLJ_MAIN
   CALL SEDZLJ_SHEAR
 !
 !Calculating the morphology before sediment transport of each time step.
-  IF(IMORPH_SEDZLJ==1)FORALL(L=2:LA)HBED(L,1:KB)=0.01*(TSED(1:KB,L)/BULKDENS(1:KB,L))
+  IF(IMORPH_SEDZLJ==1) THEN
+    FORALL(L=2:LA) HBED(L,1:KB) = REAL(0.01*(TSED(1:KB,L)/BULKDENS(1:KB,L)),KIND(HBED))
+  ENDIF
 !TSED-sediment layer's thickness. HBED-Bed height. BULKDENS-Density of sediment and water in layer.
 !
 !Setting the sediment concentration in the current.  SEDS is a saved version of SED (the sediment
@@ -51,7 +52,7 @@ SUBROUTINE SEDZLJ_MAIN
 !
 !WSETA - temporary settling velocity.  The division of DWS by 100.0 probably has to do with unit conversion.
 !going from cm/s to m/s.
-     FORALL(K=0:KS,L=2:LA)WSETA(L,K,1:NSCM)=DWS(1:NSCM)/100.0
+     FORALL(K=0:KS,L=2:LA)WSETA(L,K,1:NSCM)=REAL(DWS(1:NSCM)/100.0,KIND(WSETA))
      SEDF(2:LA,0:KS,1:NSCM)=0.0
      !if(minval(SEDF) < 0.0) then
         !print *, 'Negative SEDF 0'
@@ -69,7 +70,7 @@ SUBROUTINE SEDZLJ_MAIN
               WVEL(L)=DELT*HPI(L)*DZIC(KC)
               CLEFT(L)=1.0+WSETA(L,KC-1,NS)*WVEL(L)
               CRIGHT(L)=MAX(SED(L,KC,NS),0.0)
-              SED(L,KC,NS)=CRIGHT(L)/CLEFT(L)
+              SED(L,KC,NS)=REAL(CRIGHT(L)/CLEFT(L),KIND(SED))
               SEDF(L,KC-1,NS)=-WSETA(L,KC-1,NS)*SED(L,KC,NS)
            ENDFORALL
 !PT: added if loop to allow code to run faster for KC = 2 case.
@@ -79,7 +80,7 @@ SUBROUTINE SEDZLJ_MAIN
                     WVEL(L)=DELT*HPI(L)*DZIC(K)
                     CLEFT(L)=1.0+WSETA(L,K-1,NS)*WVEL(L)
                     CRIGHT(L)=MAX(SED(L,K,NS),0.0)-SEDF(L,K,NS)*WVEL(L)
-                    SED(L,K,NS)=CRIGHT(L)/CLEFT(L)
+                    SED(L,K,NS)=REAL(CRIGHT(L)/CLEFT(L),KIND(SED))
                     SEDF(L,K-1,NS)=-WSETA(L,K-1,NS)*SED(L,K,NS)
                  ENDFORALL
               ENDDO
@@ -104,9 +105,11 @@ SUBROUTINE SEDZLJ_MAIN
 !  **   Update the bed thickness based on the flux and calculate
 !       the flux into the water column.
 !
-        QSBDTOP(L)=SUM(SSGI(1:NSCM)*SEDF(L,0,1:NSCM))
+        QSBDTOP(L)=REAL(SUM(SSGI(1:NSCM)*SEDF(L,0,1:NSCM)),KIND(QSBDTOP))
         DO NS=1,NSCM
-           QWBDTOP(L)=QWBDTOP(L)+SSGI(NS)*(VDRBED(L,KBT(L))*MAX(SEDF(L,0,NS),0.0)+VDRDEPO(NS)*MIN(SEDF(L,0,NS),0.0))
+           QWBDTOP(L)=REAL(QWBDTOP(L)+SSGI(NS)*(VDRBED(L,KBT(L))*MAX(SEDF(L,0,NS),0.0)    &
+                                      +VDRDEPO(NS)*MIN(SEDF(L,0,NS),0.0)),                &
+                                      KIND(QWBDTOP))
         ENDDO
 
   ! delme
@@ -129,7 +132,7 @@ SUBROUTINE SEDZLJ_MAIN
                     CRNUM(L)=1.0+DELT*WSETA(L,K,NS)*HPI(L)*DZIC(K+1)
                     GRADSED(L)=(SED(L,K+1,NS)-SED(L,K,NS))/(DZC(K+1)+DZC(K))
                     SEDAVG(L)=0.5*(SED(L,K+1,NS)+SED(L,K,NS)+1.0E-16)
-                    WSETA(L,K,NS)=-CRNUM(L)*DZC(K+1)*WSETA(L,K,NS)*GRADSED(L)/SEDAVG(L)
+                    WSETA(L,K,NS)=REAL(-CRNUM(L)*DZC(K+1)*WSETA(L,K,NS)*GRADSED(L)/SEDAVG(L),KIND(WSETA))
                  ENDFORALL
               ENDDO
 !
@@ -196,7 +199,7 @@ SUBROUTINE SEDZLJ_MAIN
                  CRNUM=1.+DELT*WSETA(2:LA,K,NS)*HPI(2:LA)*DZIC(K+1)
                  GRADSED=(SED(2:LA,K+1,NS)-SED(2:LA,K,NS))/(DZC(K+1)+DZC(K))
                  SEDAVG=0.5*(SED(2:LA,K+1,NS)-SED(2:LA,K,NS)+1.E-16)
-                 WSETA(2:LA,K,NS)=-CRNUM*DZC(K+1)*WSETA(2:LA,K,NS)*GRADSED/SEDAVG
+                 WSETA(2:LA,K,NS)=REAL(-CRNUM*DZC(K+1)*WSETA(2:LA,K,NS)*GRADSED/SEDAVG,KIND(WSETA))
               ENDDO
 !
 !     TVAR1S=LOWER DIAGONAL
@@ -276,8 +279,8 @@ SUBROUTINE SEDZLJ_MAIN
                  BB11=DELTI*DZC(1)*HP(L)*SED(L,1,NS)
                  BB22=DELTI*DZC(KC)*HP(L)*SED(L,KC,NS)
                  DETI=1./(AA11*AA22-AA12*AA21)
-                 SED(L,1,NS)=DETI*( BB11*AA22-BB22*AA12 )
-                 SED(L,KC,NS)=DETI*( AA11*BB22-AA21*BB11 )
+                 SED(L,1,NS)=REAL(DETI*( BB11*AA22-BB22*AA12 ), KIND(SED))
+                 SED(L,KC,NS)=REAL(DETI*( AA11*BB22-AA21*BB11 ), KIND(SED))
               ENDDO
            ENDIF
 !
@@ -302,7 +305,7 @@ SUBROUTINE SEDZLJ_MAIN
 !   SEDZLJ Sediment and Contaminant Transport model
 !
      DO NS=1,NSCM
-        FORALL(L=2:LA,K=0:KS)WSETA(L,K,NS)=DWS(NS)/100.
+        FORALL(L=2:LA,K=0:KS)WSETA(L,K,NS)=REAL(DWS(NS)/100.,KIND(WSETA))
 !----------------------------------------------------------------------!
 !
 ! **  HORIZONTAL LOOPS
@@ -312,7 +315,7 @@ SUBROUTINE SEDZLJ_MAIN
         WVEL(2:LA)=DELT*HPI(2:LA)*DZIC(K)
         CLEFT(2:LA)=1.0+WSETA(2:LA,K-1,NS)*WVEL(2:LA)
         CRIGHT(2:LA)=MAX(SED(2:LA,K,NS),0.0)
-        SED(2:LA,K,NS)=CRIGHT(2:LA)/CLEFT(2:LA)
+        SED(2:LA,K,NS)=REAL(CRIGHT(2:LA)/CLEFT(2:LA),KIND(SED))
         SEDF(2:LA,K-1,NS)=-WSETA(2:LA,K-1,NS)*SED(2:LA,K,NS)
         !if(minval(SEDF) < 0.0) then
            !print *, 'Negative SEDF 7'
@@ -323,7 +326,7 @@ SUBROUTINE SEDZLJ_MAIN
            WVEL(2:LA)=DELT*HPI(2:LA)*DZIC(K)
            CLEFT(2:LA)=1.0+WSETA(2:LA,K-1,NS)*WVEL(2:LA)
            CRIGHT(2:LA)=MAX(SED(2:LA,K,NS),0.0)-SEDF(2:LA,K,NS)*WVEL(2:LA)
-           SED(2:LA,K,NS)=CRIGHT(2:LA)/CLEFT(2:LA)
+           SED(2:LA,K,NS)=REAL(CRIGHT(2:LA)/CLEFT(2:LA),KIND(SED))
            SEDF(2:LA,K-1,NS)=-WSETA(2:LA,K-1,NS)*SED(2:LA,K,NS)
            !if(minval(SEDF) < 0.0) then
               !print *, 'Negative SEDF 8'
@@ -341,8 +344,10 @@ SUBROUTINE SEDZLJ_MAIN
 !  **   Update the bed thickness based on the flux and calculate
 !       the flux into the water column.
 !
-        QSBDTOP(L)=SUM(SSGI(1:NSCM)*SEDF(L,0,1:NSCM))
-        QWBDTOP(L)=VDRBED(L,KBT(L))*SUM(SSGI(1:NSCM)*SEDF(L,0,1:NSCM),SEDF(L,0,1:NSCM)>0.0)+SUM(SSGI(1:NSCM)*VDRDEPO(1:NSCM)*SEDF(L,0,1:NSCM),SEDF(L,0,1:NSCM)<0.0)
+        QSBDTOP(L)=REAL(SUM(SSGI(1:NSCM)*SEDF(L,0,1:NSCM)),KIND(QSBDTOP))
+        QWBDTOP(L)=REAL(VDRBED(L,KBT(L))*SUM(SSGI(1:NSCM)*SEDF(L,0,1:NSCM),SEDF(L,0,1:NSCM)>0.0)  &
+                        +SUM(SSGI(1:NSCM)*VDRDEPO(1:NSCM)*SEDF(L,0,1:NSCM),SEDF(L,0,1:NSCM)<0.0), &
+                        KIND(QWBDTOP))
         !DO NS=1,NSCM
         !QWBDTOP(L)=QWBDTOP(L)+SSGI(1:NSCM)*(VDRBED(L,KBT(L))*MAX(SEDF(L,0,NS),0.0)+VDRDEPO(NS)*MIN(SEDF(L,0,NS),0.0))
         !ENDDO
@@ -361,7 +366,7 @@ SUBROUTINE SEDZLJ_MAIN
                  CRNUM(L)=1.0+DELT*WSETA(L,K,NS)*HPI(L)*DZIC(K+1)
                  GRADSED(L)=(SED(L,K+1,NS)-SED(L,K,NS))/(DZC(K+1)+DZC(K))
                  SEDAVG(L)=0.5*(SED(L,K+1,NS)+SED(L,K,NS)+1.0E-16)
-                 WSETA(L,K,NS)=-CRNUM(L)*DZC(K+1)*WSETA(L,K,NS)*GRADSED(L)/SEDAVG(L)
+                 WSETA(L,K,NS)=REAL(-CRNUM(L)*DZC(K+1)*WSETA(L,K,NS)*GRADSED(L)/SEDAVG(L),KIND(WSETA))
               ENDFORALL
            ENDDO
 !

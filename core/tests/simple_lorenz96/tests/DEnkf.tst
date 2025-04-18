@@ -9,10 +9,10 @@
                 </check>
                 <check>
 		<!-- last line looks like
-		x_f_central{102}	=[5.918771659370243,8.848111030656193
+		x_f_central{51}	=[5.907863987206802,8.95173452830568, ...
 		-->
                         <file removeBeforeTest="yes" >../denkf_results.m</file>
-			<regex>x_f_central\{102\}(.*)\[5.91(.*)8.84(.*)</regex>
+			<regex>x_f_central\{51\}(.*)\[5.90(.*)8.95(.*)</regex>
                 </check>
         </checks>
 </testConfig>

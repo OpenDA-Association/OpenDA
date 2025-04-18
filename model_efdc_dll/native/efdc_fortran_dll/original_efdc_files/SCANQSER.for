@@ -1,8 +1,9 @@
       SUBROUTINE SCANQSER  
       USE GLOBAL
-      INTEGER*4 NS, I, J, M
+      USE MPI
+      INTEGER IOS
         
-      WRITE(*,'(A)')'SCANNING INPUT FILE: QSER.INP'  
+      IF(MYRANK.EQ.0)WRITE(*,'(A)')'SCANNING INPUT FILE: QSER.INP'  
       OPEN(1,FILE='QSER.INP',STATUS='OLD')  
 
       DO NS=1,NQSER  
@@ -22,12 +23,14 @@
       CLOSE(1)  
       RETURN  
 
-   20 WRITE(*,30)  
-      WRITE(8,30)  
+   20 CONTINUE
+      IF(MYRANK.EQ.0) WRITE(*,30)  
+      IF(MYRANK.EQ.0) WRITE(8,30)  
    30 FORMAT('READ ERROR IN INPUT FILE')  
       STOP  
-   40 WRITE(*,50)  
-      WRITE(8,50)  
+   40 CONTINUE
+      IF(MYRANK.EQ.0) WRITE(*,50)  
+      IF(MYRANK.EQ.0) WRITE(8,50)  
    50 FORMAT('UNEXPECTED END OF INPUT FILE')  
       STOP  
       END  
@@ -36,12 +39,14 @@ C *****************************************************************************
       
       SUBROUTINE SCANQWSER  
       USE GLOBAL  
+      USE MPI
       INTEGER*4  NTMP, I, J, M, NV
       
       NTMP=4+NSED+NSND+NTOX
       ! *** Handle Water Quality variables, if needed
       IF(ISTRAN(8).GT.0)THEN
-        WRITE(*,'(A)')'SCANNING INPUT FILE: WQ3DWC.INP (PRELIM)'
+        IF(MYRANK.EQ.0)
+     &  WRITE(*,'(A)')'SCANNING INPUT FILE: WQ3DWC.INP (PRELIM)'
         OPEN(1,FILE='WQ3DWC.INP',STATUS='OLD')
 
         CALL SEEK('C02')  
@@ -52,7 +57,7 @@ C *****************************************************************************
         NTMP=NTMP+NWQV 
       ENDIF
 
-      WRITE(*,'(A)')'SCANNING INPUT FILE: QWRS.INP'  
+      IF(MYRANK.EQ.0)WRITE(*,'(A)')'SCANNING INPUT FILE: QWRS.INP'  
       OPEN(1,FILE='QWRS.INP',STATUS='OLD') 
 
       DO NS=1,NQWRSR  
@@ -73,12 +78,14 @@ C *****************************************************************************
       CLOSE(1)  
       RETURN  
       
-   20 WRITE(*,30)  
-      WRITE(8,30)  
+   20 CONTINUE
+      IF(MYRANK.EQ.0) WRITE(*,30)  
+      IF(MYRANK.EQ.0) WRITE(8,30)  
    30 FORMAT('READ ERROR IN INPUT FILE')  
       STOP  
-   40 WRITE(*,50)  
-      WRITE(8,50)  
+   40 CONTINUE
+      IF(MYRANK.EQ.0) WRITE(*,50)  
+      IF(MYRANK.EQ.0) WRITE(8,50)  
    50 FORMAT('UNEXPECTED END OF INPUT FILE')  
       STOP  
       END  

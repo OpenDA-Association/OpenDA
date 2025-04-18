@@ -246,7 +246,7 @@ C
           ENDDO  
         ENDDO  
       ENDIF  
- 8999 FORMAT(' TAD  ',2I10,5E14.5,2F10.5)  
+C8999 FORMAT(' TAD  ',2I10,5E14.5,2F10.5)  
       RETURN  
       END  
 

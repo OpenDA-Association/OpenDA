@@ -222,7 +222,7 @@ contains
     if ((size_n > csert(id)%NDCSER)) then 
 
        !reallocate instance memory
-       if (debug) print*, "enlarge_cser_time_series", id, n, m 
+       if (debug) print*, "enlarge_cser_time_series", id, n, m, k
        if (debug) print*, "enlarge_cser_time_series", id, size_n, size_m, size_k 
 
        allocate(csert_new%MCSER(new_m,NSTVM))
@@ -282,6 +282,7 @@ contains
           CSER(1:n,1:k,1:m,:)= CSER_orig
                   
           deallocate(TCSER_orig, CSER_orig)
+          ndcser_max= NDCSER
           
           !ALLOCATE(CSERT_EFDC(KCM,0:NCSERM,NSTVM))
           !ALLOCATE(MCTLAST(NCSERM,NSTVM))

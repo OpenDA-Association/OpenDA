@@ -1,5 +1,6 @@
       SUBROUTINE SEEK(TAG)  
 C
+      USE MPI
       CHARACTER TAG*(*)  
       CHARACTER*80 TEXT  
 C
@@ -10,11 +11,11 @@ C
           TAG(I:I)=CHAR(J-32)  
         ENDIF  
       ENDDO  
-      WRITE(7,'(A,A)')'SEEKING GROUP: ',TAG  
+      IF(MYRANK.EQ.0) WRITE(7,'(A,A)')'SEEKING GROUP: ',TAG  
       DO K=1,2  
    10   READ(1,'(A)',END=20)TEXT  
         M=MAX(1,LEN_TRIM(TEXT))  
-        WRITE(7,'(A)')TEXT(1:M)  
+        IF(MYRANK.EQ.0) WRITE(7,'(A)')TEXT(1:M)  
         DO WHILE(M.GT.L.AND.TEXT(1:1).EQ.'')  
           TEXT(1:M-1)=TEXT(2:M)  
           TEXT(M:M)=' '  

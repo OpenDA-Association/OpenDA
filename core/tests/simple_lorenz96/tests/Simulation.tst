@@ -10,9 +10,9 @@
                 <check>
                         <file removeBeforeTest="yes" >../simulation_results.m</file>
 			<!-- last line looks like
-			x_f_central{102}	=[6.045796963594913,-1.1366813812223224,...
+			x_f_central{51}	=[6.045796963594913,-1.1366813812223224, ...
 			-->
-			<regex>x_f_central\{102\}(.*)\[6.04(.*)-1.13(.*)</regex>
+			<regex>x_f_central\{51\}(.*)\[6.04(.*)-1.13(.*)</regex>
                 </check>
         </checks>
 </testConfig>
