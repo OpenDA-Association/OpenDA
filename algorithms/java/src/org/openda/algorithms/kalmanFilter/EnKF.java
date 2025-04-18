@@ -23,13 +23,16 @@ import org.openda.interfaces.*;
 import org.openda.observers.ObserverUtils;
 import org.openda.utils.Matrix;
 import org.openda.utils.Results;
+import org.openda.utils.Vector;
 import org.openda.utils.io.FileBasedModelState;
 import org.openda.utils.io.KalmanGainStorage;
 import org.openda.utils.performance.OdaTiming;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author Nils van Velzen based in the initial OpenDA implementation by Martin Verlaan
@@ -275,8 +278,18 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 		if (write_output) {
 		System.out.print("Applying localization method according to Hamill\n");
 		}
+
+		IObservationDescriptions observationDescriptions = obs.getObservationDescriptions();
+		int observationCount = observationDescriptions.getObservationCount();
+		System.out.println("Number of observations: " + observationCount);
+		List<IExchangeItem> exchangeItems = observationDescriptions.getExchangeItems();
+		System.out.println("Number of exchange items: " + exchangeItems.size());
+		for (IExchangeItem exchangeItem : exchangeItems) {
+			System.out.println(exchangeItem.getId());
+		}
+
 		// Get the localization correlation matrix for the ensemble
-		IVector[] rho = this.ensemble[0].getObservedLocalization(obs.getObservationDescriptions(), this.distance);
+		IVector[] rho = this.ensemble[0].getObservedLocalization(observationDescriptions, this.distance);
 		for(int i=0; i<rho.length; i++){
 			int indexOutput=i;
 			if (colIndexOutput!=null){indexOutput=colIndexOutput[i];}
@@ -662,15 +675,27 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 	}
 
 	protected double[][] getHK(IStochObserver obs, EnsembleVectors ensemblePredictionsForecast) {
-		if (localizationMethod != LocalizationMethodType.none) {
+		IVector[] rhoForLocalization = null;
+		IObservationDescriptions observationDescriptions = obs.getObservationDescriptions();
+		if (localizationMethod == LocalizationMethodType.hamill) {
+			rhoForLocalization = this.ensemble[0].getRhoForLocalization(observationDescriptions, this.distance);
+		} else if (localizationMethod != LocalizationMethodType.none) {
 			System.out.println("Not computing HK for Kalman Gain Storage because it is not compatible with localization method " + localizationMethod);
 			return null;
+		} else {
+			int obsCount = observationDescriptions.getObservationCount();
+			rhoForLocalization = new IVector[obsCount];
+			for (int i = 0; i < obsCount; i++) {
+				double[] weightsObservation = new double[obsCount];
+				Arrays.fill(weightsObservation, 1);
+				rhoForLocalization[i] = new Vector(weightsObservation);
+			}
 		}
 		Matrix hk = computeHK(obs, ensemblePredictionsForecast);
 		double[][] array = new double[hk.getNumberOfRows()][hk.getNumberOfRows()];
 		for (int i = 0; i < array.length; i++) {
 			for (int j = 0; j < array[0].length; j++) {
-				array[i][j] = hk.getValue(i, j);
+				array[i][j] = rhoForLocalization[i].getValue(j) * hk.getValue(i, j);
 			}
 		}
 		return array;

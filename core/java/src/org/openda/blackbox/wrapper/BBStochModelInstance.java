@@ -1301,6 +1301,34 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		return obsVectorArray;
 	}
 
+	public IVector[] getRhoForLocalization(IObservationDescriptions observationDescriptions, double distance) {
+
+
+
+		// For each observation description, return a vector with the size of the state, containing the weight factors
+		// Distance is delegated to the ExchangeItem and then apply the Gaspari-Cohn function.
+		//IVector[] modelObservedLocalization = model.getObservedLocalization(observationDescriptions, distance);
+		IVector xObs = observationDescriptions.getValueProperties("xposition");
+		IVector yObs = observationDescriptions.getValueProperties("yposition");
+		IVector zObs = observationDescriptions.getValueProperties("height");
+		String[] obsId = observationDescriptions.getStringProperties("id");
+		int obsCount = observationDescriptions.getObservationCount();
+
+		IVector[] obsVectorArray = new IVector[obsCount];
+		for (int i = 0; i < obsCount; i++) {
+			double[] weightsObservation = new double[obsCount];
+			for (int j = 0; j < obsCount; j++) {
+				// TODO EP: convert to meters if needed
+				double obsDistance = Math.sqrt(Math.pow(xObs.getValue(i) - xObs.getValue(j), 2) + Math.pow(yObs.getValue(i) - yObs.getValue(j), 2));
+				weightsObservation[j] = GeometryUtils.calculateCohnWeight(obsDistance, distance);
+			}
+
+			obsVectorArray[i] = new Vector(weightsObservation);
+
+		}
+		return obsVectorArray;
+	}
+
 	//private IVector getLocalizedCohnWeights(String obsId, double distanceCohnMeters, double xObs, double yObs, double zObs){
 	private ITreeVector getLocalizedCohnWeights(String obsId, double distanceCohnMeters, double xObs, double yObs, double zObs){
 
