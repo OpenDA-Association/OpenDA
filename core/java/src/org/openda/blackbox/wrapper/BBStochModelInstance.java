@@ -1308,19 +1308,12 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		IVector zObs = observationDescriptions.getValueProperties("height");
 		int obsCount = observationDescriptions.getObservationCount();
 
-		IVector[] obsVectorArray = new IVector[obsCount];
 		List<IExchangeItem> exchangeItems = observationDescriptions.getExchangeItems();
+		IGeometryInfo[] geometryInfos = new IGeometryInfo[obsCount];
 		for (int i = 0; i < obsCount; i++) {
-			double[] weightsObservation = new double[obsCount];
-			for (int j = 0; j < obsCount; j++) {
-				double obsDistance = exchangeItems.get(i).getGeometryInfo().distanceToPoint(xObs.getValue(j), yObs.getValue(j), zObs.getValue(j)).getValueAsDouble(0);
-				weightsObservation[j] = GeometryUtils.calculateCohnWeight(obsDistance, distance);
-			}
-
-			obsVectorArray[i] = new Vector(weightsObservation);
-
+			geometryInfos[i] = exchangeItems.get(i).getGeometryInfo();
 		}
-		return obsVectorArray;
+		return GeometryUtils.calculateCohnWeightsBetweenPointGeometries(distance, geometryInfos, xObs, yObs, zObs);
 	}
 
 	private ITreeVector getLocalizedCohnWeights(String obsId, double distanceCohnMeters, double xObs, double yObs, double zObs){
