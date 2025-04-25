@@ -1313,7 +1313,14 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		for (int i = 0; i < obsCount; i++) {
 			geometryInfos[i] = exchangeItems.get(i).getGeometryInfo();
 		}
-		return GeometryUtils.calculateCohnWeightsBetweenPointGeometries(distance, geometryInfos, xObs, yObs, zObs);
+		IVector[] iVectors = GeometryUtils.calculateCohnWeightsBetweenPointGeometries(distance, geometryInfos, xObs, yObs, zObs);
+		for (int i = 0; i < obsCount; i++) {
+			IVector iVector = iVectors[i];
+			for (int j = 0; j < iVector.getSize(); j++) {
+				System.out.printf("Localization weight between observations %d %s and %d %s: %f%n", i, exchangeItems.get(i).getId(), j, exchangeItems.get(j).getId(), iVector.getValue(j));
+			}
+		}
+		return iVectors;
 	}
 
 	private ITreeVector getLocalizedCohnWeights(String obsId, double distanceCohnMeters, double xObs, double yObs, double zObs){
