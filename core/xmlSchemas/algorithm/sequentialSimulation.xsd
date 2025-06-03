@@ -61,6 +61,11 @@
 						<xs:documentation>Offset w.r.t. to TSTART of simulation. The first analysis time is equal to TSTART+timeOffset. Default: 0.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="timeOffsetLast">
+					<xs:annotation>
+						<xs:documentation>Offset of last analysis time w.r.t. to TSTART of simulation. The last analysis time is equal to TSTART+timeOffsetLast. Default: 0.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 				<xs:attribute name="timeUnit">
 					<xs:annotation>
 						<xs:documentation>Unit of timeIncrement and timeOffset. When timeIncrement is specified, then timeUnit is mandatory.</xs:documentation>

@@ -94,6 +94,7 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 	public boolean stochInit=false;
 	private String timeIncrement;
 	private String timeOffset;
+	private String timeOffsetEnd;
 	private String timeUnit;
 
 
@@ -170,6 +171,7 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 			String timeFormat = this.configurationAsTree.getAsString("analysisTimes@timeFormat", "dateTimeString");
 			timeIncrement = this.configurationAsTree.getAsString("analysisTimes@timeIncrement","");
 			timeOffset = this.configurationAsTree.getAsString("analysisTimes@timeOffset","0");
+			timeOffsetEnd = this.configurationAsTree.getAsString("analysisTimes@timeOffsetEnd","0");
 			timeUnit = this.configurationAsTree.getAsString("analysisTimes@timeUnit","");
 			if (timeIncrement.contentEquals("")){
 				if(timeFormat.equals("dateTimeString")){
@@ -263,27 +265,31 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 			if (!timeIncrement.contentEquals("")){
 				double deltaAnalysisTime = Double.parseDouble(this.timeIncrement);
 				double startOffset = Double.parseDouble(this.timeOffset);
+				double endOffset = Double.parseDouble(this.timeOffsetEnd);
 				if (this.timeUnit.contentEquals("day")){
 					// timeUnit is already consistent with the other time variables, do nothing here.
 				} else if (this.timeUnit.contentEquals("hour")){
 						double hourToDay = 1.0d / 24.0d;
 						deltaAnalysisTime = deltaAnalysisTime * hourToDay;
 						startOffset = startOffset * hourToDay;
+						endOffset = endOffset * hourToDay;
 				} else if(this.timeUnit.contentEquals("minute")){
 					double minuteToDay = 1/ 60 / 24;
 					deltaAnalysisTime = deltaAnalysisTime * minuteToDay;
 					startOffset = startOffset * minuteToDay;
+					endOffset = endOffset * minuteToDay;
 				} else if(this.timeUnit.contentEquals("second")){
 					double secondToDay = 1 / 60 / 60 / 24;
 					deltaAnalysisTime = deltaAnalysisTime * secondToDay;
 					startOffset = startOffset * secondToDay;
+					endOffset = endOffset * secondToDay;
 				} else {
 					throw new RuntimeException("timeUnit " + this.timeUnit + " for analyses times is supported. "+
 							"Supported units are day, hour, minute, and second");
 				}
 				double startTime = modelSpan.getBeginTime().getMJD();
 				double endTime = modelSpan.getEndTime().getMJD();
-				int nAnalysisTime = (int) (Math.floor((endTime-startTime-startOffset)/deltaAnalysisTime)+1);
+				int nAnalysisTime = getAnalysisTimeCount(endOffset, endTime, startTime, startOffset, deltaAnalysisTime);
 				double[] analysisTimes = new double[nAnalysisTime];
 				for (int iAnalysisTime=0; iAnalysisTime<nAnalysisTime; iAnalysisTime++){
 					analysisTimes[iAnalysisTime] = startTime+startOffset+iAnalysisTime*deltaAnalysisTime;
@@ -332,6 +338,11 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 				this.FinalStepNoAnalysis=true;
 			}
 		}
+	}
+
+	private static int getAnalysisTimeCount(double endOffset, double endTime, double startTime, double startOffset, double deltaAnalysisTime) {
+		if (endOffset == 0.0) return (int) (Math.floor((endTime - startTime - startOffset) / deltaAnalysisTime) + 1);
+		return (int) (Math.floor((endOffset - startOffset) / deltaAnalysisTime) + 1);
 	}
 
 	/**
