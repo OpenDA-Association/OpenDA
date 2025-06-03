@@ -33,7 +33,7 @@ import java.util.*;
 
 public class NetcdfFileConcatenater {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(NetcdfFileConcatenater.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(NetcdfFileConcatenater.class);
 
 	public static void main(String[] arguments) {
 		if (arguments.length < 2) {
@@ -46,12 +46,10 @@ public class NetcdfFileConcatenater {
 			String[] keyValue = StringUtilities.getKeyValuePair(argument);
 			String key = keyValue[0];
 			String value = keyValue[1];
-			switch (key) {
-				case "useOldValueOnOverlap":
-					useOldValueOnOverlap = Boolean.valueOf(value);
-					break;
-				default:
-					throw new RuntimeException("Unknown key " + key + ". Please specify only useOldValueOnOverlap as key=value pair");
+			if (key.equals("useOldValueOnOverlap")) {
+				useOldValueOnOverlap = Boolean.parseBoolean(value);
+			} else {
+				throw new RuntimeException("Unknown key " + key + ". Please specify only useOldValueOnOverlap as key=value pair");
 			}
 		}
 		// file must be there. If it is indeed, the path has been made absolute by BBaction
@@ -380,13 +378,10 @@ public class NetcdfFileConcatenater {
 		List<Dimension> dimensionsAll = variable.getDimensionsAll();
 		List<Dimension> newDimensions = new ArrayList<>(dimensionsAll.size());
 		for (Dimension dimension : dimensionsAll) {
-			switch (dimension.getFullNameEscaped()) {
-				case "time":
-					newDimensions.add(timeDimension);
-					break;
-				default:
-					newDimensions.add(dimension);
-					break;
+			if (dimension.getFullNameEscaped().equals("time")) {
+				newDimensions.add(timeDimension);
+			} else {
+				newDimensions.add(dimension);
 			}
 		}
 		return newDimensions;
