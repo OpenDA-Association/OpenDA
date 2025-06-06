@@ -1,0 +1,29 @@
+/*--------------------------------*4D-COOL*----------------------------------*\
+|------------------------------OpenFOAM v 1712 -------------------------------|
+\*--------------------------------*4D-COOL*----------------------------------*/
+FoamFile
+{
+version    2.0;
+format     ascii;
+class      dictionary;
+object     decomposeParDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+numberOfSubdomains 1;
+
+method             scotch;
+
+preservePatches
+(
+    tileX0Y0_master
+    tileX0Y0_slave
+    tileX1Y1_master
+    tileX1Y1_slave
+    tileX2Y0_master
+    tileX2Y0_slave
+    tileX3Y0_master
+    tileX3Y0_slave
+);
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

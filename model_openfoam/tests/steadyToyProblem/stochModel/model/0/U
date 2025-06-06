@@ -1,0 +1,49 @@
+/*--------------------------------*4D-COOL*----------------------------------*\
+|------------------------------OpenFOAM v 1712 -------------------------------|
+\*--------------------------------*4D-COOL*----------------------------------*/
+FoamFile
+{
+version    2.0;
+format     ascii;
+class      volVectorField;
+object     U;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [ 0 1 -1 0 0 0 0 ];
+
+internalField   uniform ( 0 0 0 );
+
+boundaryField
+{
+    wall
+    {
+        type            fixedValue;
+        value           $internalField;
+    }
+    cyclic
+    {
+        type            cyclic;
+        value           $internalField;
+    }
+
+    CRAC_Return
+    {
+        type            pressureInletOutletVelocity;
+        value           uniform (0 0 -2);
+    }
+    CRAC_Supply
+    {
+        type            flowRateInletVelocity;
+        volumetricFlowRate  2.222222;
+        value           uniform (0 0 -2);
+    }
+    "open.*"
+    {
+        type            pressureInletOutletVelocity;
+        value           $internalField;
+    }
+}
+
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
