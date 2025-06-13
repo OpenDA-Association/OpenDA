@@ -120,7 +120,7 @@ public class FileCopier implements IConfigurable {
 
 		File file = new File(arguments[1]);
 		String fileName = file.getName();
-		String newFileName = prefix + BBUtils.getFileNameWithoutExtension(fileName + postfix) + BBUtils.getFileExtension(fileName);
+		String newFileName = prefix + BBUtils.getFileNameWithoutExtension(fileName) + postfix + BBUtils.getFileExtension(fileName);
 		File newFile = new File(file.getParentFile(), newFileName);
 		return newFile.getPath();
 	}
