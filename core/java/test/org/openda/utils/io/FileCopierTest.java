@@ -26,6 +26,8 @@ import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 /**
  * Tests for utility class FileCopier.
@@ -54,4 +56,29 @@ public class FileCopierTest extends TestCase {
 
         assertTrue(destinationFile.exists());
     }
+
+    public void testCopyFileWithPrefix() throws ParseException {
+        String sourceFilePath = "fileCopierTest/original/original.txt";
+        String destinationFileName = "fileCopierTest/target/copy.txt";
+        File destinationFile = new File(testRunDataDir, destinationFileName);
+        File destinationDirectory = new File(testRunDataDir, "fileCopierTest/target/");
+
+        assertFalse(destinationFile.exists());
+
+        FileCopier fileCopier = new FileCopier();
+		long currentTimeMillis = System.currentTimeMillis();
+		fileCopier.initialize(testRunDataDir, new String[]{sourceFilePath, destinationFileName, "currentTimeFormattingStringPrefix=yyyyMMddHHmmss"});
+
+		File[] files = destinationDirectory.listFiles();
+		assertNotNull(files);
+		assertEquals(1, files.length);
+
+		String name = files[0].getName();
+		assertTrue(name.endsWith("_copy.txt"));
+		assertEquals(23, name.length());
+
+		long timeFromFilename = new SimpleDateFormat("yyyyMMddHHmmss").parse(name.substring(0, 14)).getTime();
+		long timeDiff = currentTimeMillis - timeFromFilename;
+		assertTrue(timeDiff < 1000);
+	}
 }

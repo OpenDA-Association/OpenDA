@@ -22,6 +22,8 @@ package org.openda.utils.io;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.text.SimpleDateFormat;
 
 import org.openda.blackbox.config.BBUtils;
 import org.openda.interfaces.IConfigurable;
@@ -49,7 +51,7 @@ public class FileCopier implements IConfigurable {
     
     public void initialize(File workingDir, String[] arguments) {
         //get arguments.
-        if (arguments == null || arguments.length != 2 || arguments[0] == null || arguments[1] == null) {
+        if (arguments == null || arguments.length < 2 || arguments[0] == null || arguments[1] == null) {
             throw new IllegalArgumentException("Wrong number of arguments supplied."
                     + " The command line arguments should be: <sourceFilePath> <destinationFilePath>"
                     + " Where <sourceFilePath> is the pathname of the source file to copy (relative to working directory)"
@@ -66,16 +68,60 @@ public class FileCopier implements IConfigurable {
                     + sourceFile.getAbsolutePath() + "' is not a file.");
         }
 
-        File destinationFile = new File(workingDir, arguments[1]);
+		String fileNameWithoutExtension = getDestFileName(arguments);
 
-        //copy file.
-        Results.putMessage(this.getClass().getSimpleName() + ": copying file "
-                + sourceFile.getAbsolutePath() + " to " + destinationFile.getAbsolutePath());
+		File destinationFile = new File(workingDir, fileNameWithoutExtension);
         try {
-            BBUtils.copyFile(sourceFile, destinationFile);
+			checkDestinationFile(destinationFile);
+
+			Results.putMessage(this.getClass().getSimpleName() + ": copying file "
+				+ sourceFile.getAbsolutePath() + " to " + destinationFile.getAbsolutePath());
+			if (arguments.length > 2) {
+				Files.copy(sourceFile.toPath(), destinationFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+				return;
+			}
+			// Alternatively, you can use BBUtils.copyFile if you want to use the OpenDA blackbox utility:
+			BBUtils.copyFile(sourceFile, destinationFile);
         } catch (IOException e) {
             throw new RuntimeException(this.getClass().getSimpleName() + ": problem while copying file "
                     + sourceFile.getAbsolutePath() + ". Message was: " + e.getMessage(), e);
         }
     }
+
+	private static void checkDestinationFile(File destinationFile) throws IOException {
+		if (!destinationFile.exists()) {
+			File parentFile = destinationFile.getParentFile();
+			if (!parentFile.exists() && !destinationFile.mkdirs()) throw new RuntimeException("Could not create destination directory: " + destinationFile.getParentFile().getAbsolutePath());
+			boolean newFile = destinationFile.createNewFile();
+			if (!destinationFile.exists() && !newFile) throw new RuntimeException("Could not create destination file: " + destinationFile.getAbsolutePath());
+		}
+	}
+
+	private static String getDestFileName(String[] arguments) {
+		String prefix = "";
+		String postfix = "";
+
+		for (int i = 2; i < arguments.length; i++) {
+			String[] split = arguments[i].split("=");
+			if (split.length != 2)
+				throw new RuntimeException(String.format("Argument %s not a valid key=value pair. Only supply arguments currentTimeFormattingStringPrefix=<pattern> or currentTimeFormattingStringPostfix=<pattern>", arguments[i]));
+			if (split[0].equals("currentTimeFormattingStringPrefix")) {
+				String currentTimeString = new SimpleDateFormat(split[1]).format(System.currentTimeMillis());
+				prefix = currentTimeString + "_";
+				continue;
+			}
+			if (split[0].equals("currentTimeFormattingStringPostfix")) {
+				String currentTimeString = new SimpleDateFormat(split[1]).format(System.currentTimeMillis());
+				postfix = "_" + currentTimeString;
+				continue;
+			}
+			throw new RuntimeException(String.format("Argument %s not a valid key=value pair. Only supply arguments currentTimeFormattingStringPrefix=<pattern> or currentTimeFormattingStringPostfix=<pattern>", arguments[i]));
+		}
+
+		File file = new File(arguments[1]);
+		String fileName = file.getName();
+		String newFileName = prefix + BBUtils.getFileNameWithoutExtension(fileName + postfix) + BBUtils.getFileExtension(fileName);
+		File newFile = new File(file.getParentFile(), newFileName);
+		return newFile.getPath();
+	}
 }
