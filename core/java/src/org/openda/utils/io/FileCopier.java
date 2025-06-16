@@ -52,11 +52,12 @@ public class FileCopier implements IConfigurable {
     public void initialize(File workingDir, String[] arguments) {
         //get arguments.
         if (arguments == null || arguments.length < 2 || arguments[0] == null || arguments[1] == null) {
-            throw new IllegalArgumentException("Wrong number of arguments supplied."
-                    + " The command line arguments should be: <sourceFilePath> <destinationFilePath>"
-                    + " Where <sourceFilePath> is the pathname of the source file to copy (relative to working directory)"
-                    + " and <destinationFilePath> is the pathname of the destination file (relative to working directory).");
-        }
+			throw new IllegalArgumentException("Wrong number of arguments supplied."
+				+ " The command line arguments should be: <sourceFilePath> <destinationFilePath> and optional arguments currentTimeFormattingStringPrefix=<pattern> or currentTimeFormattingStringPostfix=<pattern>."
+				+ " Where <sourceFilePath> is the pathname of the source file to copy (relative to working directory)"
+				+ " and <destinationFilePath> is the pathname of the destination file (relative to working directory)."
+				+ " Optional arguments can be used to add a prefix or postfix to the destination file name based on the current time, using a specified date format pattern.");
+		}
 
         File sourceFile = new File(workingDir, arguments[0]);
         if (!sourceFile.exists()) {
