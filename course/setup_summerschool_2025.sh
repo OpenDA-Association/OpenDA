@@ -1,13 +1,13 @@
 #!/bin/sh
-mkdir summerschool_2023
-cd summerschool_2023
+mkdir summerschool_2025
+cd summerschool_2025
 cp -r ../exercise_double_pendulum_part1 .
 cp -r ../exercise_double_pendulum_part2 .
 cp -r ../exercise_localization .
 cp -r ../exercise_black_box_calibration_polution .
 cp -r ../exercise_black_box_enkf_polution .
 cp -r ../exercise_black_box_steady_state_filter .
-cp ../doc/latex/openda_course_summerschool_2023.pdf .
+cp ../doc/latex/openda_course_summerschool_2025.pdf .
 #remove some files that are actually the solution
 rm exercise_black_box_calibration_polution/Dud_from_restart.oda
 rm exercise_black_box_enkf_polution/parallel2.xml
