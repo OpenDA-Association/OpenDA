@@ -278,9 +278,8 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 		if (write_output) {
 		System.out.print("Applying localization method according to Hamill\n");
 		}
-
 		// Get the localization correlation matrix for the ensemble
-		IVector[] rho = this.ensemble[0].getObservedLocalization(obs.getObservationDescriptions(), this.distance);
+		IVector[] rho = this.ensemble[0].getObservedLocalization(observationDescriptions, this.distance);
 		for(int i=0; i<rho.length; i++){
 			int indexOutput=i;
 			if (colIndexOutput!=null){indexOutput=colIndexOutput[i];}
