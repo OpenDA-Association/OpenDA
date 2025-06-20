@@ -67,7 +67,7 @@ public class FileCopierTest extends TestCase {
 
         FileCopier fileCopier = new FileCopier();
 		long currentTimeMillis = System.currentTimeMillis();
-		fileCopier.initialize(testRunDataDir, new String[]{sourceFilePath, destinationFileName, "currentTimeFormattingStringPrefix=yyyyMMddHHmmss"});
+		fileCopier.initialize(testRunDataDir, new String[]{sourceFilePath, destinationFileName, "currentTimePrefix=true"});
 
 		File[] files = destinationDirectory.listFiles();
 		assertNotNull(files);
@@ -82,9 +82,7 @@ public class FileCopierTest extends TestCase {
 		assertTrue(timeDiff < 5000);
 	}
 
-
-
-	public void testCopyFileWithPrefixAndSuffix() throws ParseException {
+	public void testCopyFileWithPostfix() throws ParseException {
 		String sourceFilePath = "fileCopierTest/original/original.txt";
 		String destinationFileName = "fileCopierTest/target/copy.txt";
 		File destinationFile = new File(testRunDataDir, destinationFileName);
@@ -94,7 +92,7 @@ public class FileCopierTest extends TestCase {
 
 		FileCopier fileCopier = new FileCopier();
 		long currentTimeMillis = System.currentTimeMillis();
-		fileCopier.initialize(testRunDataDir, new String[]{sourceFilePath, destinationFileName, "currentTimeFormattingStringPostfix=yyyyMMddHHmmss"});
+		fileCopier.initialize(testRunDataDir, new String[]{sourceFilePath, destinationFileName, "currentTimePrefix=false", "currentTimePostfix=true"});
 
 		File[] files = destinationDirectory.listFiles();
 		assertNotNull(files);

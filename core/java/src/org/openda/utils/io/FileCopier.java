@@ -37,7 +37,11 @@ import org.openda.utils.Results;
  */
 public class FileCopier implements IConfigurable {
 
-    /**
+	public static final String CURRENT_TIME_PREFIX = "currentTimePrefix";
+	public static final String CURRENT_TIME_POSTFIX = "currentTimePostfix";
+	private SimpleDateFormat currentTimeDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");;
+
+	/**
      * Utility class to copy a file. If the destination file
      * already exists, then it is overwritten.
      *
@@ -98,25 +102,25 @@ public class FileCopier implements IConfigurable {
 		}
 	}
 
-	private static String getDestFileName(String[] arguments) {
+	private String getDestFileName(String[] arguments) {
 		String prefix = "";
 		String postfix = "";
 
+		long currentTimeMillis = System.currentTimeMillis();
 		for (int i = 2; i < arguments.length; i++) {
 			String[] split = arguments[i].split("=");
-			if (split.length != 2)
-				throw new RuntimeException(String.format("Argument %s not a valid key=value pair. Only supply arguments currentTimeFormattingStringPrefix=<pattern> or currentTimeFormattingStringPostfix=<pattern>", arguments[i]));
-			if (split[0].equals("currentTimeFormattingStringPrefix")) {
-				String currentTimeString = new SimpleDateFormat(split[1]).format(System.currentTimeMillis());
-				prefix = currentTimeString + "_";
+			if (split.length != 2) {
+				throw new RuntimeException(String.format("Argument %s not a valid key=value pair. Only supply arguments %s=true/false or %s=true/false", arguments[i], CURRENT_TIME_PREFIX, CURRENT_TIME_POSTFIX));
+			}
+			if (split[0].equals(CURRENT_TIME_PREFIX)) {
+				prefix = Boolean.parseBoolean(split[1]) ? currentTimeDateFormat.format(currentTimeMillis) + "_" : "";
 				continue;
 			}
-			if (split[0].equals("currentTimeFormattingStringPostfix")) {
-				String currentTimeString = new SimpleDateFormat(split[1]).format(System.currentTimeMillis());
-				postfix = "_" + currentTimeString;
+			if (split[0].equals(CURRENT_TIME_POSTFIX)) {
+				postfix = Boolean.parseBoolean(split[1]) ? "_" + currentTimeDateFormat.format(currentTimeMillis) : "";
 				continue;
 			}
-			throw new RuntimeException(String.format("Argument %s not a valid key=value pair. Only supply arguments currentTimeFormattingStringPrefix=<pattern> or currentTimeFormattingStringPostfix=<pattern>", arguments[i]));
+			throw new RuntimeException(String.format("Argument %s not a valid key=value pair. Only supply arguments %s=true/false or %s=true/false", arguments[i], CURRENT_TIME_PREFIX, CURRENT_TIME_POSTFIX));
 		}
 
 		File file = new File(arguments[1]);
