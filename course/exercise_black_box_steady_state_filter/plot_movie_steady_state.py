@@ -88,7 +88,7 @@ def update(frame):
 
     ax[0].plot(x_obs,obs_c1,'*')
     ax[1].plot(x_obs,obs_c2,'*')
-    ax[0].set_title("t="+str(int(time)))
+    ax[0].set_title("t="+str(int(time[0])))
     ax[0].legend(("Truth","First guess","EnKF","Steady-state"))
     return ln,
 
