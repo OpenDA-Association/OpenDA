@@ -42,7 +42,7 @@ Now let us have a look at the configuration for performing OpenDA's Ensemble
 Kalman Filtering on our black-box model, using a twin experiment as an example.
 The model has been run with the 'real' (time-dependent) values for the
 concentrations for substance 1 as disposed of by factory 1 and factory 2. This
-'truth' has been stored in the directory {\tt truthmodel}, and the results of that run
+'truth' has been stored in the directory {\tt twinTrue}, and the results of that run
 have been used to generate observation time series at the output locations.
 These time series (with some noise added) have been copied to the {\tt stochObserver} directory to
 serve as observations for the filtering run.
@@ -61,6 +61,7 @@ observations downstream of factory 2 to optimize the forecast.
    run, the sequential ensemble run, and for the EnKF run. Identify the part of
    the {\tt polluteStochModel.xml} configuration that is used only by the EnKF
    run and not by the others.
+ \item Run the model in {\tt twinTrue}. This will generate output which we will use to compare our results to the "truth".
  \item Execute the Ensemble Kalman Filtering run by using the {\tt EnKF.oda}
    configuration.\\ Check how good the run is performing by analyzing to what
    extent the filter has adjusted the predictions towards the

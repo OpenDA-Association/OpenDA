@@ -88,6 +88,7 @@ xlabel('time');
       
 To create a time-series plot in Python type:
 \begin{lstlisting}[style=PythonStyle,caption={Python}]
+from matplotlib import pyplot as plt
 plt.subplot(2,1,1)
 plt.plot(unperturbed.model_time,unperturbed.x[:,0],"b") 
 # Python counts starting at 0
