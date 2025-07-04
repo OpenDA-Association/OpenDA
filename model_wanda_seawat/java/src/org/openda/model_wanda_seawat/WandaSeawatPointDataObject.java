@@ -6,21 +6,13 @@ import org.openda.exchange.TimeInfo;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.io.AsciiFileUtils;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.*;
 
 public class WandaSeawatPointDataObject extends AbstractDataObject {
 	private static final int FIRST_VALUE_OFFSET = 1;
-	private String header;
-	private List<Double> heights;
 	private List<Double> radii;
 	private TreeMap<String, File> fileNamesToFiles;
-	private String filePrefix;
 
 	@Override
 	public void initialize(File workingDir, String[] arguments) {
@@ -33,7 +25,7 @@ public class WandaSeawatPointDataObject extends AbstractDataObject {
 		}
 
 		String subDirString = arguments[0];
-		filePrefix = arguments[1];
+		String filePrefix = arguments[1];
 		File fileDirectory = new File(workingDir, subDirString);
 
 		if (!fileDirectory.exists() || !fileDirectory.isDirectory()) throw new RuntimeException(fileDirectory + " does not exist or is not a directory");
@@ -50,9 +42,7 @@ public class WandaSeawatPointDataObject extends AbstractDataObject {
 				return;
 			}
 
-			header = lines.get(0);
 			radii = readHeader(lines);
-			heights = new ArrayList<>();
 			for (String line : lines.subList(1, lines.size())) {
 				String[] values = line.trim().split("\\s+");
 
@@ -61,7 +51,6 @@ public class WandaSeawatPointDataObject extends AbstractDataObject {
 				}
 
 				double height = Double.parseDouble(values[0]);
-				heights.add(height);
 
 				readRow(keyToValues, entry, values, height, timeInfo, filePrefix);
 			}
@@ -124,32 +113,6 @@ public class WandaSeawatPointDataObject extends AbstractDataObject {
 
 	@Override
 	public void finish() {
-		DecimalFormat decimalFormat = new DecimalFormat(".00000000E00", new DecimalFormatSymbols(Locale.UK));
-
-		int fileCount = 0;
-		for (Map.Entry<String, File> entry : fileNamesToFiles.entrySet()) {
-			try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(entry.getValue()))) {
-				bufferedWriter.write(header + "\n");
-
-				for (Double height : heights) {
-					bufferedWriter.write(String.format("%10s", String.format(Locale.UK, "%5.4f", height)));
-
-					for (Double radius : radii) {
-						String key = String.format("%sdepth%s_radius%s", filePrefix, height, radius);
-						DoublesExchangeItem doublesExchangeItem = (DoublesExchangeItem) exchangeItems.get(key);
-						String formattedNumber = "0" + decimalFormat.format(doublesExchangeItem.getValuesAsDoubles()[fileCount]);
-						if (!formattedNumber.contains("E-")) {
-							formattedNumber = formattedNumber.replace("E", "E+");
-						}
-						bufferedWriter.write(String.format("%24s", formattedNumber));
-					}
-
-					bufferedWriter.write("\n");
-				}
-				fileCount++;
-			} catch (IOException exception) {
-				throw new RuntimeException(exception);
-			}
-		}
+		// Never write to the file system, as this is a point data object meant just to read.
 	}
 }

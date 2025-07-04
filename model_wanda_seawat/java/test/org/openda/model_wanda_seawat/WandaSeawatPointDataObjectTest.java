@@ -42,13 +42,16 @@ public class WandaSeawatPointDataObjectTest extends TestCase {
 		assertEquals(59730.00138888889, times[1], 0.0000001d);
 
 		doublesExchangeItem.setValuesAsDoubles(new double[]{0.10554802E+02, 0.65432100E+02});
+
+		// This should not rewrite files
 		wandaSeawatPointDataObject.finish();
 
-		File output = new File(testRunDataDir, "HTO_001/HTO_TEMP_20220531000200.ASC");
-		try (Stream<String> stream = Files.lines(output.toPath())) {
-			String lines = stream.collect(Collectors.joining("\n"));
-			assertTrue("Updated value present in ini file", lines.contains(" -298.0000          0.16334927E+02          0.65432100E+02          0.10028160E+02"));
-			assertTrue("Existing values present in ini file", lines.contains(" -302.0000          0.10001448E+02          0.10000043E+02          0.10000001E+02"));
-		}
+		File output = new File(testRunDataDir, "HTO_001/HTO_TEMP_20220531000100.ASC");
+		File expected = new File(testRunDataDir, "HTO_001_expected/HTO_TEMP_20220531000100.ASC");
+		assertTrue(testData.FilesAreIdentical(output, expected));
+
+		File output2 = new File(testRunDataDir, "HTO_001/HTO_TEMP_20220531000200.ASC");
+		File expected2 = new File(testRunDataDir, "HTO_001_expected/HTO_TEMP_20220531000200.ASC");
+		assertTrue(testData.FilesAreIdentical(output2, expected2));
 	}
 }
