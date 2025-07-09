@@ -477,7 +477,6 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 		// Compute H*K for linear update of predictions, since for blackbox models the predictions
 		// are not upadted until after the next forecast
 		// H*K = PRED*PRED'*inv(D)
-		timerLinalg.start();
 		// This is H*K and should also be written to Kalman Gain Storage
 		Matrix K_pred = new Matrix(m, m);
 		K_pred.multiply(1.0, predMat, E, 0.0, false, false);
