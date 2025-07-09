@@ -99,7 +99,7 @@ public class KalmanGainStorageTest extends TestCase {
 
 		KalmanGainStorage kgStorageIn = new KalmanGainStorage(testRunDataDir, timeAsMJD);
 		kgStorageIn.setColumnFileType(KalmanGainStorage.StorageType.netcdf_cf);
-		kgStorageIn.setKalmanGainStorageFileName("KalmanGainStorageHK.nc");
+		kgStorageIn.setKalmanGainStorageFileName("kalmanGainStorageHK.nc");
 		kgStorageIn.readKalmanGain();
 
 		IVector[] kalmanGainColumnsIn = kgStorageIn.getKalmanGainColumns();
