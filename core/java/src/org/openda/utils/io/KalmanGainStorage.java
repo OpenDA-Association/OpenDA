@@ -246,6 +246,10 @@ public class KalmanGainStorage {
 			return;
 		}
 
+		writeKalmanGainToXML(observationIds, observationOffsetsInDays, kalmanGainColumns, directoryForStorage);
+	}
+
+	private void writeKalmanGainToXML(String[] observationIds, double[] observationOffsetsInDays, IVector[] kalmanGainColumns, File directoryForStorage) {
 		long start = System.currentTimeMillis();
 		// store general info
 		KalmanGainStorageXML kgStorageXML = new KalmanGainStorageXML();
@@ -255,6 +259,14 @@ public class KalmanGainStorage {
 
 		KalmanGainObservationsXML observationsXML = new KalmanGainObservationsXML();
 		kgStorageXML.setObservations(observationsXML);
+		fillObservationsXML(observationIds, observationOffsetsInDays, kalmanGainColumns, directoryForStorage, observationsXML, kgStorageXML);
+		File kgStorageXmlFile = new File(directoryForStorage, kalmanGainStorageFileName);
+		CastorUtils.write(kgStorageXML, kgStorageXmlFile, "opendaKalmanGainStorage", null, null);
+		long timePassed = System.currentTimeMillis() - start;
+		Results.putMessage("Writing kalman gain to xml took: " + timePassed);
+	}
+
+	private void fillObservationsXML(String[] observationIds, double[] observationOffsetsInDays, IVector[] kalmanGainColumns, File directoryForStorage, KalmanGainObservationsXML observationsXML, KalmanGainStorageXML kgStorageXML) {
 		for (int i = 0; i < observationIds.length; i++) {
 			KalmanGainObservationXML observationXML = new KalmanGainObservationXML();
 			observationsXML.addObservation(observationXML);
@@ -276,21 +288,17 @@ public class KalmanGainStorage {
 					String vectorString = TreeVectorWriter.createVectorXML(kalmanGainColumns[i]);
 					observationXMLChoice.setVector(vectorString);
 				}
-			} else {
-				// netCdf-file
-				String netcdfFileName = columnFilePrefix + String.valueOf(i+1) + ".nc";
-				observationXMLChoice.setFileName(netcdfFileName);
-				if (!kgStorageXML.hasStateSize()) {
-					kgStorageXML.setStateSize(kalmanGainColumns[i].getSize());
-				}
-				netcdfFileName = new File(directoryForStorage, netcdfFileName).getAbsolutePath();
-				writeKalmanGainColumnToNetCdfFile(netcdfFileName, kalmanGainColumns[i]);
+				continue;
 			}
+			// netCdf-file
+			String netcdfFileName = columnFilePrefix + String.valueOf(i + 1) + ".nc";
+			observationXMLChoice.setFileName(netcdfFileName);
+			if (!kgStorageXML.hasStateSize()) {
+				kgStorageXML.setStateSize(kalmanGainColumns[i].getSize());
+			}
+			netcdfFileName = new File(directoryForStorage, netcdfFileName).getAbsolutePath();
+			writeKalmanGainColumnToNetCdfFile(netcdfFileName, kalmanGainColumns[i]);
 		}
-		File kgStorageXmlFile = new File(directoryForStorage, kalmanGainStorageFileName);
-		CastorUtils.write(kgStorageXML, kgStorageXmlFile, "opendaKalmanGainStorage", null, null);
-		long timePassed = System.currentTimeMillis() - start;
-		Results.putMessage("Writing kalman gain to xml took: " + timePassed);
 	}
 
 	private void writeKalmanGainToNetcdfCF(String[] observationIds, double[] observationOffsetsInDays, IVector[] kalmanGainColumns, File directoryForStorage, double[][] hk) {

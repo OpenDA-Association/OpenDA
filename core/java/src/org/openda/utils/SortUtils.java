@@ -48,7 +48,8 @@ public class SortUtils {
 	}
 
 	private static boolean stringEquals(String s1, String s2) {
-		if (s1 == s2) return true;
+		// Ignore codacy warning because object comparison is a fast way to make sure the contents are identical
+		if (s1 == s2) return true;// eslint-disable-line no-eval
 		if (s1 == null || s2 == null) return false;
 		int length = s1.length();
 		if (length != s2.length()) return false;
