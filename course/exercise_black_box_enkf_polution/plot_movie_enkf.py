@@ -46,9 +46,10 @@ def init():
 
 
 def update(frame):
+    asyn_step=5
     i=frame
     time = enkf.analysis_time[i]
-    c1_true = c1[i]
+    c1_true = c1[i*asyn_step]
     c1_sim  = sim.x_a[i,(no_sources_sim):(no_sources_sim+ngrid)]
     c1_enkf = enkf.x_a[i,(no_sources_enkf):(no_sources_enkf+ngrid)]
 
@@ -70,7 +71,7 @@ def update(frame):
     ax[0].plot(c1_sim,'b')
     ax[0].plot(c1_enkf,'g')
     
-    c2_true = c2[i]
+    c2_true = c2[i*asyn_step]
     c2_sim  = sim.x_a[i,(no_sources_sim+ngrid):(no_sources_sim+2*ngrid)]
     c2_enkf = enkf.x_a[i,(no_sources_enkf+ngrid):(no_sources_enkf+2*ngrid)]
 
@@ -87,8 +88,8 @@ def update(frame):
     ax[0].legend(("Truth","First guess","EnKF"))
     return ln,
 
-ani = animation.FuncAnimation(fig, update, frames=range(len(c1)),
-                    init_func=init, repeat=False, interval=20,blit=False)
+ani = animation.FuncAnimation(fig, update, frames=range(len(enkf.analysis_time)),
+                    init_func=init, repeat=False, interval=100,blit=False)
 
 
 # Set up formatting for the movie files

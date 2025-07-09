@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnkfConfig xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/algorithm/enkf.xsd">
-	<analysisTimes type="fromObservationTimes"/>
+        <analysisTimes type="fixed" timeFormat="mjd" >300.0,600.0,...,15000</analysisTimes>
+<!--	<analysisTimes type="fromObservationTimes"/> -->
 	<!-- selection to add noise to a model. This should probably be false unless you are generating data for a
 	twin-experpiment -->
 	<mainModel stochParameter="false" stochForcing="false" stochInit="false"/>

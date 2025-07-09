@@ -66,7 +66,7 @@ observations downstream of factory 2 to optimize the forecast.
    configuration.\\ Check how good the run is performing by analyzing to what
    extent the filter has adjusted the predictions towards the
    observation.\\ Note that the model output files in {\tt
-     stochModel/output/work0} only contain a few time steps. Can you explain
+		work/work0/reactive\_pollution} e.g. {\tt reactive\_pollution\_model.log } only contain a few time steps. Can you explain
    why? To compare the observations with the predictions, you have to use
    the result file produced by the EnKF algorithm, which can be visualized using
    {\tt plot\_movie\_enkf.py}.
@@ -89,5 +89,9 @@ factory 1.
 	      in such a way that the filtering process is extended as described above.
  \item Run the filtering process by using the {\tt EnKF2.oda} configuration,
    and compare the results with the previous version of the filtering process.
+ \item You have probably noticed that the assimilation of the differences caused by factory 2 are not performing as well as for factory 1. Experiment a bit with the uncertainty at observation location C ({\tt timeSeriesFormatter.xml} and the uncertainty of the emmisions ({\tt BoundaryNoise2.xml}) and see how it impacts the performance of the algorithm.
+\item Starting the model executable gives quite some overhead (especially on Windows and microsoft defender). Investigate the log file of your EnKF run and the number of observations that are assimilated at each analysis step. Can you figure out why this number is higher than you would expect?
+
+
 \end{itemize}
 
