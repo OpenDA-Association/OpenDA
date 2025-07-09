@@ -576,8 +576,10 @@ public class NetcdfUtils {
 			//convert times.
 			convertedTimes = new double[times.length];
 			DateUnit dateUnit = getDateUnitFromDimension(timeVariable);
+			boolean roundToWholeSeconds = dateUnit.getTimeUnit().getValueInSeconds() == 1;
 			for (int n = 0; n < times.length; n++) {
-				Date date = dateUnit.makeDate(times[n]);
+				double roundedTime = roundToWholeSeconds ? Math.round(times[n]) : times[n];
+				Date date = dateUnit.makeDate(roundedTime);
 				if (date == null) {
 					convertedTimes[n] = 0;
 					continue;

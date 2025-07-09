@@ -32,6 +32,7 @@ import java.util.Objects;
 public class NetcdfFileConcatenaterTest extends TestCase {
 	private File testRunDataDir;
 
+	@Override
 	protected void setUp() throws IOException {
 		OpenDaTestSupport testData = new OpenDaTestSupport(NetcdfFileConcatenaterTest.class, "core");
 		this.testRunDataDir = testData.getTestRunDataDir();
