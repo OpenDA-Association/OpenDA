@@ -1,29 +1,29 @@
 /* MOD_V2.0
-* Copyright (c) 2012 OpenDA Association
-* All rights reserved.
-* 
-* This file is part of OpenDA. 
-* 
-* OpenDA is free software: you can redistribute it and/or modify 
-* it under the terms of the GNU Lesser General Public License as 
-* published by the Free Software Foundation, either version 3 of 
-* the License, or (at your option) any later version. 
-* 
-* OpenDA is distributed in the hope that it will be useful, 
-* but WITHOUT ANY WARRANTY; without even the implied warranty of 
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-* GNU Lesser General Public License for more details. 
-* 
-* You should have received a copy of the GNU Lesser General Public License
-* along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Copyright (c) 2012 OpenDA Association
+ * All rights reserved.
+ *
+ * This file is part of OpenDA.
+ *
+ * OpenDA is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * OpenDA is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.openda.utils.io;
 import junit.framework.TestCase;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.costa.CtaTreeVector;
 import org.openda.costa.CtaVector;
-import org.openda.interfaces.ITreeVector;
 import org.openda.exchange.timeseries.TimeUtils;
+import org.openda.interfaces.ITreeVector;
 import org.openda.interfaces.IVector;
 import org.openda.utils.OpenDaTestSupport;
 import org.openda.utils.TreeVector;
@@ -61,11 +61,11 @@ public class KalmanGainStorageTest extends TestCase {
 		KalmanGainStorage kgStorageOut = new KalmanGainStorage(testRunDataDir, timeAsMJD);
 		kgStorageOut.setKalmanGainStorageFileName("kalmanGainStorage_out.xml");
 		kgStorageOut.writeKalmanGain(kgStorageIn.getObservationIds(),
-				kgStorageIn.getObservationOffsetInDays(), kgStorageIn.getKalmanGainColumns(), null);
+			kgStorageIn.getObservationOffsetInDays(), kgStorageIn.getKalmanGainColumns(), null);
 
 		testData.FilesAreIdentical(
-				new File(kgStorageDir, "kalmanGainStorage_out.xml"),
-				new File(kgStorageDirCopy, "kalmanGainStorage.xml"));
+			new File(kgStorageDir, "kalmanGainStorage_out.xml"),
+			new File(kgStorageDirCopy, "kalmanGainStorage.xml"));
 
 	}
 
@@ -82,7 +82,7 @@ public class KalmanGainStorageTest extends TestCase {
 		assertEquals(8, kalmanGainColumnsIn.length);
 
 		String[] observationIds = kgStorageIn.getObservationIds();
-		checkKalmanGainContents(timeAsMJD, kalmanGainColumnsIn, observationIds, kgStorageIn.getTimeStampAsMjd(), kgStorageIn.getHk());
+		checkKalmanGainContents(timeAsMJD, kgStorageIn, kalmanGainColumnsIn, observationIds);
 
 		KalmanGainStorage kgStorageOut = new KalmanGainStorage(testRunDataDir, timeAsMJD);
 		kgStorageOut.setColumnFileType(KalmanGainStorage.StorageType.netcdf_cf);
@@ -90,7 +90,7 @@ public class KalmanGainStorageTest extends TestCase {
 		kgStorageOut.writeKalmanGain(observationIds, kgStorageIn.getObservationOffsetInDays(), kalmanGainColumnsIn, kgStorageIn.getHk());
 		kgStorageOut.readKalmanGain();
 
-		checkKalmanGainContents(timeAsMJD, kgStorageOut.getKalmanGainColumns(), kgStorageOut.getObservationIds(), kgStorageOut.getTimeStampAsMjd(), kgStorageOut.getHk());
+		checkKalmanGainContents(timeAsMJD, kgStorageOut, kgStorageOut.getKalmanGainColumns(), kgStorageOut.getObservationIds());
 	}
 
 	public void testReadWriteKalmanGainNetcdfCFHK() throws ParseException {
@@ -99,7 +99,7 @@ public class KalmanGainStorageTest extends TestCase {
 
 		KalmanGainStorage kgStorageIn = new KalmanGainStorage(testRunDataDir, timeAsMJD);
 		kgStorageIn.setColumnFileType(KalmanGainStorage.StorageType.netcdf_cf);
-		kgStorageIn.setKalmanGainStorageFileName("KalmanGainStorageHK.nc");
+		kgStorageIn.setKalmanGainStorageFileName("kalmanGainStorageHK.nc");
 		kgStorageIn.readKalmanGain();
 
 		IVector[] kalmanGainColumnsIn = kgStorageIn.getKalmanGainColumns();
@@ -124,13 +124,37 @@ public class KalmanGainStorageTest extends TestCase {
 		}
 	}
 
-	private void checkKalmanGainContents(double timeAsMJD, IVector[] kalmanGainColumns, String[] observationIds, double timeStampFromStorage, double[][] hk) {
+	public void testReadWriteKalmanGainNetcdfCFDoubleState() {
+
+		double timeAsMJD = 60310;
+
+		KalmanGainStorage kgStorageIn = new KalmanGainStorage(testRunDataDir, timeAsMJD);
+		kgStorageIn.setColumnFileType(KalmanGainStorage.StorageType.netcdf_cf);
+		kgStorageIn.setKalmanGainStorageFileName("KalmanGainStorage.nc");
+		kgStorageIn.readKalmanGain();
+
+		IVector[] kalmanGainColumnsIn = kgStorageIn.getKalmanGainColumns();
+		assertEquals(8, kalmanGainColumnsIn.length);
+
+		String[] observationIds = kgStorageIn.getObservationIds();
+		checkKalmanGainContentsDoubleState(timeAsMJD, kgStorageIn, kalmanGainColumnsIn, observationIds);
+
+		KalmanGainStorage kgStorageOut = new KalmanGainStorage(testRunDataDir, timeAsMJD);
+		kgStorageOut.setColumnFileType(KalmanGainStorage.StorageType.netcdf_cf);
+		kgStorageOut.setKalmanGainStorageFileName("KalmanGainStorage.nc");
+		kgStorageOut.writeKalmanGain(observationIds, kgStorageIn.getObservationOffsetInDays(), kalmanGainColumnsIn, null);
+		kgStorageOut.readKalmanGain();
+
+		checkKalmanGainContentsDoubleState(timeAsMJD, kgStorageOut, kgStorageOut.getKalmanGainColumns(), kgStorageOut.getObservationIds());
+	}
+
+	private void checkKalmanGainContents(double timeAsMJD, KalmanGainStorage kgStorageIn, IVector[] kalmanGainColumns, String[] observationIds) {
 		String[] expectedObservationIds = {"WICK.waterlevel", "VLISSGN.waterlevel", "DENHDR.waterlevel", "NORTHSS.waterlevel", "DOVR.waterlevel", "SHEERNS.waterlevel", "HOEKVHLD.waterlevel", "LOWST.waterlevel"};
 		for (int i = 0; i < expectedObservationIds.length; i++) {
 			assertEquals(expectedObservationIds[i], observationIds[i]);
 		}
 
-		assertEquals(timeAsMJD, timeStampFromStorage);
+		assertEquals(timeAsMJD, kgStorageIn.getTimeStampAsMjd());
 
 		assertEquals(8, kalmanGainColumns.length);
 		IVector firstKalmanGainColumn = kalmanGainColumns[0];
@@ -170,6 +194,8 @@ public class KalmanGainStorageTest extends TestCase {
 		assertEquals(0.015112, values[435], delta);
 		assertEquals(-0.038791, values[436], delta);
 
+		double[][] hk = kgStorageIn.getHk();
+
 		assertEquals(8, hk.length);
 		assertEquals(8, hk[0].length);
 		for (int i = 0; i < hk.length; i++) {
@@ -177,30 +203,6 @@ public class KalmanGainStorageTest extends TestCase {
 				assertEquals(i * 10 + j, hk[i][j], 0.000001);
 			}
 		}
-	}
-
-	public void testReadWriteKalmanGainNetcdfCFDoubleState() {
-
-		double timeAsMJD = 60310;
-
-		KalmanGainStorage kgStorageIn = new KalmanGainStorage(testRunDataDir, timeAsMJD);
-		kgStorageIn.setColumnFileType(KalmanGainStorage.StorageType.netcdf_cf);
-		kgStorageIn.setKalmanGainStorageFileName("KalmanGainStorage.nc");
-		kgStorageIn.readKalmanGain();
-
-		IVector[] kalmanGainColumnsIn = kgStorageIn.getKalmanGainColumns();
-		assertEquals(8, kalmanGainColumnsIn.length);
-
-		String[] observationIds = kgStorageIn.getObservationIds();
-		checkKalmanGainContentsDoubleState(timeAsMJD, kgStorageIn, kalmanGainColumnsIn, observationIds);
-
-		KalmanGainStorage kgStorageOut = new KalmanGainStorage(testRunDataDir, timeAsMJD);
-		kgStorageOut.setColumnFileType(KalmanGainStorage.StorageType.netcdf_cf);
-		kgStorageOut.setKalmanGainStorageFileName("KalmanGainStorage.nc");
-		kgStorageOut.writeKalmanGain(observationIds, kgStorageIn.getObservationOffsetInDays(), kalmanGainColumnsIn);
-		kgStorageOut.readKalmanGain();
-
-		checkKalmanGainContentsDoubleState(timeAsMJD, kgStorageOut, kgStorageOut.getKalmanGainColumns(), kgStorageOut.getObservationIds());
 	}
 
 	private void checkKalmanGainContentsDoubleState(double timeAsMJD, KalmanGainStorage kgStorageIn, IVector[] kalmanGainColumns, String[] observationIds) {
@@ -270,9 +272,9 @@ public class KalmanGainStorageTest extends TestCase {
 
 	public void testWriteReadKalmanGainNetCdf() throws Exception {
 		for (int ii=0; ii< 2; ii++){
-		   double timeAsMJD = 55615.00 + ii/24.0;  // 2011-02-23T00:00:00GMT 2011-02-23T01:00:00CET
-		   int columnSize = KalmanGainStorage.DefaultMaxKeepVectorInXMLSize + 5;
-		   writeAndReadKalmanGain(timeAsMJD, columnSize);
+			double timeAsMJD = 55615.00 + ii/24.0;  // 2011-02-23T00:00:00GMT 2011-02-23T01:00:00CET
+			int columnSize = KalmanGainStorage.DefaultMaxKeepVectorInXMLSize + 5;
+			writeAndReadKalmanGain(timeAsMJD, columnSize);
 		}
 	}
 
@@ -302,7 +304,7 @@ public class KalmanGainStorageTest extends TestCase {
 		double[] observationOffsetsInDaysIn = kgStorageIn.getObservationOffsetInDays();
 		for (int i = 0; i < observationOffsetsInDaysIn.length; i++) {
 			assertEquals("observationOffsetInDays out/in",
-					observationOffsetsInDaysOut[i], observationOffsetsInDaysIn[i]);
+				observationOffsetsInDaysOut[i], observationOffsetsInDaysIn[i]);
 		}
 
 		IVector[] kalmanGainColumnsIn = kgStorageIn.getKalmanGainColumns();

@@ -622,15 +622,6 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 				this.smoothedGainMatrix.SmoothGain(obs,Kvecs, this.timeRegularisationPerDay, analysisTime);
 			}
 
-
-			/*ObserverUtils obsUtils = new ObserverUtils(obs);
-			String[] obsIds = obsUtils.getObsIds();
-			double[] obsTimeOffsets = obsUtils.getObsTimeOffsets(analysisTime.getMJD());
-			System.out.println("Observation order for writing HK");
-			for (int i = 0; i < obsIds.length; i++) {
-				System.out.printf("ObsId:offset %s:%f%n", obsIds[i], obsTimeOffsets[i]);
-			}*/
-
 			double[][] hk = getHK(obs, ensemblePredictionsForecast);
 			// Store kalman gain for future use in this object
 			storeGainMatrix(obs, analysisTime, Kvecs, hk);
@@ -662,18 +653,24 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 	}
 
 	protected double[][] getHK(IStochObserver obs, EnsembleVectors ensemblePredictionsForecast) {
-		if (localizationMethod != LocalizationMethodType.none) {
-			System.out.println("Not computing HK for Kalman Gain Storage because it is not compatible with localization method " + localizationMethod);
-			return null;
-		}
+		IVector[] rhoForLocalization = getRhoForLocalization(obs);
+		if (rhoForLocalization == null) return null;
 		Matrix hk = computeHK(obs, ensemblePredictionsForecast);
 		double[][] array = new double[hk.getNumberOfRows()][hk.getNumberOfRows()];
 		for (int i = 0; i < array.length; i++) {
 			for (int j = 0; j < array[0].length; j++) {
-				array[i][j] = hk.getValue(i, j);
+				array[i][j] = rhoForLocalization[i].getValue(j) * hk.getValue(i, j);
 			}
 		}
 		return array;
+	}
+
+	private IVector[] getRhoForLocalization(IStochObserver obs) {
+		IObservationDescriptions observationDescriptions = obs.getObservationDescriptions();
+		if (localizationMethod == LocalizationMethodType.hamill) return this.ensemble[0].getRhoForLocalization(observationDescriptions, this.distance);
+		if (localizationMethod == LocalizationMethodType.none) return IModelInstance.getDefaultRhoForLocalization(observationDescriptions);
+		System.out.println("Not computing HK for Kalman Gain Storage because it is not compatible with localization method " + localizationMethod);
+		return null;
 	}
 
 	@Override
