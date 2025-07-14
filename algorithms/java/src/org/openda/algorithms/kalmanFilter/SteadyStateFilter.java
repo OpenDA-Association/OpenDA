@@ -57,7 +57,7 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 	private double[] readGainTime;
 	private int steadyStateTimeCounter = 0;
 	private double skipAssimilationStandardDeviationFactor = Double.POSITIVE_INFINITY;
-	private boolean tryCompensatingForMissingObservationWithHK = false;
+	private boolean estimateMissingObservations = false;
 	private double[][] hk;
 	private String[] gainStorageObservationIdsArray;
 	private String[] gainVectorIdArray;
@@ -158,7 +158,7 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
             }
 		}
 		this.skipAssimilationStandardDeviationFactor = this.configurationAsTree.getAsDouble("skipAssimilationStandardDeviationFactor", Double.POSITIVE_INFINITY);
-		this.tryCompensatingForMissingObservationWithHK = this.configurationAsTree.getAsBoolean("tryCompensatingForMissingObservationWithHK", false);
+		this.estimateMissingObservations = this.configurationAsTree.getAsBoolean("estimateMissingObservations", false);
 
 		//now read the first gain file into memory
         steadyStateTimeCounter++;
@@ -220,7 +220,7 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 		int m=innovation.getSize();
 		IVector pred_a = this.mainModel.getObservationOperator().getObservedValues(observations.getObservationDescriptions());
 
-		HKCalculator hkCalculator = tryCompensatingForMissingObservationWithHK && hk != null ? new HKCalculator(availableObsGainVectorIdArray, this.gainVectors) : null;
+		HKCalculator hkCalculator = estimateMissingObservations && hk != null ? new HKCalculator(availableObsGainVectorIdArray, this.gainVectors) : null;
 
 		for (int i = 0; i < m; i++) {
 			// find matching column in steady-state gain
