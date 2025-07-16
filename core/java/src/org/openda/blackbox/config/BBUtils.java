@@ -497,6 +497,11 @@ public class BBUtils {
         return (pointPos < 0) ? fileName : fileName.substring(0, pointPos);
     }
 
+    public static String getFileExtension(String fileName) {
+        int pointPos = fileName.lastIndexOf('.');
+        return (pointPos < 0) ? "" : fileName.substring(pointPos);
+    }
+
     public static File getFileOnOpenDaTempDir(String userSettingsFileName) {
 
         // determine directory where user settings file is stored

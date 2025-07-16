@@ -22,6 +22,8 @@ package org.openda.utils.io;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.text.SimpleDateFormat;
 
 import org.openda.blackbox.config.BBUtils;
 import org.openda.interfaces.IConfigurable;
@@ -35,7 +37,28 @@ import org.openda.utils.Results;
  */
 public class FileCopier implements IConfigurable {
 
-    /**
+	public static final String FILE_TIME_STAMP = "fileTimeStamp";
+	private final SimpleDateFormat currentTimeDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");;
+	private FileTimeStamp fileTimeStamp = null;
+
+	enum FileTimeStamp {
+		PREFIX("prefix"), POSTFIX("postfix");
+
+		private final String name;
+
+		FileTimeStamp(String name) {
+			this.name = name;
+		}
+
+		public static FileTimeStamp getByName(String name) {
+			for (FileTimeStamp fileTimeStamp : FileTimeStamp.values()) {
+				if (fileTimeStamp.name.equalsIgnoreCase(name)) return fileTimeStamp;
+			}
+			return null;
+		}
+	}
+
+	/**
      * Utility class to copy a file. If the destination file
      * already exists, then it is overwritten.
      *
@@ -49,12 +72,13 @@ public class FileCopier implements IConfigurable {
     
     public void initialize(File workingDir, String[] arguments) {
         //get arguments.
-        if (arguments == null || arguments.length != 2 || arguments[0] == null || arguments[1] == null) {
-            throw new IllegalArgumentException("Wrong number of arguments supplied."
-                    + " The command line arguments should be: <sourceFilePath> <destinationFilePath>"
-                    + " Where <sourceFilePath> is the pathname of the source file to copy (relative to working directory)"
-                    + " and <destinationFilePath> is the pathname of the destination file (relative to working directory).");
-        }
+        if (arguments == null || arguments.length < 2 || arguments.length > 3 || arguments[0] == null || arguments[1] == null) {
+			throw new IllegalArgumentException("Wrong number of arguments supplied."
+				+ " The command line arguments should be: <sourceFilePath> <destinationFilePath> and optional arguments fileTimeStamp=prefix/postfix"
+				+ " Where <sourceFilePath> is the pathname of the source file to copy (relative to working directory)"
+				+ " and <destinationFilePath> is the pathname of the destination file (relative to working directory)."
+				+ " Optional arguments can be used to add a prefix or postfix to the destination file name based on the current time.");
+		}
 
         File sourceFile = new File(workingDir, arguments[0]);
         if (!sourceFile.exists()) {
@@ -66,16 +90,56 @@ public class FileCopier implements IConfigurable {
                     + sourceFile.getAbsolutePath() + "' is not a file.");
         }
 
-        File destinationFile = new File(workingDir, arguments[1]);
+		String fileNameWithoutExtension = getDestFileName(arguments);
 
-        //copy file.
-        Results.putMessage(this.getClass().getSimpleName() + ": copying file "
-                + sourceFile.getAbsolutePath() + " to " + destinationFile.getAbsolutePath());
+		File destinationFile = new File(workingDir, fileNameWithoutExtension);
         try {
-            BBUtils.copyFile(sourceFile, destinationFile);
+			checkDestinationFile(destinationFile);
+
+			Results.putMessage(this.getClass().getSimpleName() + ": copying file "
+				+ sourceFile.getAbsolutePath() + " to " + destinationFile.getAbsolutePath());
+			if (arguments.length > 2) {
+				Files.copy(sourceFile.toPath(), destinationFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+				return;
+			}
+			// Alternatively, you can use BBUtils.copyFile if you want to use the OpenDA blackbox utility:
+			BBUtils.copyFile(sourceFile, destinationFile);
         } catch (IOException e) {
             throw new RuntimeException(this.getClass().getSimpleName() + ": problem while copying file "
                     + sourceFile.getAbsolutePath() + ". Message was: " + e.getMessage(), e);
         }
     }
+
+	private static void checkDestinationFile(File destinationFile) throws IOException {
+		if (!destinationFile.exists()) {
+			File parentFile = destinationFile.getParentFile();
+			if (!parentFile.exists() && !destinationFile.mkdirs()) throw new RuntimeException("Could not create destination directory: " + destinationFile.getParentFile().getAbsolutePath());
+			boolean newFile = destinationFile.createNewFile();
+			if (!destinationFile.exists() && !newFile) throw new RuntimeException("Could not create destination file: " + destinationFile.getAbsolutePath());
+		}
+	}
+
+	private String getDestFileName(String[] arguments) {
+		for (int i = 2; i < arguments.length; i++) {
+			String[] split = arguments[i].split("=");
+			if (split.length != 2) throw new RuntimeException(String.format("Argument %s not a valid key=value pair. Only supply argument fileTimeStamp=prefix/postfix", arguments[i]));
+			if (!split[0].equalsIgnoreCase(FILE_TIME_STAMP)) throw new RuntimeException(String.format("Argument %s not a valid key=value pair. Only supply argument fileTimeStamp=prefix/postfix", arguments[i]));
+			fileTimeStamp = FileTimeStamp.getByName(split[1]);
+			if (fileTimeStamp == null) throw new RuntimeException(String.format("Argument %s not a valid key=value pair. Only supply argument fileTimeStamp=prefix/postfix", arguments[i]));
+		}
+
+		File file = new File(arguments[1]);
+		String fileName = file.getName();
+		String newFileName = getNewFileName(fileName);
+		File newFile = new File(file.getParentFile(), newFileName);
+		return newFile.getPath();
+	}
+
+	private String getNewFileName(String fileName) {
+		if (fileTimeStamp == null) return fileName; // No timestamp, return original file name
+		if (fileTimeStamp == FileTimeStamp.PREFIX) return currentTimeDateFormat.format(System.currentTimeMillis()) + "_" + fileName;
+		else if (fileTimeStamp == FileTimeStamp.POSTFIX)
+			return BBUtils.getFileNameWithoutExtension(fileName) + "_" + currentTimeDateFormat.format(System.currentTimeMillis()) + BBUtils.getFileExtension(fileName);
+		throw new IllegalArgumentException("Unknown file time stamp type: " + fileTimeStamp);
+	}
 }
