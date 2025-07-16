@@ -52,8 +52,7 @@ public class FileCopier implements IConfigurable {
 
 		public static FileTimeStamp getByName(String name) {
 			for (FileTimeStamp fileTimeStamp : FileTimeStamp.values()) {
-				if (!fileTimeStamp.name.equalsIgnoreCase(name)) continue;
-				return fileTimeStamp;
+				if (fileTimeStamp.name.equalsIgnoreCase(name)) return fileTimeStamp;
 			}
 			return null;
 		}
