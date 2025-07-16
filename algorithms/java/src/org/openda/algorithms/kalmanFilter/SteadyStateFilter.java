@@ -384,8 +384,7 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 			Matrix inverseIMinusM2 = iMinusM2.inverse();
 			Matrix m1DAvailable = this.m1.mult(this.dAvailable);
 			Matrix dMissing = inverseIMinusM2.mult(m1DAvailable);
-		/* Code used for debugging when necessary
-		System.out.println("M1: " + m1);
+		/*System.out.println("M1: " + m1);
 		System.out.println("M2: " + m2);
 		System.out.println("inverseIMinusM2: " + inverseIMinusM2);
 		System.out.println("dAvailable: " + dAvailable);
