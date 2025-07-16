@@ -23,6 +23,7 @@ package org.openda.utils.geometry;
 import junit.framework.TestCase;
 import org.openda.exchange.ArrayGeometryInfo;
 import org.openda.exchange.IrregularGridGeometryInfo;
+import org.openda.exchange.PointGeometryInfo;
 import org.openda.interfaces.IArray;
 import org.openda.interfaces.IGeometryInfo;
 import org.openda.interfaces.IVector;
@@ -255,5 +256,33 @@ public class GeometryUtilsTest extends TestCase {
 
 		//if geometryInfo is already curvilinear.
 		assertEquals(geometryInfo, geometryInfo.toCurvilinearGeometryInfo());
+	}
+
+	public void testCalculateCohnWeightsForPointGeometries() {
+		// Mock inputs
+		double distance = 300000.0;
+		IGeometryInfo[] geometryInfos = new IGeometryInfo[3];
+		geometryInfos[0] = new PointGeometryInfo(1.0, 4.0, 0.0);
+		geometryInfos[1] = new PointGeometryInfo(2.0, 5.0, 0.0);
+		geometryInfos[2] = new PointGeometryInfo(3.0, 6.0, 0.0);
+
+		int obsCount = 3;
+		IVector xObs = new Vector(new double[]{1.0, 2.0, 3.0});
+		IVector yObs = new Vector(new double[]{4.0, 5.0, 6.0});
+		IVector zObs = new Vector(new double[]{0.0, 0.0, 0.0});
+
+		IVector[] weights = GeometryUtils.calculateCohnWeightsBetweenPointGeometries(distance, geometryInfos, xObs, yObs, zObs);
+
+		assertNotNull(weights[0]);
+		assertEquals(obsCount, weights[0].getSize());
+		assertEquals(1.0, weights[0].getValue(0), 1e-6);
+		assertEquals(0.661056, weights[0].getValue(1), 1e-6);
+		assertEquals(0.177380, weights[0].getValue(2), 1e-6);
+		assertEquals(0.661056, weights[1].getValue(0), 1e-6);
+		assertEquals(1.0, weights[1].getValue(1), 1e-6);
+		assertEquals(0.661469, weights[1].getValue(2), 1e-6);
+		assertEquals(0.177380, weights[2].getValue(0), 1e-6);
+		assertEquals(0.661469, weights[2].getValue(1), 1e-6);
+		assertEquals(1.0, weights[2].getValue(2), 1e-6);
 	}
 }

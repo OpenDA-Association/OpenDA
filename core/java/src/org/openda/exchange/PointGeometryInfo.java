@@ -54,6 +54,7 @@ public class PointGeometryInfo extends ArrayGeometryInfo {
 		this.setInfo(latitudeArray, latitudeValueIndices, latitudeQuantityInfo, 
 			  longitudeArray, longitudeValueIndices, longitudeQuantityInfo,
 			  heightArray, heightValueIndices, heightQuantityInfo);
+		isWGS84 = true;
 	}
 	
 	public double getLatitude(){

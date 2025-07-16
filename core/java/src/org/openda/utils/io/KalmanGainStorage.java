@@ -57,6 +57,7 @@ public class KalmanGainStorage {
 	public static final Attribute STATION_IDENTIFICATION_CODE_ATT = new Attribute("long_name", "station identification code");
 	public static final Attribute TIME_SERIES_ID_ATT = new Attribute("cf_role", "timeseries_id");
 	public static final Attribute OBSERVATION_OFFSET_LONG_NAME_ATT = new Attribute("long_name", "offset in days for observations");
+	public static final Attribute HK_LONG_NAME_ATT = new Attribute("long_name", "HK");
 	public static final Attribute KALMAN_GAIN_LONG_NAME_ATT = new Attribute("long_name", "kalman gain");
 	public static final Attribute FRACTIONS_UNIT_ATT = new Attribute("units", "1");
 	public static int DefaultMaxKeepVectorInXMLSize = 40;
@@ -71,6 +72,7 @@ public class KalmanGainStorage {
 	private String kalmanGainStorageFileName = "kalmanGainStorage.xml";
 	private int maxKeepVectorInXMLSize = DefaultMaxKeepVectorInXMLSize;
 	private boolean useTimeStampInDirectoryName = true;
+	private double[][] hk = null;
 
 	public enum StorageType {
 		xml, netcdf, automatic, netcdf_cf
@@ -200,25 +202,29 @@ public class KalmanGainStorage {
 		IVector[] kalmanGainColumns = new IVector[n];
 		Set<String> gainIds = gainVectors.keySet();
 		int index=0;
+		//System.out.println("Observation order for writing kalman gain");
 		for(String gainId : gainIds){
 			observationIds[index] = obsId.get(gainId);
 			observationOffsetsInDays[index] = obsTimeOffset.get(gainId);
+			//System.out.printf("ObsId:offset %s:%f%n", observationIds[index], observationOffsetsInDays[index]);
 			kalmanGainColumns[index] = gainVectors.get(gainId);
 			index++;
 		}
-		writeKalmanGain(observationIds,observationOffsetsInDays,kalmanGainColumns);
+		writeKalmanGain(observationIds,observationOffsetsInDays,kalmanGainColumns, hk);
 	}	
 	
 	/**
 	 * Write the kalman gain matrix to xml file and, in case of large column vectors, to netdcf files.
-	 * @param observationIds The observation identifiers
+	 *
+	 * @param observationIds           The observation identifiers
 	 * @param observationOffsetsInDays The time offset of the observations, expressed in days,
 	 *                                 relative to the time stamp for this kalman gain
 	 *                                 (0 means: same time stamp as the gain,
-	 *                                  negative means before the kalman gain time stamp)
-	 * @param kalmanGainColumns The vectors to be written to the kalman gain column files.
+	 *                                 negative means before the kalman gain time stamp)
+	 * @param kalmanGainColumns        The vectors to be written to the kalman gain column files.
+	 * @param hk
 	 */
-	public void writeKalmanGain(String[] observationIds, double[] observationOffsetsInDays, IVector[] kalmanGainColumns) {
+	public void writeKalmanGain(String[] observationIds, double[] observationOffsetsInDays, IVector[] kalmanGainColumns, double[][] hk) {
 		if (kalmanGainColumns == null || kalmanGainColumns.length == 0 ) {
 			throw new IllegalArgumentException(this.getClass().getName() +
 					": at least one kalman gain column must be provided");
@@ -236,10 +242,14 @@ public class KalmanGainStorage {
 		File directoryForStorage = determineStorageDirectory(false);
 
 		if (this.gainFileType == StorageType.netcdf_cf) {
-			writeKalmanGainToNetcdfCF(observationIds, observationOffsetsInDays, kalmanGainColumns, directoryForStorage);
+			writeKalmanGainToNetcdfCF(observationIds, observationOffsetsInDays, kalmanGainColumns, directoryForStorage, hk);
 			return;
 		}
 
+		writeKalmanGainToXML(observationIds, observationOffsetsInDays, kalmanGainColumns, directoryForStorage);
+	}
+
+	private void writeKalmanGainToXML(String[] observationIds, double[] observationOffsetsInDays, IVector[] kalmanGainColumns, File directoryForStorage) {
 		long start = System.currentTimeMillis();
 		// store general info
 		KalmanGainStorageXML kgStorageXML = new KalmanGainStorageXML();
@@ -249,6 +259,14 @@ public class KalmanGainStorage {
 
 		KalmanGainObservationsXML observationsXML = new KalmanGainObservationsXML();
 		kgStorageXML.setObservations(observationsXML);
+		fillObservationsXML(observationIds, observationOffsetsInDays, kalmanGainColumns, directoryForStorage, observationsXML, kgStorageXML);
+		File kgStorageXmlFile = new File(directoryForStorage, kalmanGainStorageFileName);
+		CastorUtils.write(kgStorageXML, kgStorageXmlFile, "opendaKalmanGainStorage", null, null);
+		long timePassed = System.currentTimeMillis() - start;
+		Results.putMessage("Writing kalman gain to xml took: " + timePassed);
+	}
+
+	private void fillObservationsXML(String[] observationIds, double[] observationOffsetsInDays, IVector[] kalmanGainColumns, File directoryForStorage, KalmanGainObservationsXML observationsXML, KalmanGainStorageXML kgStorageXML) {
 		for (int i = 0; i < observationIds.length; i++) {
 			KalmanGainObservationXML observationXML = new KalmanGainObservationXML();
 			observationsXML.addObservation(observationXML);
@@ -270,24 +288,20 @@ public class KalmanGainStorage {
 					String vectorString = TreeVectorWriter.createVectorXML(kalmanGainColumns[i]);
 					observationXMLChoice.setVector(vectorString);
 				}
-			} else {
-				// netCdf-file
-				String netcdfFileName = columnFilePrefix + String.valueOf(i+1) + ".nc";
-				observationXMLChoice.setFileName(netcdfFileName);
-				if (!kgStorageXML.hasStateSize()) {
-					kgStorageXML.setStateSize(kalmanGainColumns[i].getSize());
-				}
-				netcdfFileName = new File(directoryForStorage, netcdfFileName).getAbsolutePath();
-				writeKalmanGainColumnToNetCdfFile(netcdfFileName, kalmanGainColumns[i]);
+				continue;
 			}
+			// netCdf-file
+			String netcdfFileName = columnFilePrefix + String.valueOf(i + 1) + ".nc";
+			observationXMLChoice.setFileName(netcdfFileName);
+			if (!kgStorageXML.hasStateSize()) {
+				kgStorageXML.setStateSize(kalmanGainColumns[i].getSize());
+			}
+			netcdfFileName = new File(directoryForStorage, netcdfFileName).getAbsolutePath();
+			writeKalmanGainColumnToNetCdfFile(netcdfFileName, kalmanGainColumns[i]);
 		}
-		File kgStorageXmlFile = new File(directoryForStorage, kalmanGainStorageFileName);
-		CastorUtils.write(kgStorageXML, kgStorageXmlFile, "opendaKalmanGainStorage", null, null);
-		long timePassed = System.currentTimeMillis() - start;
-		Results.putMessage("Writing kalman gain to xml took: " + timePassed);
 	}
 
-	private void writeKalmanGainToNetcdfCF(String[] observationIds, double[] observationOffsetsInDays, IVector[] kalmanGainColumns, File directoryForStorage) {
+	private void writeKalmanGainToNetcdfCF(String[] observationIds, double[] observationOffsetsInDays, IVector[] kalmanGainColumns, File directoryForStorage, double[][] hk) {
 		NetcdfFileWriter netcdfFileWriter = null;
 		try {
 			File file = new File(directoryForStorage, kalmanGainStorageFileName);
@@ -297,6 +311,7 @@ public class KalmanGainStorage {
 			Dimension stationDimension = netcdfFileWriter.addDimension(null, STATION_DIMENSION, observationIds.length);
 			netcdfFileWriter.addDimension(null, CHAR_LENGTH_ID, STATION_ID_CHAR_LENGTH);
 			Variable observationOffsetVariable = createObservationOffsetVariable(netcdfFileWriter);
+			Variable hkVariable = hk != null ? createHKVariable(netcdfFileWriter) : null;
 			Variable stationVariable = createStationVariable(netcdfFileWriter);
 
 			KalmanGainVariableData[] kalmanGainVariableData = getKalmanGainVariableData(kalmanGainColumns, netcdfFileWriter, stationDimension);
@@ -305,6 +320,7 @@ public class KalmanGainStorage {
 			writeStationData(observationIds, netcdfFileWriter, stationVariable);
 			writeTimeStampData(netcdfFileWriter, timeStampVariable);
 			writeObservationOffsetData(observationOffsetsInDays, netcdfFileWriter, observationOffsetVariable);
+			if (hkVariable != null) writeHK(hk, netcdfFileWriter, hkVariable);
 
 			for (int observationIndex = 0; observationIndex < kalmanGainColumns.length; observationIndex++) {
 
@@ -365,6 +381,16 @@ public class KalmanGainStorage {
 			observationOffsetArray.set(i, observationOffsetsInDays[i]);
 		}
 		netcdfFileWriter.write(observationOffsetVariable, observationOffsetArray);
+	}
+
+	private void writeHK(double[][] hk, NetcdfFileWriter netcdfFileWriter, Variable hkVariable) throws IOException, InvalidRangeException {
+		ArrayDouble.D2 hkArray = new ArrayDouble.D2(hk.length, hk.length);
+		for (int i = 0; i < hk.length; i++) {
+			for (int j = 0; j < hk.length; j++) {
+				hkArray.set(i, j, hk[i][j]);
+			}
+		}
+		netcdfFileWriter.write(hkVariable, hkArray);
 	}
 
 	private void writeStationData(String[] observationIds, NetcdfFileWriter netcdfFileWriter, Variable stationVariable) throws IOException, InvalidRangeException {
@@ -463,6 +489,13 @@ public class KalmanGainStorage {
 		return observationOffsetVariable;
 	}
 
+	private Variable createHKVariable(NetcdfFileWriter netcdfFileWriter) {
+		Variable observationOffsetVariable = netcdfFileWriter.addVariable(null, "HK", DataType.DOUBLE, STATION_DIMENSION + ' ' + STATION_DIMENSION);
+		observationOffsetVariable.addAttribute(HK_LONG_NAME_ATT);
+		observationOffsetVariable.addAttribute(FRACTIONS_UNIT_ATT);
+		return observationOffsetVariable;
+	}
+
 	private Variable createTimeStampVariable(NetcdfFileWriter netcdfFileWriter) {
 		Dimension timeStampDimension = netcdfFileWriter.addDimension(null, "time_stamp_dimension", 1);
 		ArrayList<Dimension> dimensionList = new ArrayList<>();
@@ -524,6 +557,14 @@ public class KalmanGainStorage {
 			// the values were not in the file
 		}
 		return this.kalmanGainColumns;
+	}
+
+	public double[][] getHk() {
+		return hk;
+	}
+
+	public void setHk(double[][] hk) {
+		this.hk = hk;
 	}
 
 	/**
@@ -621,6 +662,10 @@ public class KalmanGainStorage {
 			}
 			if (TIME_STAMP.equals(shortName)) {
 				this.timeStampAsMJD = ((double[]) variable.read().get1DJavaArray(double.class))[0];
+				continue;
+			}
+			if ("HK".equals(shortName)) {
+				this.hk = (double[][]) variable.read().copyToNDJavaArray();
 				continue;
 			}
 			int[] shape = variable.getShape();

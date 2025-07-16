@@ -20,7 +20,10 @@
 
 package org.openda.interfaces;
 
+import org.openda.utils.Vector;
+
 import java.io.File;
+import java.util.Arrays;
 
 /**
  * Model Instance interface.
@@ -100,6 +103,20 @@ public interface IModelInstance extends IDataObject, IInstance {
 	 */
 	IVector[] getObservedLocalization(IObservationDescriptions observationDescriptions, double distance, int iDomain);
 
+	default IVector[] getRhoForLocalization(IObservationDescriptions observationDescriptions, double distance) {
+		return getDefaultRhoForLocalization(observationDescriptions);
+	}
+
+	static IVector[] getDefaultRhoForLocalization(IObservationDescriptions observationDescriptions) {
+		int obsCount = observationDescriptions.getObservationCount();
+		IVector[] rhoForLocalization = new IVector[obsCount];
+		for (int i = 0; i < obsCount; i++) {
+			double[] weightsObservation = new double[obsCount];
+			Arrays.fill(weightsObservation, 1);
+			rhoForLocalization[i] = new Vector(weightsObservation);
+		}
+		return rhoForLocalization;
+	}
 	/**************************************
      *** Save/restore full internal state
      **************************************/

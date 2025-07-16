@@ -3,6 +3,7 @@ package org.openda.model_metaswap;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
+import org.openda.utils.SortUtils;
 import org.openda.utils.io.CsvReader;
 
 import java.io.File;
@@ -47,10 +48,10 @@ public class SwapResultFile implements IDataObject {
 		try {
 			CsvReader csvReader = new CsvReader(sourceFile);
 			String[] headerSplit = csvReader.readCSVLineTrimElements();
-			int s01Index = indexOfString(headerSplit, S01MM_COLUMN_NAME);
-			int dprztbIndex = indexOfString(headerSplit, DPRZTB_COLUMN_NAME);
-			int yearIndex = indexOfString(headerSplit, "yr");
-			int dayIndex = indexOfString(headerSplit, "td(d)");
+			int s01Index = SortUtils.indexOfString(headerSplit, S01MM_COLUMN_NAME);
+			int dprztbIndex = SortUtils.indexOfString(headerSplit, DPRZTB_COLUMN_NAME);
+			int yearIndex = SortUtils.indexOfString(headerSplit, "yr");
+			int dayIndex = SortUtils.indexOfString(headerSplit, "td(d)");
 			List<Double> doubleValuesList = new ArrayList<>();
 			List<Double> doubleTimesList = new ArrayList<>();
 			String[] lineElements = csvReader.readCSVLineTrimElements();
@@ -75,32 +76,6 @@ public class SwapResultFile implements IDataObject {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	private static int indexOfString(String[] array, String string) {
-		return indexOfString(array, 0, array.length, string);
-	}
-
-	private static int indexOfString(String[] array, int pos, int length, String string) {
-		if (string == null) {
-			for (int i = pos, n = pos + length; i < n; i++) {
-				if (array[i] == null) return i;
-			}
-		} else {
-			for (int i = pos, n = pos + length; i < n; i++) {
-				if (stringEquals(array[i], string)) return i;
-			}
-		}
-		return -1;
-	}
-
-	private static boolean stringEquals(String s1, String s2) {
-		if (s1 == s2) return true;
-		if (s1 == null || s2 == null) return false;
-		int length = s1.length();
-		if (length != s2.length()) return false;
-		if (s1.hashCode() != s2.hashCode()) return false;
-		return s1.regionMatches(0, s2, 0, length);  // 3 times faster than equals, no cast required
 	}
 
 

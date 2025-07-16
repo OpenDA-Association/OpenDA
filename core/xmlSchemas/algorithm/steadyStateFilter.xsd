@@ -77,6 +77,11 @@
             <xs:documentation>Skip gain when the model results differ from the observations more than this factor times the standard deviation of the observations</xs:documentation>
           </xs:annotation>
         </xs:element>
+        <xs:element name="estimateMissingObservations" type="xs:boolean" minOccurs="0">
+          <xs:annotation>
+            <xs:documentation>When this option is true AND in the kalman gain storage the term HK has been stored, for locations with missing observations the innovation value </xs:documentation>
+          </xs:annotation>
+        </xs:element>
       </xs:sequence>
 		</xs:complexType>
 	</xs:element>

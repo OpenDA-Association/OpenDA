@@ -1290,9 +1290,6 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 			ITreeVector modelWeightsTreeVector = getLocalizedCohnWeights(obsId[i], distance,
 				xObs.getValue(i), yObs.getValue(i), zObs.getValue(i));
 
-			// TreeVector to vector
-//			IVector statesWeightsArray = new Vector(modelWeightsTreeVector.getValues());
-//			obsVectorArray[i] = statesWeightsArray;
 			TreeVector weightsForFullState = new TreeVector("State-Weight");
 			weightsForFullState.addChild(noiseModelWeightsTreeVector);
 			weightsForFullState.addChild(modelWeightsTreeVector);
@@ -1301,15 +1298,27 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 		return obsVectorArray;
 	}
 
-	//private IVector getLocalizedCohnWeights(String obsId, double distanceCohnMeters, double xObs, double yObs, double zObs){
+	public IVector[] getRhoForLocalization(IObservationDescriptions observationDescriptions, double distance) {
+		// Distance is delegated to the ExchangeItem and then apply the Gaspari-Cohn function.
+		IVector xObs = observationDescriptions.getValueProperties("xposition");
+		IVector yObs = observationDescriptions.getValueProperties("yposition");
+		IVector zObs = observationDescriptions.getValueProperties("height");
+		int obsCount = observationDescriptions.getObservationCount();
+
+		List<IExchangeItem> exchangeItems = observationDescriptions.getExchangeItems();
+		IGeometryInfo[] geometryInfos = new IGeometryInfo[obsCount];
+		for (int i = 0; i < obsCount; i++) {
+			geometryInfos[i] = exchangeItems.get(i).getGeometryInfo();
+		}
+		return GeometryUtils.calculateCohnWeightsBetweenPointGeometries(distance, geometryInfos, xObs, yObs, zObs);
+	}
+
 	private ITreeVector getLocalizedCohnWeights(String obsId, double distanceCohnMeters, double xObs, double yObs, double zObs){
 
-		//IVector iWeightsVector = new IVector;
 		TreeVector treeVector = new TreeVector("weights-for " + obsId);
 		Collection<BBStochModelVectorConfig> vectorCollection =
 			this.bbStochModelVectorsConfig.getStateConfig().getVectorCollection();
 
-		//int k=0;
 		for (BBStochModelVectorConfig vectorConfig : vectorCollection) {
 			String id = vectorConfig.getId();
 			IExchangeItem prevExchangeItem = getExchangeItem(id);
@@ -1322,14 +1331,11 @@ public class BBStochModelInstance extends Instance implements IStochModelInstanc
 
 				for (int xy = 0; xy < distancesForExchangeItem.length; xy++) {
 					weightsForExchangeItem[xy] = GeometryUtils.calculateCohnWeight(distancesForExchangeItem[xy], distanceCohnMeters);
-					//k++;
 				}
 				treeVector.addChild(prevExchangeItem.getId(), weightsForExchangeItem);
-				//iWeightsVector[k] = weightsForExchangeItem;
 			}
 		}
 		return treeVector;
-		//return iWeightsVector;
 	}
 
 

@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import static org.openda.utils.performance.OdaGlobSettings.getTimePrecision;
 
@@ -77,9 +78,9 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 		
 	// Kalman preparations
 	// - the actual analysis is performed by the filter
-	protected HashMap<String, IVector> gainVectors = new HashMap<String, IVector>();
-	protected HashMap<String, String> obsId = new HashMap<String, String>();
-	protected HashMap<String, Double> obsTimeOffset = new HashMap<String, Double>();
+	protected HashMap<String, IVector> gainVectors = new LinkedHashMap<>();
+	protected HashMap<String, String> obsId = new LinkedHashMap<>();
+	protected HashMap<String, Double> obsTimeOffset = new LinkedHashMap<>();
 
 	
 	//collecting data for writing output
