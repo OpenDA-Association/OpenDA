@@ -37,9 +37,27 @@ import org.openda.utils.Results;
  */
 public class FileCopier implements IConfigurable {
 
-	public static final String CURRENT_TIME_PREFIX = "currentTimePrefix";
-	public static final String CURRENT_TIME_POSTFIX = "currentTimePostfix";
-	private SimpleDateFormat currentTimeDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");;
+	public static final String FILE_TIME_STAMP = "fileTimeStamp";
+	private final SimpleDateFormat currentTimeDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");;
+	private FileTimeStamp fileTimeStamp = null;
+
+	enum FileTimeStamp {
+		PREFIX("prefix"), POSTFIX("postfix");
+
+		private final String name;
+
+		FileTimeStamp(String name) {
+			this.name = name;
+		}
+
+		public static FileTimeStamp getByName(String name) {
+			for (FileTimeStamp fileTimeStamp : FileTimeStamp.values()) {
+				if (!fileTimeStamp.name.equalsIgnoreCase(name)) continue;
+				return fileTimeStamp;
+			}
+			return null;
+		}
+	}
 
 	/**
      * Utility class to copy a file. If the destination file
@@ -55,12 +73,12 @@ public class FileCopier implements IConfigurable {
     
     public void initialize(File workingDir, String[] arguments) {
         //get arguments.
-        if (arguments == null || arguments.length < 2 || arguments[0] == null || arguments[1] == null) {
+        if (arguments == null || arguments.length < 2 || arguments.length > 3 || arguments[0] == null || arguments[1] == null) {
 			throw new IllegalArgumentException("Wrong number of arguments supplied."
-				+ " The command line arguments should be: <sourceFilePath> <destinationFilePath> and optional arguments currentTimeFormattingStringPrefix=<pattern> or currentTimeFormattingStringPostfix=<pattern>."
+				+ " The command line arguments should be: <sourceFilePath> <destinationFilePath> and optional arguments fileTimeStamp=prefix/postfix"
 				+ " Where <sourceFilePath> is the pathname of the source file to copy (relative to working directory)"
 				+ " and <destinationFilePath> is the pathname of the destination file (relative to working directory)."
-				+ " Optional arguments can be used to add a prefix or postfix to the destination file name based on the current time, using a specified date format pattern.");
+				+ " Optional arguments can be used to add a prefix or postfix to the destination file name based on the current time.");
 		}
 
         File sourceFile = new File(workingDir, arguments[0]);
@@ -103,30 +121,26 @@ public class FileCopier implements IConfigurable {
 	}
 
 	private String getDestFileName(String[] arguments) {
-		String prefix = "";
-		String postfix = "";
-
-		long currentTimeMillis = System.currentTimeMillis();
 		for (int i = 2; i < arguments.length; i++) {
 			String[] split = arguments[i].split("=");
-			if (split.length != 2) {
-				throw new RuntimeException(String.format("Argument %s not a valid key=value pair. Only supply arguments %s=true/false or %s=true/false", arguments[i], CURRENT_TIME_PREFIX, CURRENT_TIME_POSTFIX));
-			}
-			if (split[0].equals(CURRENT_TIME_PREFIX)) {
-				prefix = Boolean.parseBoolean(split[1]) ? currentTimeDateFormat.format(currentTimeMillis) + "_" : "";
-				continue;
-			}
-			if (split[0].equals(CURRENT_TIME_POSTFIX)) {
-				postfix = Boolean.parseBoolean(split[1]) ? "_" + currentTimeDateFormat.format(currentTimeMillis) : "";
-				continue;
-			}
-			throw new RuntimeException(String.format("Argument %s not a valid key=value pair. Only supply arguments %s=true/false or %s=true/false", arguments[i], CURRENT_TIME_PREFIX, CURRENT_TIME_POSTFIX));
+			if (split.length != 2) throw new RuntimeException(String.format("Argument %s not a valid key=value pair. Only supply argument fileTimeStamp=prefix/postfix", arguments[i]));
+			if (!split[0].equalsIgnoreCase(FILE_TIME_STAMP)) throw new RuntimeException(String.format("Argument %s not a valid key=value pair. Only supply argument fileTimeStamp=prefix/postfix", arguments[i]));
+			fileTimeStamp = FileTimeStamp.getByName(split[1]);
+			if (fileTimeStamp == null) throw new RuntimeException(String.format("Argument %s not a valid key=value pair. Only supply argument fileTimeStamp=prefix/postfix", arguments[i]));
 		}
 
 		File file = new File(arguments[1]);
 		String fileName = file.getName();
-		String newFileName = prefix + BBUtils.getFileNameWithoutExtension(fileName) + postfix + BBUtils.getFileExtension(fileName);
+		String newFileName = getNewFileName(fileName);
 		File newFile = new File(file.getParentFile(), newFileName);
 		return newFile.getPath();
+	}
+
+	private String getNewFileName(String fileName) {
+		if (fileTimeStamp == null) return fileName; // No timestamp, return original file name
+		if (fileTimeStamp == FileTimeStamp.PREFIX) return currentTimeDateFormat.format(System.currentTimeMillis()) + "_" + fileName;
+		else if (fileTimeStamp == FileTimeStamp.POSTFIX)
+			return BBUtils.getFileNameWithoutExtension(fileName) + "_" + currentTimeDateFormat.format(System.currentTimeMillis()) + BBUtils.getFileExtension(fileName);
+		throw new IllegalArgumentException("Unknown file time stamp type: " + fileTimeStamp);
 	}
 }

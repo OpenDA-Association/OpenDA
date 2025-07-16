@@ -67,7 +67,7 @@ public class FileCopierTest extends TestCase {
 
         FileCopier fileCopier = new FileCopier();
 		long currentTimeMillis = System.currentTimeMillis();
-		fileCopier.initialize(testRunDataDir, new String[]{sourceFilePath, destinationFileName, "currentTimePrefix=true"});
+		fileCopier.initialize(testRunDataDir, new String[]{sourceFilePath, destinationFileName, "fileTimeStamp=prefix"});
 
 		File[] files = destinationDirectory.listFiles();
 		assertNotNull(files);
@@ -92,7 +92,7 @@ public class FileCopierTest extends TestCase {
 
 		FileCopier fileCopier = new FileCopier();
 		long currentTimeMillis = System.currentTimeMillis();
-		fileCopier.initialize(testRunDataDir, new String[]{sourceFilePath, destinationFileName, "currentTimePrefix=false", "currentTimePostfix=true"});
+		fileCopier.initialize(testRunDataDir, new String[]{sourceFilePath, destinationFileName, "fileTimeStamp=postfix"});
 
 		File[] files = destinationDirectory.listFiles();
 		assertNotNull(files);
