@@ -173,7 +173,8 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 		IVector[] KVecs = gainStorage.getKalmanGainColumns();
 		gainVectorIdArray = new String[gainStorageObservationIdsArray.length];
 		for(int i = 0; i< gainStorageObservationIdsArray.length; i++){
-			String gainVectorId = gainStorageObservationIdsArray[i] + ":" + Math.round(gainStorageObsTimeOffsets[i] * 24.0 * 3600.0); //conversion to seconds
+			// use relative time stamps in ids to distinguish between observations for asynchronous filtering
+			String gainVectorId = gainStorageObservationIdsArray[i] + ":" + Math.round(gainStorageObsTimeOffsets[i] * 24.0 * 3600.0);
 			gainVectorIdArray[i] = gainVectorId;
 			this.gainVectors.put(gainVectorId, KVecs[i]);
 		}
@@ -384,7 +385,8 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 			Matrix inverseIMinusM2 = iMinusM2.inverse();
 			Matrix m1DAvailable = this.m1.mult(this.dAvailable);
 			Matrix dMissing = inverseIMinusM2.mult(m1DAvailable);
-		/*System.out.println("M1: " + m1);
+		/* Code for debugging
+		System.out.println("M1: " + m1);
 		System.out.println("M2: " + m2);
 		System.out.println("inverseIMinusM2: " + inverseIMinusM2);
 		System.out.println("dAvailable: " + dAvailable);
@@ -393,6 +395,7 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 			for (int i = 0; i < this.missingObservationIndices.size(); i++) {
 				Integer missingObservationIndex = this.missingObservationIndices.get(i);
 				String missingObservationId = gainStorageObservationIdsArray[missingObservationIndex];
+				// Use relative time stamps in ids to distinguish between observations for asynchronous filtering
 				String gainVectorId = missingObservationId + ":" + Math.round(obsTimeOffsets[i] * 24.0 * 3600.0); //conversion to seconds
 				Results.putProgression("processing obs " + gainVectorId + "\n");
 				// add to analysis increment for this obs
