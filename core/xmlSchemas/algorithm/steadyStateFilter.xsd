@@ -79,7 +79,7 @@
         </xs:element>
         <xs:element name="estimateMissingObservations" type="xs:boolean" minOccurs="0">
           <xs:annotation>
-            <xs:documentation>When this option is true AND in the kalman gain storage the term HK has been stored, for locations with missing observations the innovation value </xs:documentation>
+            <xs:documentation>When this option is true AND in the kalman gain storage the term HK has been stored, for locations with missing observations the innovation value will be estimated based on the innovation value of locations for which observations are available.</xs:documentation>
           </xs:annotation>
         </xs:element>
       </xs:sequence>
