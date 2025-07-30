@@ -84,7 +84,6 @@ public class WandaSeawatGridDataObject extends AbstractDataObject {
 		String formattedFileName = simpleDateFormat.format(mostRecentDate);
 
 		file = new File(fileDirectory, formattedFileName);
-		System.out.println("Reading grid data from " + file.getAbsolutePath());
 		List<String> lines = AsciiFileUtils.readLines(file);
 
 		if (lines.size() < 2) {
@@ -113,31 +112,9 @@ public class WandaSeawatGridDataObject extends AbstractDataObject {
 			dataArray[datum] = data.get(datum);
 		}
 		String id = filePrefix + "Grid";
-		System.out.println("Reading data from " + file.getAbsolutePath() + " into exchange item with id " + id + " and length " + dataArray.length);
-		System.out.println("Setting values into exchange item: " + Arrays.toString(dataArray));
 		DoublesExchangeItem dataExchangeItem = new DoublesExchangeItem(id, IExchangeItem.Role.InOut, dataArray);
-		System.out.println("Getting values from exchange item: " + Arrays.toString(dataExchangeItem.getValuesAsDoubles()));
 		TimeInfo timeInfo = new TimeInfo(new double[]{TimeUtils.date2Mjd(mostRecentDate)});
 		dataExchangeItem.setTimeInfo(timeInfo);
 		exchangeItems.put(id, dataExchangeItem);
-	}
-
-	private static TreeMap<String, File> getFileNamesToFiles(File workingDir, String filePrefix) {
-		TreeMap<String, File> fileNamesToFiles = new TreeMap<>();
-
-		File[] fileList = workingDir.listFiles();
-
-		if (fileList == null) {
-			return fileNamesToFiles;
-		}
-
-		for (File listedFile : fileList) {
-			if (!listedFile.getName().startsWith(filePrefix)) {
-				continue;
-			}
-
-			fileNamesToFiles.putIfAbsent(listedFile.getName(), listedFile);
-		}
-		return fileNamesToFiles;
 	}
 }
