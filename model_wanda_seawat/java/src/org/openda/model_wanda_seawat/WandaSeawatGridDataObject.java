@@ -3,8 +3,10 @@ package org.openda.model_wanda_seawat;
 import org.openda.exchange.AbstractDataObject;
 import org.openda.exchange.DoublesExchangeItem;
 import org.openda.exchange.TimeInfo;
+import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.io.AsciiFileUtils;
+import org.openda.utils.io.FileSupport;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,6 +14,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class WandaSeawatGridDataObject extends AbstractDataObject {
@@ -73,9 +76,15 @@ public class WandaSeawatGridDataObject extends AbstractDataObject {
 
 		if (!fileDirectory.exists() || !fileDirectory.isDirectory()) throw new RuntimeException(fileDirectory + " does not exist or is not a directory");
 
-		TreeMap<String, File> fileNamesToFiles = getFileNamesToFiles(fileDirectory, filePrefix);
+		String fileNamePattern = String.format("'%s'yyyyMMddHHmmss'.ASC'", filePrefix);
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(fileNamePattern);
+		simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+		ArrayList<Date> dates = FileSupport.getDatesFromFileNames(fileNamePattern, simpleDateFormat, fileDirectory);
+		Date mostRecentDate = dates.get(dates.size() - 1);
+		String formattedFileName = simpleDateFormat.format(mostRecentDate);
 
-		file = fileNamesToFiles.firstEntry().getValue();
+		file = new File(fileDirectory, formattedFileName);
+		System.out.println("Reading grid data from " + file.getAbsolutePath());
 		List<String> lines = AsciiFileUtils.readLines(file);
 
 		if (lines.size() < 2) {
@@ -104,8 +113,11 @@ public class WandaSeawatGridDataObject extends AbstractDataObject {
 			dataArray[datum] = data.get(datum);
 		}
 		String id = filePrefix + "Grid";
+		System.out.println("Reading data from " + file.getAbsolutePath() + " into exchange item with id " + id + " and length " + dataArray.length);
+		System.out.println("Setting values into exchange item: " + Arrays.toString(dataArray));
 		DoublesExchangeItem dataExchangeItem = new DoublesExchangeItem(id, IExchangeItem.Role.InOut, dataArray);
-		TimeInfo timeInfo = WandaSeawatUtils.getTimeInfo(filePrefix, fileNamesToFiles);
+		System.out.println("Getting values from exchange item: " + Arrays.toString(dataExchangeItem.getValuesAsDoubles()));
+		TimeInfo timeInfo = new TimeInfo(new double[]{TimeUtils.date2Mjd(mostRecentDate)});
 		dataExchangeItem.setTimeInfo(timeInfo);
 		exchangeItems.put(id, dataExchangeItem);
 	}

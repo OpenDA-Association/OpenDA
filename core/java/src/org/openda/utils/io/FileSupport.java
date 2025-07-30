@@ -20,7 +20,11 @@
 package org.openda.utils.io;
 
 import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 
 /**
  * Utility class for manipulating files
@@ -151,4 +155,18 @@ public class FileSupport {
         }
     }
 
+	public static ArrayList<Date> getDatesFromFileNames(String fileNamePattern, SimpleDateFormat simpleDateFormat, File sourcesDir) {
+		ArrayList<Date> dates = new ArrayList<>();
+		File[] files = sourcesDir.listFiles(pathname -> {
+			try {
+				dates.add(simpleDateFormat.parse(pathname.getName()));
+				return true;
+			} catch (ParseException e) {
+				return false;
+			}
+		});
+		if (files == null || dates.isEmpty()) throw new RuntimeException(String.format("DFlowFMRestartFileWrapper: no restart file found with pattern %s in %s", fileNamePattern, sourcesDir));
+		Collections.sort(dates);
+		return dates;
+	}
 }

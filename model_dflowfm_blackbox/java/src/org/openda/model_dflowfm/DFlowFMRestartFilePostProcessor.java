@@ -3,15 +3,14 @@ package org.openda.model_dflowfm;
 import org.openda.interfaces.IConfigurable;
 import org.openda.utils.Results;
 import org.openda.utils.generalJavaUtils.StringUtilities;
+import org.openda.utils.io.FileSupport;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 
 public class DFlowFMRestartFilePostProcessor implements IConfigurable {
@@ -74,7 +73,7 @@ public class DFlowFMRestartFilePostProcessor implements IConfigurable {
 	private void processRestartFilesForPattern(File workingDir, String sourceRestartFileSubDir, boolean deleteOlderRstFiles, String fileNamePattern, String partition) {
 		final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(fileNamePattern);
 		File sourcesDir = sourceRestartFileSubDir != null ? new File(workingDir, sourceRestartFileSubDir) : workingDir;
-		ArrayList<Date> dates = getDatesOfRestartFiles(fileNamePattern, simpleDateFormat, sourcesDir);
+		ArrayList<Date> dates = FileSupport.getDatesFromFileNames(fileNamePattern, simpleDateFormat, sourcesDir);
 		moveMostRecentRestartFile(workingDir, simpleDateFormat, sourcesDir, dates, partition);
 		deleteOlderRestartFiles(deleteOlderRstFiles, simpleDateFormat, sourcesDir, dates);
 	}
@@ -106,18 +105,4 @@ public class DFlowFMRestartFilePostProcessor implements IConfigurable {
 		}
 	}
 
-	private static ArrayList<Date> getDatesOfRestartFiles(String fileNamePattern, SimpleDateFormat simpleDateFormat, File sourcesDir) {
-		ArrayList<Date> dates = new ArrayList<>();
-		File[] files = sourcesDir.listFiles(pathname -> {
-			try {
-				dates.add(simpleDateFormat.parse(pathname.getName()));
-				return true;
-			} catch (ParseException e) {
-				return false;
-			}
-		});
-		if (files == null || dates.isEmpty()) throw new RuntimeException(String.format("DFlowFMRestartFileWrapper: no restart file found with pattern %s in %s", fileNamePattern, sourcesDir));
-		Collections.sort(dates);
-		return dates;
-	}
 }

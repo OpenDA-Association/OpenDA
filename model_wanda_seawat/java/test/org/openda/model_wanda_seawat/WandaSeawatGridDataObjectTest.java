@@ -37,7 +37,7 @@ public class WandaSeawatGridDataObjectTest extends TestCase {
 		assertNotNull(timeInfo);
 		double[] times = timeInfo.getTimes();
 		assertEquals(1, times.length);
-		assertEquals(60766, times[0], 0.0000001d);
+		assertEquals(60767, times[0], 0.0000001d);
 
 		double[] axpyValues = new double[values.length];
 		Arrays.fill(axpyValues, 0.5);
@@ -45,8 +45,8 @@ public class WandaSeawatGridDataObjectTest extends TestCase {
 
 		wandaSeawatGridDataObject.finish();
 
-		File output = new File(testRunDataDir, "HTO_001/HTO_TEMP_20250401000000.ASC");
-		File expected = new File(testRunDataDir, "HTO_001_expected/HTO_TEMP_20250401000000.ASC");
+		File output = new File(testRunDataDir, "HTO_001/HTO_TEMP_20250402000000.ASC");
+		File expected = new File(testRunDataDir, "HTO_001_expected/HTO_TEMP_20250402000000.ASC");
 		assertTrue(testData.FilesAreIdentical(output, expected));
 	}
 }

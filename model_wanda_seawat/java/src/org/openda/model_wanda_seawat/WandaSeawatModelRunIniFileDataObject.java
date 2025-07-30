@@ -42,7 +42,7 @@ public class WandaSeawatModelRunIniFileDataObject extends AbstractDataObject {
 				File csvFile = new File(file.getParentFile(), csvFileName);
 				try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile))) {
 					for (int i = 0; i < times.length; i++) {
-						writer.write(String.format("%s;%s", TimeUtils.mjdToString(times[i]), values[i]));
+						writer.write(String.format("%s;%s", TimeUtils.mjdToString(times[i], datePattern), values[i]));
 						writer.newLine();
 					}
 				} catch (IOException e) {
