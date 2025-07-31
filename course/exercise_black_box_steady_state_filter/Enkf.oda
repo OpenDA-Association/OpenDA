@@ -21,6 +21,7 @@
 			<resultItem id="analysis_time" outputLevel="All"  maxSize="100000"   />
 			<resultItem id="x_a" outputLevel="All"  maxSize="100000"   />
 			<resultItem id="x_f_central" outputLevel="All"  maxSize="100000"   />
+			<resultItem id="pred_f_central" outputLevel="All"  maxSize="100000"   />
 		</selection>
 	</resultWriter>
 	</resultWriters>
