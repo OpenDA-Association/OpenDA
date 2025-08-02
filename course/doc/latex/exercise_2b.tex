@@ -3,10 +3,11 @@
 In this exercise, you will learn how to set up and run the EnKF method in OpenDA.
 
 \begin{itemize}
-  \item Prepare the input files for a run with the EnKF method. Use the input
-        files from exercise 1 as a template. Hint: the Ensemble Kalman filter
-        is called \verb|org.openda.algorithms.kalmanFilter.EnKF|. The algorithm
-        configuration file has the following content
+  \item Study the input files for a run with the EnKF method, starting with the main configuration file
+      \texttt{enkf.oda}. You can also compare the configuration for a simulation in 
+      \texttt{simulation\_initial.oda} to highlight the main differences. 
+      See for example that the EnKF algorithm is called \verb|org.openda.algorithms.kalmanFilter.EnKF|. 
+      The algorithm configuration file has the following content
       \begin{lstlisting}[language=XML,frame=single,caption={XML input for EnKF algorithm}]
       <?xml version="1.0" encoding="UTF-8"?>
       <EnkfConfig>

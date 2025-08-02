@@ -108,8 +108,8 @@ starts with a slightly different initial condition using the
 configuration file \texttt{ simulation\_perturbed.oda}. The different initial conditions
 can be found in 
 \begin{itemize}
- \item {\ttfamily model\/DoublePendulumStochModel.xml}, and 
- \item {\ttfamily model\/DoublePendulumStochModel\_perturbed.xml}.
+ \item {\texttt{model/DoublePendulumStochModel.xml}}, and 
+ \item {\texttt{model/DoublePendulumStochModel\_perturbed.xml}}.
 \end{itemize}
 
 Visualize the unperturbed and perturbed results in a single plot. Make
@@ -157,15 +157,11 @@ plt.show() \end{lstlisting}
 Next, we want to create an ensemble of model runs all with slightly different initial conditions. 
       You can do this in several steps:
       \begin{itemize}
-      \item First, create the input file \texttt{ simulation\_ensemble.oda} based on
-
-            \texttt{simulation\_unperturbed.oda}. Change the algorithm and the
-            configuration of the algorithm. Hint: the algorithm is called
-
-            \verb|org.openda.algorithms.kalmanFilter.SequentialEnsembleSimulation|.
-      \item Create a configuration file for the ensemble algorithm (e.g. named
-
-            \texttt{algorithm/SequentialEnsembleSimulation.xml}). It should contain the following content:
+      \item First, study the input file \texttt{ simulation\_ensemble.oda} and compare it with the
+            \texttt{simulation\_unperturbed.oda}. Note that the ensemble algorithm is called
+            \verb|org.openda.algorithms.kalmanFilter.SequentialEnsembleSimulation| in the main application.
+      \item Next, look at the configuration for the ensemble algorithm \\
+      (named \texttt{algorithm/SequentialEnsembleSimulation.xml}). It should contain the following content:
 \begin{lstlisting}[language=XML,frame=single,caption={XML input for sequentialAlgorithm}]
 <?xml version="1.0" encoding="UTF-8"?>
 <sequentialAlgorithm>
@@ -177,12 +173,10 @@ Next, we want to create an ensemble of model runs all with slightly different in
 </sequentialAlgorithm>
 
 \end{lstlisting}
-      Hint: do not forget to refer to 
-
-      \texttt{algorithm/SequentialEnsembleSimulation.xml} in 
-
-      \texttt{simulation\_ensemble.oda}
-      and do not forget to give a different name to the output files.
+      Note that the algorithm in \texttt{simulation\_ensemble.oda} now points to the algorithm configuration file:
+      \texttt{algorithm/SequentialEnsembleSimulation.xml} in the OpenDA installation.
+      \item Finally, note that the output files will be written to the same directory as the input files, and thus need a different name.
+      See \texttt{simulation\_ensemble\_results.py} in the resultwriter in \texttt{simulation\_ensemble.oda}.
       \item Run the new configuration with OpenDA.
 
       \item Make a plot of the first and second variables of the five ensemble
