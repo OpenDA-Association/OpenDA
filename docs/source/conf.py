@@ -8,7 +8,7 @@ import sphinx_rtd_theme
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'OpenDA'
-copyright = '2023, The OpenDA Association'
+copyright = '2025, The OpenDA Association'
 author = 'The OpenDA Association'
 
 # -- General configuration ---------------------------------------------------
@@ -26,6 +26,7 @@ exclude_patterns = []
 
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
+html_css_files = ['custom.css']
 
 
 
