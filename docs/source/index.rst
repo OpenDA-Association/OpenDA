@@ -12,6 +12,7 @@ Index
 
    introduction_openda
    introduction_da
+   calibration 
 
 .. toctree::
    :caption: Getting started
