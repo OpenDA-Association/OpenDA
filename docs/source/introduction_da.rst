@@ -99,6 +99,7 @@ is the true state at time :math:`t_k`.
 OpenDA supports the method of 
 steady-state Kalman filtering where the :math:`K` matrix is computed in a previous run
 using, for instance, EnKF. This can be considered a special form of optimal interpolation.
+This method also supports the :ref:`estimation of missing observations <Estimate missing observations>`.
 However, we mostly use Kalman filtering, which is described below.
 
 Kalman filtering

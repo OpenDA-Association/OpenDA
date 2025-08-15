@@ -29,6 +29,7 @@ Index
    data_objects.rst
    localization.rst
    continuing.rst
+   estimate_missing_observations.rst
 
 .. toctree::
    :caption: Contributing to the source
