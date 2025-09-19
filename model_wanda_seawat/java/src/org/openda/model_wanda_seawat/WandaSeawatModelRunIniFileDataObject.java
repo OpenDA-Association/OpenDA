@@ -55,7 +55,6 @@ public class WandaSeawatModelRunIniFileDataObject extends AbstractDataObject {
 				double[] values = exchangeItem.getValuesAsDoubles();
 				int index = Arrays.binarySearch(exchangeItem.getTimes(), endTime);
 				double value = values[index];
-				System.out.println("Constant parameter " + option + " changed from " + optionsFromParameters.get(option) + " to " + value + " over the period to " + TimeUtils.mjdToString(endTime, datePattern));
 				ini.put(SECTION_PARAMETERS, option, value);
 				continue;
 			}
