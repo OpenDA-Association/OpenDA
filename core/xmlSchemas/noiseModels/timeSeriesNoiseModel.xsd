@@ -20,6 +20,11 @@
 				<xs:documentation>The standard deviation for the generated noise</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="initialRandomValue" type="xs:double" use="required">
+			<xs:annotation>
+				<xs:documentation>Initial value that needs to be calculated randomly to start with an ensemble spread. It reuses the initialValue as mean and standardDeviation</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 		<xs:attribute name="timeCorrelationScale" type="xs:double" use="required">
 			<xs:annotation>
 				<xs:documentation>Time interval speficying the correlation between the consecutive values</xs:documentation>

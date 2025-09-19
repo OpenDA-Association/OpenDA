@@ -308,6 +308,17 @@ public class TimeSeriesNoiseModelInstance extends Instance implements IStochMode
 			}
 			tempSeries.setProperty(keyword, stringValue);
 
+			// TODO: EP: improve code and combine with initialValue
+			keyword = "initialRandomValue";
+			stringValue = "false";
+			stringValue = seriesTrees[i].getAsString("@"+keyword, stringValue);
+			stringValue=stringValue.trim();
+			if (stringValue.toLowerCase().contentEquals("true")){
+				StochVector initialRandomValue = new StochVector(1, initialValue , std);
+				IVector w = initialRandomValue.createRealization();
+				this.state.setValue(i, w.getValue(0));
+			}
+
 			// noise configuration
 			double alpha = Math.exp(-incrementTime/timeCorrelationScale);
 			this.timeCorrelationPerTimeStep.setValue(i, alpha);
