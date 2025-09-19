@@ -88,7 +88,8 @@ public class WandaSeawatConstantAsTimeSeriesExchangeItem implements IExchangeIte
 	@Override
 	public void multiplyValues(double[] multiplicationFactors) {
 		for (int i = 0; i < values.length; i++) {
-			values[i] *= multiplicationFactors[i];
+			// TODO EP: make the use of initial values instead of the current values optional
+			values[i] = initialValue * multiplicationFactors[i];
 		}
 	}
 

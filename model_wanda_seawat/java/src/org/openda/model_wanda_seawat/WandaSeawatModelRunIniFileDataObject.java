@@ -19,7 +19,7 @@ public class WandaSeawatModelRunIniFileDataObject extends AbstractDataObject {
 	private static final String OPTION_END_DATE_TIME = "endDateTime";
 	private static final String SECTION_PARAMETERS = "parameters";
 	public static final String datePattern = "yyyyMMddHHmmss";
-	private File file;
+	private File targetFile;
 	private Ini ini;
 
 	@Override
@@ -39,7 +39,7 @@ public class WandaSeawatModelRunIniFileDataObject extends AbstractDataObject {
 				String csvFileName = optionsFromParameters.get(option);
 				double[] times = exchangeItem.getTimes();
 				double[] values = exchangeItem.getValuesAsDoubles();
-				File csvFile = new File(file.getParentFile(), csvFileName);
+				File csvFile = new File(targetFile.getParentFile(), csvFileName);
 				try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile))) {
 					for (int i = 0; i < times.length; i++) {
 						writer.write(String.format("%s;%s", TimeUtils.mjdToString(times[i], datePattern), values[i]));
@@ -59,7 +59,7 @@ public class WandaSeawatModelRunIniFileDataObject extends AbstractDataObject {
 			ini.put(SECTION_PARAMETERS, option, parameterExchangeItem.getValue());
 		}
 		try {
-			ini.store(file);
+			ini.store(targetFile);
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
@@ -67,11 +67,12 @@ public class WandaSeawatModelRunIniFileDataObject extends AbstractDataObject {
 
 	@Override
 	public void initialize(File workingDir, String[] arguments) {
-		file = new File(workingDir, arguments[0]);
+		targetFile = new File(workingDir, arguments[0]);
+		File initialFile = new File(workingDir, arguments[arguments.length > 1 ? 1 : 0]);
 		ini = new Ini();
 		ini.getConfig().setEscape(false);
 		try {
-			ini.load(file);
+			ini.load(initialFile);
 			double startDateTime = dateTimeExchangeItem(ini, OPTION_START_DATE_TIME, OPTION_START_DATE_TIME);
 			double endDateTime = dateTimeExchangeItem(ini, OPTION_END_DATE_TIME, OPTION_END_DATE_TIME);
 			Profile.Section optionsFromParameters = ini.get(SECTION_PARAMETERS);
