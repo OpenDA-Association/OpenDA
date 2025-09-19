@@ -117,12 +117,14 @@ public class WandaSeawatModelRunIniFileDataObjectTest extends TestCase {
 		Object startDateTimeExchangeItemObject = wandaSeawatModelRunIniFileDataObject.getDataObjectExchangeItem("startDateTime");
 		assertTrue(startDateTimeExchangeItemObject instanceof DoubleExchangeItem);
 		DoubleExchangeItem startDateTimeExchangeItem = (DoubleExchangeItem) startDateTimeExchangeItemObject;
-		assertEquals("The start date time (20240101000000) is 60310.0", 60310.0, startDateTimeExchangeItem.getValue());
+		double startDateTimeExchangeItemValue = startDateTimeExchangeItem.getValue();
+		assertEquals("The start date time (20240101000000) is 60310.0", 60310.0, startDateTimeExchangeItemValue);
 
 		Object endDateTimeExchangeItemObject = wandaSeawatModelRunIniFileDataObject.getDataObjectExchangeItem("endDateTime");
 		assertTrue(endDateTimeExchangeItemObject instanceof DoubleExchangeItem);
 		DoubleExchangeItem endDateTimeExchangeItem = (DoubleExchangeItem) endDateTimeExchangeItemObject;
-		assertEquals("The end date time (20240102000000) is 60311.0", 60311.0, endDateTimeExchangeItem.getValue());
+		double endDateTimeExchangeItemValue = endDateTimeExchangeItem.getValue();
+		assertEquals("The end date time (20240102000000) is 60319.0", 60319.0, endDateTimeExchangeItemValue);
 
 		Object bulkDensityExchangeItemObject = wandaSeawatModelRunIniFileDataObject.getDataObjectExchangeItem("HTGEOFIL H1.Geoformations.Bulk density formation.kleilaag 1");
 		assertTrue(bulkDensityExchangeItemObject instanceof WandaSeawatConstantAsTimeSeriesExchangeItem);
@@ -167,14 +169,18 @@ public class WandaSeawatModelRunIniFileDataObjectTest extends TestCase {
 		double[] axpyValues = new double[porosityValues.length];
 		Arrays.fill(axpyValues, 1);
 		porosityExchangeItem.axpyOnValues(1.1, axpyValues);
-		wandaSeawatModelRunIniFileDataObject.finish();
 
-		File output = new File(testRunDataDir, "example.ini");
-		File expected = new File(testRunDataDir, "expected_example.ini");
-		assertTrue(testData.FilesAreIdentical(output, expected));
+		startDateTimeExchangeItem.setValue(60313);
+		endDateTimeExchangeItem.setValue(60314);
+
+		wandaSeawatModelRunIniFileDataObject.finish();
 
 		File outputUnchangedInitial = new File(testRunDataDir, "initial_example.ini");
 		File expectedOutputUnchangedInitial = new File(testRunDataDir, "expected_initial_example.ini");
 		assertTrue(testData.FilesAreIdentical(outputUnchangedInitial, expectedOutputUnchangedInitial));
+
+		File output = new File(testRunDataDir, "example.ini");
+		File expected = new File(testRunDataDir, "expected_example.ini");
+		assertTrue(testData.FilesAreIdentical(output, expected));
 	}
 }

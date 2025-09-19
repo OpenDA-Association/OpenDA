@@ -11,6 +11,7 @@ import org.openda.utils.io.AsciiFileUtils;
 
 import java.io.*;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.List;
 
 public class WandaSeawatModelRunIniFileDataObject extends AbstractDataObject {
@@ -52,7 +53,10 @@ public class WandaSeawatModelRunIniFileDataObject extends AbstractDataObject {
 			}
 			if (exchangeItem instanceof WandaSeawatConstantAsTimeSeriesExchangeItem) {
 				double[] values = exchangeItem.getValuesAsDoubles();
-				ini.put(SECTION_PARAMETERS, option, values[values.length - 1]);
+				int index = Arrays.binarySearch(exchangeItem.getTimes(), endTime);
+				double value = values[index];
+				System.out.println("Constant parameter " + option + " changed from " + optionsFromParameters.get(option) + " to " + value + " over the period to " + TimeUtils.mjdToString(endTime, datePattern));
+				ini.put(SECTION_PARAMETERS, option, value);
 				continue;
 			}
 			DoubleExchangeItem parameterExchangeItem = (DoubleExchangeItem) exchangeItem;
