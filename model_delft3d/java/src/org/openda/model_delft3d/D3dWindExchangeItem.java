@@ -81,13 +81,9 @@ public class D3dWindExchangeItem implements IExchangeItem {
         return null;
     }
 
-    public ValueType getValuesType() {
-        return null;
-    }
-
-    public Class getValueType() {
-        return List.class;
-    }
+	public ValueType getValuesType() {
+		return ValueType.IArrayType;
+	}
 
     public Role getRole() { return Role.InOut; }
 
