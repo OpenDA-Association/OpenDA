@@ -38,6 +38,7 @@ Index
    estimate_missing_observations.rst
    DFlowFM_info.rst
    calibration_twin.rst
+   Quadratic_cost_function.rst
 
 .. toctree::
    :caption: Contributing to the source
