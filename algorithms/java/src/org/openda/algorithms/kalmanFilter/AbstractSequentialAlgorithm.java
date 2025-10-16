@@ -95,7 +95,7 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 	public boolean stochInit=false;
 	private String timeIncrement;
 	private String timeOffset;
-	private String timeOffsetEnd;
+	private String timeOffsetLast;
 	private String timeUnit;
 
 
@@ -172,7 +172,7 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 			String timeFormat = this.configurationAsTree.getAsString("analysisTimes@timeFormat", "dateTimeString");
 			timeIncrement = this.configurationAsTree.getAsString("analysisTimes@timeIncrement","");
 			timeOffset = this.configurationAsTree.getAsString("analysisTimes@timeOffset","0");
-			timeOffsetEnd = this.configurationAsTree.getAsString("analysisTimes@timeOffsetEnd","0");
+			timeOffsetLast = this.configurationAsTree.getAsString("analysisTimes@timeOffsetLast","0");
 			timeUnit = this.configurationAsTree.getAsString("analysisTimes@timeUnit","");
 			if (timeIncrement.contentEquals("")){
 				if(timeFormat.equals("dateTimeString")){
@@ -266,7 +266,7 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 			if (!timeIncrement.contentEquals("")){
 				double deltaAnalysisTime = Double.parseDouble(this.timeIncrement);
 				double startOffset = Double.parseDouble(this.timeOffset);
-				double endOffset = Double.parseDouble(this.timeOffsetEnd);
+				double endOffset = Double.parseDouble(this.timeOffsetLast);
 				if (this.timeUnit.contentEquals("day")){
 					// timeUnit is already consistent with the other time variables, do nothing here.
 				} else if (this.timeUnit.contentEquals("hour")){
