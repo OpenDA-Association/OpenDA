@@ -99,6 +99,7 @@ is the true state at time :math:`t_k`.
 OpenDA supports the method of 
 steady-state Kalman filtering where the :math:`K` matrix is computed in a previous run
 using, for instance, EnKF. This can be considered a special form of optimal interpolation.
+This method also supports the :ref:`estimation of missing observations <Estimate missing observations>`.
 However, we mostly use Kalman filtering, which is described below.
 
 Kalman filtering
@@ -189,7 +190,7 @@ Kalman filter for these situations.
   `PhD thesis <https://www.researchgate.net/publication/224840111_Efficient_Kalman_Filtering_Algorithms_for_Hydrodynamic_Models>`__ 
   written by Martin Verlaan.
 
-- Ensemble Kalman filtering
+- Ensemble Kalman filtering (EnKF)
 
   While the RRSQRT represents the covariance matrix :math:`P` based on the
   first :math:`q` leading eigenvectors, the ensemble Kalman filter (EnKF)
