@@ -1,6 +1,8 @@
 =============================
 D-Flow FM related information
 =============================
+Disclaimer: this page has not been finished yet. Current open questions 
+are described in this `issue <https://github.com/OpenDA-Association/OpenDA/issues/431>`__.
 
 Writing Kalman gain
 -------------------

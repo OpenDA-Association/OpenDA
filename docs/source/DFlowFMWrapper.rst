@@ -1,6 +1,9 @@
 =================
 D-Flow FM wrapper
 =================
+Disclaimer: this page has not been finished yet. Current open questions 
+are described in this `issue <https://github.com/OpenDA-Association/OpenDA/issues/431>`__.
+
 The D-Flow FM wrapper has been developed and is maintained by our OpenDA
 partner Deltares. On this page, we describe the different data objects for the
 D-Flow FM wrapper. Examples based on the dcsmv5 (North Sea) model are available
