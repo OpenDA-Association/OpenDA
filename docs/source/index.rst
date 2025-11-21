@@ -23,6 +23,12 @@ Index
    OpenDA_course
 
 .. toctree::
+   :caption: Wrappers
+   :maxdepth: 2
+
+   DFlowFMWrapper
+
+.. toctree::
    :caption: Additional information
    :maxdepth: 2
 
@@ -30,6 +36,7 @@ Index
    localization.rst
    continuing.rst
    estimate_missing_observations.rst
+   DFlowFM_info.rst
 
 .. toctree::
    :caption: Contributing to the source
