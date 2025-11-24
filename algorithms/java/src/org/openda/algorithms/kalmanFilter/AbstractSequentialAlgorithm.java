@@ -172,7 +172,7 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 			String timeFormat = this.configurationAsTree.getAsString("analysisTimes@timeFormat", "dateTimeString");
 			timeIncrement = this.configurationAsTree.getAsString("analysisTimes@timeIncrement","");
 			timeOffset = this.configurationAsTree.getAsString("analysisTimes@timeOffset","0");
-			timeOffsetLast = this.configurationAsTree.getAsString("analysisTimes@timeOffsetLast","0");
+			timeOffsetLast = this.configurationAsTree.getAsString("analysisTimes@timeOffsetLast",null);
 			timeUnit = this.configurationAsTree.getAsString("analysisTimes@timeUnit","");
 			if (timeIncrement.contentEquals("")){
 				if(timeFormat.equals("dateTimeString")){
@@ -266,7 +266,7 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 			if (!timeIncrement.contentEquals("")){
 				double deltaAnalysisTime = Double.parseDouble(this.timeIncrement);
 				double startOffset = Double.parseDouble(this.timeOffset);
-				double endOffset = Double.parseDouble(this.timeOffsetLast);
+				double endOffset = timeOffsetLast == null ? 0.0 : Double.parseDouble(this.timeOffsetLast);
 				if (this.timeUnit.contentEquals("day")){
 					// timeUnit is already consistent with the other time variables, do nothing here.
 				} else if (this.timeUnit.contentEquals("hour")){
@@ -316,7 +316,7 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 
 		if ( this.nSteps > 0 ){
 			int n=this.nSteps;
-			if ("0".equals(this.timeOffsetLast) && (this.finalTime.getMJD() - this.analysisTimes[n-1].getMJD()) > getTimePrecision()){
+			if (this.timeOffsetLast == null && (this.finalTime.getMJD() - this.analysisTimes[n-1].getMJD()) > getTimePrecision()){
 				// Add an additional analysis time and step
 				ITime temp[] = new ITime[n+1];
 				for(int i=0;i<n;i++){
