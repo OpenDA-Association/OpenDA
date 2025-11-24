@@ -316,7 +316,7 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 
 		if ( this.nSteps > 0 ){
 			int n=this.nSteps;
-			if ((this.finalTime.getMJD() - this.analysisTimes[n-1].getMJD()) > getTimePrecision()){
+			if (Double.parseDouble(this.timeOffsetLast) == 0 && (this.finalTime.getMJD() - this.analysisTimes[n-1].getMJD()) > getTimePrecision()){
 				// Add an additional analysis time and step
 				ITime temp[] = new ITime[n+1];
 				for(int i=0;i<n;i++){
