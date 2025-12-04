@@ -367,6 +367,7 @@
       <module fileurl="file://$PROJECT_DIR$/model_example_fortran/java/model_example_fortran.iml" filepath="$PROJECT_DIR$/model_example_fortran/java/model_example_fortran.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_external_file/java/model_external_file.iml" filepath="$PROJECT_DIR$/model_external_file/java/model_external_file.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_external_socket/java/model_external_socket.iml" filepath="$PROJECT_DIR$/model_external_socket/java/model_external_socket.iml" />
+      <module fileurl="file://$PROJECT_DIR$/model_hec_hms/model_hec_hms.iml" filepath="$PROJECT_DIR$/model_hec_hms/model_hec_hms.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_hspf/java/model_hspf.iml" filepath="$PROJECT_DIR$/model_hspf/java/model_hspf.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_metaswap/java/model_metaswap.iml" filepath="$PROJECT_DIR$/model_metaswap/java/model_metaswap.iml" />
       <module fileurl="file://$PROJECT_DIR$/model_nemo/java/model_nemo.iml" filepath="$PROJECT_DIR$/model_nemo/java/model_nemo.iml" />

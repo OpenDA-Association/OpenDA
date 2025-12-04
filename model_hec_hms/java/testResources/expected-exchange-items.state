@@ -1,0 +1,196 @@
+Snapshot: EndState
+  Run ID: Gridded_DANA2024_BurnMDT
+  Snapshot Time:22 October 2024, 14:00
+  Execution Time: 16 September 2025, 13:21:01
+  Basin Model: Rambla Poyo Burn - Gridded
+  Version: 4.13
+End:
+
+Subbasin: Subbasin-16
+  Loss method: Gridded Soil Moisture Account
+  Transform method: Modified Clark
+  GridCell: 3489,21866
+  Loss: Soil Moisture Account
+    Soil Storage: 3.6723709106445312
+    Number Groundwater Layers: 2
+    Groundwater Storage: 0.43229889136872823
+    Groundwater Storage: 1.5
+  End Loss:
+  Transform: Modified Clark
+    Lag Table Number Flows: 2
+      Lag Table First: 1
+      Lag Table Second: 0
+      Lag Table Last: 0
+      Lag Table Flow: 0.002240212732261733
+      Lag Table Flow: 0.002240212732261733
+    End Lag Table:
+  End Transform:
+  End Grid Cell:
+  GridCell: 3490,21865
+  Loss: Soil Moisture Account
+    Soil Storage: 1.6355958186173745
+    Number Groundwater Layers: 2
+    Groundwater Storage: 0.03208461245284903
+    Groundwater Storage: 3.0
+  End Loss:
+  Transform: Modified Clark
+    Lag Table Number Flows: 2
+      Lag Table First: 1
+      Lag Table Second: 0
+      Lag Table Last: 0
+      Lag Table Flow: 0.01296803998623444
+      Lag Table Flow: 0.01284603101324866
+    End Lag Table:
+  End Transform:
+  End Grid Cell:
+  GridCell: 3490,21864
+  Loss: Soil Moisture Account
+    Soil Storage: 4.225638389587402
+    Number Groundwater Layers: 2
+    Groundwater Storage: 0.5342433215407607
+    Groundwater Storage: 2.5
+  End Loss:
+  Transform: Modified Clark
+    Lag Table Number Flows: 2
+      Lag Table First: 1
+      Lag Table Second: 0
+      Lag Table Last: 0
+      Lag Table Flow: 0.010820381639851927
+      Lag Table Flow: 0.010820381639851927
+    End Lag Table:
+  End Transform:
+  End Grid Cell:
+  GridCell: 3490,21866
+  Loss: Soil Moisture Account
+    Soil Storage: 1.6355958186173745
+    Number Groundwater Layers: 2
+    Groundwater Storage: 0.025055088630458626
+    Groundwater Storage: 3.5
+  End Loss:
+  Transform: Modified Clark
+    Lag Table Number Flows: 2
+      Lag Table First: 1
+      Lag Table Second: 0
+      Lag Table Last: 0
+      Lag Table Flow: 0.0025467914276175786
+      Lag Table Flow: 0.0025225504210034527
+    End Lag Table:
+  End Transform:
+  End Grid Cell:
+  GridCell: 3491,21866
+  Loss: Soil Moisture Account
+    Soil Storage: 3.740156888961792
+    Number Groundwater Layers: 2
+    Groundwater Storage: 0.1708343510261292
+    Groundwater Storage: 5.5
+  End Loss:
+  Transform: Modified Clark
+    Lag Table Number Flows: 2
+      Lag Table First: 1
+      Lag Table Second: 0
+      Lag Table Last: 0
+      Lag Table Flow: 2.684966328935324E-4
+      Lag Table Flow: 2.684966328935324E-4
+    End Lag Table:
+  End Transform:
+  End Grid Cell:
+  GridCell: 3490,21863
+  Loss: Soil Moisture Account
+    Soil Storage: 4.225638389587402
+    Number Groundwater Layers: 2
+    Groundwater Storage: 0.5416751881340691
+    Groundwater Storage: 2.0
+  End Loss:
+  Transform: Modified Clark
+    Lag Table Number Flows: 2
+      Lag Table First: 1
+      Lag Table Second: 0
+      Lag Table Last: 0
+      Lag Table Flow: 0.008813760335686847
+      Lag Table Flow: 0.008813760335686847
+    End Lag Table:
+  End Transform:
+  End Grid Cell:
+  GridCell: 3491,21865
+  Loss: Soil Moisture Account
+    Soil Storage: 1.6355958186173745
+    Number Groundwater Layers: 2
+    Groundwater Storage: 0.03986169816321006
+    Groundwater Storage: 5.0
+  End Loss:
+  Transform: Modified Clark
+    Lag Table Number Flows: 2
+      Lag Table First: 1
+      Lag Table Second: 0
+      Lag Table Last: 0
+      Lag Table Flow: 0.001229402537535392
+      Lag Table Flow: 0.0012175929741580981
+    End Lag Table:
+  End Transform:
+  End Grid Cell:
+  GridCell: 3491,21863
+  Loss: Soil Moisture Account
+    Soil Storage: 3.8967862129211426
+    Number Groundwater Layers: 2
+    Groundwater Storage: 1.9212463609771424
+    Groundwater Storage: 4.0
+  End Loss:
+  Transform: Modified Clark
+    Lag Table Number Flows: 2
+      Lag Table First: 1
+      Lag Table Second: 0
+      Lag Table Last: 0
+      Lag Table Flow: 1.6030003029359727E-4
+      Lag Table Flow: 1.6030003029359727E-4
+    End Lag Table:
+  End Transform:
+  End Grid Cell:
+  GridCell: 3491,21864
+  Loss: Soil Moisture Account
+    Soil Storage: 3.8967862129211426
+    Number Groundwater Layers: 2
+    Groundwater Storage: 1.9117279814288
+    Groundwater Storage: 4.5
+  End Loss:
+  Transform: Modified Clark
+    Lag Table Number Flows: 2
+      Lag Table First: 1
+      Lag Table Second: 0
+      Lag Table Last: 0
+      Lag Table Flow: 1.856005724496666E-4
+      Lag Table Flow: 1.856005724496666E-4
+    End Lag Table:
+  End Transform:
+  End Grid Cell:
+  GridCell: 3489,21865
+  Loss: Soil Moisture Account
+    Soil Storage: 3.6019248962402344
+    Number Groundwater Layers: 2
+    Groundwater Storage: 0.7460371505550496
+    Groundwater Storage: 1.0
+  End Loss:
+  Transform: Modified Clark
+    Lag Table Number Flows: 2
+      Lag Table First: 1
+      Lag Table Second: 0
+      Lag Table Last: 0
+      Lag Table Flow: 0.00760024320276418
+      Lag Table Flow: 0.00760024320276418
+    End Lag Table:
+  End Transform:
+  End Grid Cell:
+  Baseflow: None
+  End Baseflow
+End:
+
+Reach: Reach-3
+  Route: Lag
+    Lag Table Number Flows: 2
+      Lag Table First: 1
+      Lag Table Second: 0
+      Lag Table Last: 0
+      Lag Table Flow: 22.865836383074644
+      Lag Table Flow: 17.10341665595959
+    End Lag Table:
+  End Route:
+End:
