@@ -316,7 +316,9 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 
 		if ( this.nSteps > 0 ){
 			int n=this.nSteps;
-			if (this.timeOffsetLast == null && (this.finalTime.getMJD() - this.analysisTimes[n-1].getMJD()) > getTimePrecision()){
+			// When timeOffsetLast is configured add extra time step for the main model to run until the end
+			boolean timeOffsetLastConfigured = this.timeOffsetLast != null;
+			if (timeOffsetLastConfigured || (this.finalTime.getMJD() - this.analysisTimes[n-1].getMJD()) > getTimePrecision()){
 				// Add an additional analysis time and step
 				ITime temp[] = new ITime[n+1];
 				for(int i=0;i<n;i++){
@@ -391,8 +393,9 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 		}
 
 		timerNext.start();
-
-		if (this.thisStep == this.nSteps || this.FinalStepNoAnalysis) { // final forecast
+		// When the time is after offset for the last analysis run main model until the end
+		boolean afterOffsetLastAnalysis = this.timeOffsetLast != null && this.thisStep > Double.parseDouble(this.timeOffsetLast);
+		if (this.thisStep == this.nSteps || this.FinalStepNoAnalysis || afterOffsetLastAnalysis) { // final forecast
 			ITime time = this.finalTime;
 			ITime selectionStart = this.currentTime;
 			ITime selectionEnd = this.finalTime;
@@ -401,6 +404,10 @@ public abstract class AbstractSequentialAlgorithm extends Instance implements IA
 			IStochObserver selection = this.stochObserver.createSelection(selectionSpan);
 			timerNext_ObsSel.stop();
 			// Also do the final forecast of the background run!
+			Results.putProgression("========================================================================\n");
+			Results.putProgression(" Forecast from " + TimeUtils.mjdToString(this.currentTime.getMJD()) +"UTC "
+				+ " to "+ TimeUtils.mjdToString(time.getMJD()) +"UTC "+ " ("+this.currentTime.getMJD()+"-->"+time.getMJD()+") \n");
+			Results.putProgression("========================================================================\n");
 			timerNext_Compute.start();
 			this.mainModel.compute(time);
 			timerNext_Compute.stop();
