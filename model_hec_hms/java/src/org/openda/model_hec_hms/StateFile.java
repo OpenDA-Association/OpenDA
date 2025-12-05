@@ -42,6 +42,14 @@ public class StateFile implements IDataObject {
 	public void initialize(File workingDirectory, String[] arguments) {
 		this.workingDirectory = workingDirectory;
 
+		File inputFile = getInputFile(arguments);
+		processInputFile(inputFile);
+		collateGridBounds();
+		collateValuesForUpdating();
+		populateStateFileExchangeItems();
+	}
+
+	private File getInputFile(String[] arguments) {
 		if (null == arguments || 1 != arguments.length) {
 			throw new RuntimeException("Expected filename as only argument.");
 		}
@@ -61,7 +69,10 @@ public class StateFile implements IDataObject {
 		} catch (IOException ioException) {
 			throw new RuntimeException(ioException);
 		}
+		return inputFile;
+	}
 
+	private void processInputFile(File inputFile) {
 		try (FileInputStream fileInputStream = new FileInputStream(inputFile);
 			 InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
 			 BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
@@ -118,6 +129,10 @@ public class StateFile implements IDataObject {
 							cellToValue.put(gridCell, value);
 
 							GridIdToGridCell gridIdToGridCell = valuesToUpdate.put(lineNumber, new GridIdToGridCell(gridId, gridCell));
+
+							if (null != gridIdToGridCell) {
+								throw new RuntimeException("Duplicate in grid: " + gridId + " cell id: " + gridCell);
+							}
 							break;
 						default:
 							// Do nothing with other labels
@@ -130,12 +145,16 @@ public class StateFile implements IDataObject {
 		} catch (IOException ioException) {
 			throw new RuntimeException(ioException);
 		}
+	}
 
+	private void collateGridBounds() {
 		for (Map.Entry<String, GridBounds> gridToBound : gridToBounds.entrySet()) {
 			int valueArraySize = gridToBound.getValue().getSize();
 			gridToValues.put(gridToBound.getKey(), new Double[valueArraySize]);
 		}
+	}
 
+	private void collateValuesForUpdating() {
 		for (Map.Entry<String, Map<GridCell, Double>> gridToCellToValue : gridToCellToValues.entrySet()) {
 			for (Map.Entry<GridCell, Double> cellToValue : gridToCellToValue.getValue().entrySet()) {
 				Double[] values = gridToValues.get(gridToCellToValue.getKey());
@@ -144,7 +163,9 @@ public class StateFile implements IDataObject {
 				values[valueArrayIndex] = cellToValue.getValue();
 			}
 		}
+	}
 
+	private void populateStateFileExchangeItems() {
 		for (Map.Entry<String, Double[]> gridToValue : gridToValues.entrySet()) {
 			String gridId = gridToValue.getKey();
 			GridBounds gridBounds = gridToBounds.get(gridId);
