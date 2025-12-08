@@ -403,7 +403,7 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 				if (this.gainVectors.containsKey(gainVectorId)) {
 					IVector gainVector = this.gainVectors.get(gainVectorId);
 					double calculatedInnovation = dMissing.getValue(i, 0);
-					System.out.println("Calculated innovation for " + missingObservationId + ": " + calculatedInnovation + " index in dMissing: " + i);
+					System.out.println("Estimated innovation for " + missingObservationId + ": " + calculatedInnovation + " index in dMissing: " + i);
 					delta.axpy(calculatedInnovation, gainVector);
 				}
 			}
