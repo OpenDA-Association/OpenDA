@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class DFlowFMRestartFilePostProcessor implements IConfigurable {
 
@@ -73,6 +74,7 @@ public class DFlowFMRestartFilePostProcessor implements IConfigurable {
 
 	private void processRestartFilesForPattern(File workingDir, String sourceRestartFileSubDir, boolean deleteOlderRstFiles, String fileNamePattern, String partition) {
 		final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(fileNamePattern);
+		simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 		File sourcesDir = sourceRestartFileSubDir != null ? new File(workingDir, sourceRestartFileSubDir) : workingDir;
 		ArrayList<Date> dates = getDatesOfRestartFiles(fileNamePattern, simpleDateFormat, sourcesDir);
 		moveMostRecentRestartFile(workingDir, simpleDateFormat, sourcesDir, dates, partition);
