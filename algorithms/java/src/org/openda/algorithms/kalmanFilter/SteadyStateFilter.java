@@ -325,6 +325,7 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 		private final String[] availableObsGainVectorIdArray;
 		private final HashMap<String, IVector> gainVectors;
 		ArrayList<Integer> missingObservationIndices = new ArrayList<>();
+		ArrayList<String> missingObservationGainVectorIds = new ArrayList<>();
 		ArrayList<Integer> availableObservationIndicesGainStorage = new ArrayList<>();
 		ArrayList<Integer> availableObservationIndicesObserver = new ArrayList<>();
 		private int numberOfMissingObservations;
@@ -350,6 +351,7 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 				}
 				System.out.printf("Observation for %s missing%n", gainVectorId);
 				this.missingObservationIndices.add(i);
+				this.missingObservationGainVectorIds.add(gainVectorId);
 			}
 		}
 
@@ -395,14 +397,13 @@ public class SteadyStateFilter extends AbstractSequentialAlgorithm {
 			for (int i = 0; i < this.missingObservationIndices.size(); i++) {
 				Integer missingObservationIndex = this.missingObservationIndices.get(i);
 				String missingObservationId = gainStorageObservationIdsArray[missingObservationIndex];
-				// Use relative time stamps in ids to distinguish between observations for asynchronous filtering
-				String gainVectorId = missingObservationId + ":" + Math.round(obsTimeOffsets[i] * 24.0 * 3600.0); //conversion to seconds
+				String gainVectorId = missingObservationGainVectorIds.get(i);
 				Results.putProgression("processing obs " + gainVectorId + "\n");
 				// add to analysis increment for this obs
 				if (this.gainVectors.containsKey(gainVectorId)) {
 					IVector gainVector = this.gainVectors.get(gainVectorId);
 					double calculatedInnovation = dMissing.getValue(i, 0);
-					System.out.println("Calculated innovation for " + missingObservationId + ": " + calculatedInnovation + " index in dMissing: " + i);
+					System.out.println("Estimated innovation for " + missingObservationId + ": " + calculatedInnovation + " index in dMissing: " + i);
 					delta.axpy(calculatedInnovation, gainVector);
 				}
 			}
