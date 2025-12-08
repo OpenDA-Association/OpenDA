@@ -1,0 +1,40 @@
+Snapshot: EndState
+  Run ID: Gridded_DANA2024_BurnMDT
+  Snapshot Time:22 October 2024, 14:00
+  Execution Time: 16 September 2025, 13:21:01
+  Basin Model: Rambla Poyo Burn - Gridded
+  Version: 4.13
+End:
+
+Subbasin: Subbasin-6
+  Loss method: Gridded Soil Moisture Account
+  Transform method: Modified Clark
+  GridCell: 3466,21834
+  Loss: Soil Moisture Account
+    Soil Storage: 1.6355958186173745
+    Number Groundwater Layers: 0
+  End Loss:
+  Transform: Modified Clark
+    Lag Table Number Flows: 3
+      Lag Table First: 2
+      Lag Table Second: 0
+      Lag Table Last: 1
+      Lag Table Flow: 0.011798220206410559
+      Lag Table Flow: 0.012886484547997392
+      Lag Table Flow: 0.010244278335716013
+    End Lag Table:
+  End Transform:
+  End Grid Cell:
+End:
+
+Reach: Reach-3
+  Route: Lag
+    Lag Table Number Flows: 2
+      Lag Table First: 1
+      Lag Table Second: 0
+      Lag Table Last: 0
+      Lag Table Flow: 22.865836383074644
+      Lag Table Flow: 17.10341665595959
+    End Lag Table:
+  End Route:
+End:
