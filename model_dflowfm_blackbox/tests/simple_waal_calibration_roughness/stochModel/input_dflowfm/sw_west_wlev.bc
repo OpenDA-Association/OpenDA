@@ -1,0 +1,13 @@
+# written by HYDROLIB-core 0.9.8
+
+[Forcing]
+name     = L11_0001
+function = harmonic
+quantity = harmonic component
+unit     = minutes
+quantity = waterlevelbnd amplitude
+unit     = m
+quantity = waterlevelbnd phase
+unit     = deg
+0.0  1.0  0.0
+
