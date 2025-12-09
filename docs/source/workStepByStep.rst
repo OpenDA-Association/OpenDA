@@ -154,6 +154,8 @@ these model errors.
 We will explain :ref:`here <SequentialEnsembleSimulation>`
 how these experiments can be carried out using OpenDA.
 
+.. _twin:
+
 Twin experiments
 ----------------
 
