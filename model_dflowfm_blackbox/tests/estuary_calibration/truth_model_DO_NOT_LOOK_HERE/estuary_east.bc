@@ -1,0 +1,13 @@
+# written by HYDROLIB-core 0.9.8
+
+[Forcing]
+name              = eastboundary_0001
+function          = timeseries
+timeInterpolation = linear
+quantity          = time
+unit              = MINUTES SINCE 1991-01-01 00:00:00
+quantity          = dischargebnd
+unit              = m3/s
+0.0      500.0
+50000.0  500.0
+
