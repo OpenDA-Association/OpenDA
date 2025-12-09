@@ -59,6 +59,7 @@ which kind of observations might cause problems, like model
 instabilities.
 
 .. _restart:
+
 Check the restart of a model
 ----------------------------
 
@@ -152,6 +153,8 @@ these model errors.
 
 We will explain :ref:`here <SequentialEnsembleSimulation>`
 how these experiments can be carried out using OpenDA.
+
+.. _twin:
 
 Twin experiments
 ----------------

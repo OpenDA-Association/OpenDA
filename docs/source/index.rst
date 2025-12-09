@@ -37,6 +37,7 @@ Index
    continuing.rst
    estimate_missing_observations.rst
    DFlowFM_info.rst
+   calibration_twin.rst
 
 .. toctree::
    :caption: Contributing to the source
