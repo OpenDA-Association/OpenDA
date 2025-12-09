@@ -59,6 +59,7 @@ which kind of observations might cause problems, like model
 instabilities.
 
 .. _restart:
+
 Check the restart of a model
 ----------------------------
 
