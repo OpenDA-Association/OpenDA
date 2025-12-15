@@ -49,5 +49,11 @@ public class DFlowFMMduInputFileTest extends TestCase{
 		
 		Double factor = mduOptions.getTimeToMjdFactor();
 		assertEquals( 24.0 * 60.0, 1.0/factor);
+
+		long refDateMillis = mduOptions.getReferenceDateInMillis();
+		assertEquals(662688000000L, refDateMillis);
+
+		long timeStepMillis = mduOptions.getTimeStepMillis();
+		assertEquals(60000, timeStepMillis);
 	}
 }

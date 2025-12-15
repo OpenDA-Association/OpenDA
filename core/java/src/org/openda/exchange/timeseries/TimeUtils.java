@@ -220,6 +220,7 @@ public class TimeUtils {
 	}
 
 	private static SimpleDateFormat getDateFormatForStringLength(String dateString) throws ParseException {
+		if (dateString.length() == 8) return new SimpleDateFormat("yyyyMMdd", Locale.UK);
 		if (dateString.length() == 12) return new SimpleDateFormat("yyyyMMddHHmm", Locale.UK);
 		if (dateString.length() == 14) return new SimpleDateFormat("yyyyMMddHHmmss", Locale.UK);
 		if (dateString.length() == 19) return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.UK);
