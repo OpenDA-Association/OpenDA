@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.ini4j.Config;
 import org.ini4j.Ini;
@@ -52,13 +53,18 @@ public class DFlowFMMduInputFile {
 	private File inputFile = null;
 	private final Ini ini = new Ini();
 	private final static String COMMENT_CHAR = "#";
-	private static final Map<String, Double> timeMap;
+	private static final Map<String, Double> timeToMjdMap;
+	private static final Map<String, Long> millisMap;
 
 	static {
-	    timeMap = new HashMap<String, Double>();
-	    timeMap.put("S", 1.0 / (60.0*60.0*24.0) );
-	    timeMap.put("M", 1.0 / (60.0*24.0) );
-	    timeMap.put("H", 1.0 / 24.0 );
+	    timeToMjdMap = new HashMap<>();
+	    timeToMjdMap.put("S", 1.0 / (60.0*60.0*24.0) );
+	    timeToMjdMap.put("M", 1.0 / (60.0*24.0) );
+	    timeToMjdMap.put("H", 1.0 / 24.0 );
+		millisMap = new HashMap<>();
+		millisMap.put("S", 1000L);
+		millisMap.put("M", 60000L);
+		millisMap.put("H", 3600000L);
 		Config.getGlobal().setEscape(false);
 	}
 
@@ -116,13 +122,29 @@ public class DFlowFMMduInputFile {
 		}
 		return dateInMjd;
 	}
+
+	public long getReferenceDateInMillis() {
+		String dateString = this.get("time", "RefDate");
+		try {
+			return TimeUtils.dateString2Millis(dateString, TimeZone.getTimeZone("UTC"));
+		} catch (Exception e) {
+			throw new RuntimeException("Error parsing reference date: " + dateString);
+		}
+	}
 	
 	public Double getTimeToMjdFactor() {
 		String timeUnit = this.get("time","Tunit");
-		Double factor = timeMap.get(timeUnit);
+		Double factor = timeToMjdMap.get(timeUnit);
 		if (factor == null) {
 			throw new RuntimeException("Incorrect Tunit in MDU-file: " + timeUnit);
 		}
+		return factor;
+	}
+
+	public long getTimeStepMillis() {
+		String timeUnit = this.get("time","Tunit");
+		Long factor = millisMap.get(timeUnit);
+		if (factor == null) throw new RuntimeException("Incorrect Tunit in MDU-file: " + timeUnit);
 		return factor;
 	}
 	

@@ -24,13 +24,11 @@ import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 import java.io.*;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.openda.utils.Results;
 import org.openda.utils.generalJavaUtils.StringUtilities;
 
 /**
@@ -140,27 +138,24 @@ public class DFlowFMTimeInfo implements IDataObject {
 	private double getDoubleTime(String offset, String datetime) {
 		if (mduOptions.contains(SECTION_TIME, offset)) {
 			String time = mduOptions.get(SECTION_TIME, offset);
-			return Double.parseDouble(time) * mduOptions.getTimeToMjdFactor() + mduOptions.getReferenceDateInMjd();
+			double doubleTime = Double.parseDouble(time);
+			long timeStepMillis = mduOptions.getTimeStepMillis();
+			long referenceDateInMillis = mduOptions.getReferenceDateInMillis();
+			long timeMillis = (long) (doubleTime * timeStepMillis + referenceDateInMillis) * 1000 / 1000;
+			return TimeUtils.date2Mjd(new Date(timeMillis));
 		}
 
 		if (mduOptions.contains(SECTION_TIME, datetime)) {
-			String time = mduOptions.get(SECTION_TIME, datetime);
-			String timeUnit = mduOptions.get(SECTION_TIME, "Tunit");
-			if ("H".equalsIgnoreCase(timeUnit)) {
-				time = time.substring(0, time.length() - REPLACE_MINUTES_AND_SECONDS.length()) + REPLACE_MINUTES_AND_SECONDS;
-			}
-
-			if ("M".equalsIgnoreCase(timeUnit)) {
-				time = time.substring(0, time.length() - REPLACE_SECONDS.length()) + REPLACE_SECONDS;
-			}
-
 			try {
+				String time = mduOptions.get(SECTION_TIME, datetime);
+				String timeUnit = mduOptions.get(SECTION_TIME, "Tunit");
+				if ("H".equalsIgnoreCase(timeUnit)) return TimeUtils.date2Mjd(time.substring(0, time.length() - REPLACE_MINUTES_AND_SECONDS.length()) + REPLACE_MINUTES_AND_SECONDS);
+				if ("M".equalsIgnoreCase(timeUnit)) return TimeUtils.date2Mjd(time.substring(0, time.length() - REPLACE_SECONDS.length()) + REPLACE_SECONDS);
 				return TimeUtils.date2Mjd(time);
 			} catch (Exception e) {
 				throw new RuntimeException(String.format("Error parsing %s " + mduOptions.get(SECTION_TIME, datetime), datetime));
 			}
 		}
-
 		throw new RuntimeException(String.format("Neither %s nor %s are specified in %s", offset, datetime, SECTION_TIME));
 	}
 
