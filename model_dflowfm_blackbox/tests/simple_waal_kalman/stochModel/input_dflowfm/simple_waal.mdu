@@ -17,8 +17,8 @@ ProflocFile          =                     # *_proflocation.xyz)    x,y,z, z = p
 ProfdefFile          =                     # *_profdefinition.def) definition for all profile nrs
 ManholeFile          =                     # *...
 WaterLevIni          = 0.                  # Initial water level
-BotLevUni            = -5.                 # Uniform bottom level, (only if Botlevtype>=3, used at missing z values in netfile
-BotLevType           = 3                   # 1 : Bottom levels at waterlevel cells (=flow nodes), like tiles xz, yz, bl , bob = max(bl left, bl right)
+BedLevUni            = -5.                 # Uniform bottom level, (only if Botlevtype>=3, used at missing z values in netfile
+BedLevType           = 3                   # 1 : Bottom levels at waterlevel cells (=flow nodes), like tiles xz, yz, bl , bob = max(bl left, bl right)
                                            # 2 : Bottom levels at velocity points  (=flow links),            xu, yu, blu, bob = blu,    bl = lowest connected link
                                            # 3 : Bottom levels at velocity points  (=flow links), using mean network levels xk, yk, zk  bl = lowest connected link
                                            # 4 : Bottom levels at velocity points  (=flow links), using min  network levels xk, yk, zk  bl = lowest connected link
@@ -26,6 +26,7 @@ BotLevType           = 3                   # 1 : Bottom levels at waterlevel cel
 PartitionFile        =                     # *_part.pol, polyline(s) x,y
 AngLat               = 0.                  # Angle of latitude (deg), 0=no Coriolis
 Conveyance2D         = 3                   # -1:R=HU,0:R=H, 1:R=A/P, 2:K=analytic-1D conv, 3:K=analytic-2D conv
+IniFieldFile         = new-initial-conditions.ini
 
 [numerics]
 CFLMax               = 0.7                 # Max. Courant nr.
@@ -68,7 +69,7 @@ RestartFile          =                     # Restart file, only map, hence: *_ma
 RestartDateTime      = 19920831000000                    # Restart time (yyyymmddhhmmss)
 
 [external forcing]
-ExtForceFile         = simple_waal.ext     # *.ext
+ExtForceFileNew      = simple_waal-new.ext
 
 [output]
 ObsFile              = simple_waal_obs.xyn # *.xyn Coords+name of observation stations.

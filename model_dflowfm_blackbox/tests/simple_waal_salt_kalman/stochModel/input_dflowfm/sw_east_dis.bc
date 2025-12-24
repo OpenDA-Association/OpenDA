@@ -1,0 +1,13 @@
+# written by HYDROLIB-core 0.9.8
+
+[Forcing]
+name     = eastboundary_0001
+function = harmonic
+quantity = harmonic component
+unit     = minutes
+quantity = dischargebnd amplitude
+unit     = m3/s
+quantity = dischargebnd phase
+unit     = deg
+0.0  1.0  0.0
+

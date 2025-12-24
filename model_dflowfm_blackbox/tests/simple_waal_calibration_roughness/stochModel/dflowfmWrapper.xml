@@ -45,6 +45,7 @@
             <id>%netcdfoutput%</id>
             <arg>true</arg>
             <arg>false</arg>
+            <arg>stationDimensionVarName=station</arg>
         </dataObject>
     </inputOutput>
 

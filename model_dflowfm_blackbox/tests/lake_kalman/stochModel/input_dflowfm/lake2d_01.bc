@@ -1,0 +1,14 @@
+# written by HYDROLIB-core 0.9.8
+
+[Forcing]
+name     = lake2d_01_0001
+function = astronomic
+quantity = astronomic component
+unit     = -
+quantity = waterlevelbnd amplitude
+unit     = m
+quantity = waterlevelbnd phase
+unit     = deg
+M2  1.0  0.0
+S2  1.0  0.0
+

@@ -1,0 +1,17 @@
+# written by HYDROLIB-core 0.9.8
+
+[Boundary]
+quantity     = dischargebnd
+locationFile = sw_east_dis_noise.pli
+forcingFile  = sw_east_dis_noise.bc
+
+[Boundary]
+quantity     = dischargebnd
+locationFile = sw_east_dis.pli
+forcingFile  = sw_east_dis.bc
+
+[Boundary]
+quantity     = waterlevelbnd
+locationFile = sw_west_wlev.pli
+forcingFile  = sw_west_wlev.bc
+
