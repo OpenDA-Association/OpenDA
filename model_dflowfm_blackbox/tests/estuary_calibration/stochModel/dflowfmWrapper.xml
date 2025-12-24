@@ -54,11 +54,18 @@
             <id>%netcdfoutput%</id>
             <arg>true</arg>
             <arg>false</arg>
+			<arg>stationDimensionVarName=station</arg>
         </dataObject>
-        <dataObject className="org.openda.model_dflowfm.DFlowFMTimeSeriesDataObject">
-            <file>%mduFile%</file>
-            <id>boundaries</id>
-        </dataObject>
+		<dataObject className="org.openda.model_dflowfm.BcFile">
+			<file>estuary_west_noise.bc</file>
+			<id>noise_boundaries</id>
+			<arg>estuary_west_noise.bc</arg>
+		</dataObject>
+		<dataObject className="org.openda.model_dflowfm.BcFile">
+			<file>estuary_west_tide.bc</file>
+			<id>tide_boundaries</id>
+			<arg>estuary_west_tide.bc</arg>
+		</dataObject>
     </inputOutput>
 
 </blackBoxWrapperConfig>

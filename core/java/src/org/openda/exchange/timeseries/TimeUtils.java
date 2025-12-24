@@ -640,20 +640,22 @@ public class TimeUtils {
 	private static double getUnitMultiplicationFactor(String timeUnitString)
 	{
 		double multiplicationFactor;
-		if(timeUnitString.contains(TIME_UNIT_SECONDS)) multiplicationFactor = ONE_SECOND_IN_MILLISECONDS;
-		else if(timeUnitString.contains(TIME_UNIT_MINUTES)) multiplicationFactor = ONE_MINUTE_IN_MILLISECONDS;
-		else if(timeUnitString.contains(TIME_UNIT_HOURS)) multiplicationFactor = ONE_HOUR_IN_MILLISECONDS;
-		else throw new RuntimeException(String.format("Error reference time string unit: %s", timeUnitString));
+		String timeUnitLowerCase = timeUnitString.toLowerCase();
+		if(timeUnitLowerCase.contains(TIME_UNIT_SECONDS)) multiplicationFactor = ONE_SECOND_IN_MILLISECONDS;
+		else if(timeUnitLowerCase.contains(TIME_UNIT_MINUTES)) multiplicationFactor = ONE_MINUTE_IN_MILLISECONDS;
+		else if(timeUnitLowerCase.contains(TIME_UNIT_HOURS)) multiplicationFactor = ONE_HOUR_IN_MILLISECONDS;
+		else throw new RuntimeException(String.format("Error reference time string unit: %s", timeUnitLowerCase));
 		return multiplicationFactor;
 	}
 
 	private static double referenceDateTimeToMJD(String timeUnitString)
 	{
 		String referenceDateString;
-		if(timeUnitString.contains(TIME_UNIT_SECONDS)) referenceDateString = timeUnitString.replace(TIME_UNIT_SECONDS, "").trim();
-		else if(timeUnitString.contains(TIME_UNIT_MINUTES)) referenceDateString = timeUnitString.replace(TIME_UNIT_MINUTES, "").trim();
-		else if(timeUnitString.contains(TIME_UNIT_HOURS)) referenceDateString = timeUnitString.replace(TIME_UNIT_HOURS, "").trim();
-		else throw new RuntimeException(String.format("Error parsing Date unit: %s", timeUnitString));
+		String timeUnitLowerCase = timeUnitString.toLowerCase();
+		if(timeUnitLowerCase.contains(TIME_UNIT_SECONDS)) referenceDateString = timeUnitLowerCase.replace(TIME_UNIT_SECONDS, "").trim();
+		else if(timeUnitLowerCase.contains(TIME_UNIT_MINUTES)) referenceDateString = timeUnitLowerCase.replace(TIME_UNIT_MINUTES, "").trim();
+		else if(timeUnitLowerCase.contains(TIME_UNIT_HOURS)) referenceDateString = timeUnitLowerCase.replace(TIME_UNIT_HOURS, "").trim();
+		else throw new RuntimeException(String.format("Error parsing Date unit: %s", timeUnitLowerCase));
 
 		double referenceDateAsMJD;
 		try {
