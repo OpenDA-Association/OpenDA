@@ -447,7 +447,7 @@ public abstract class BaseDudCoreOptimizer {
 					isStop = object.checkForStop(pars[0],residual,costs[0],threshold);
 				}
 				Results.putMessage(object.toString());
-				this.moreToDo = this.moreToDo & !isStop;
+				moreToDo &= !isStop;
 			}
 		}
 		
