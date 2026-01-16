@@ -433,26 +433,20 @@ public abstract class BaseDudCoreOptimizer {
 				&& diff > relTol * Math.abs(costs[0])
 				&& relErrorLinCost>relTolLinCost;
 
-		// additional stop criteria:
-		if (stopCriteria.size()>0) {
-			IVector residual = obs.clone();
-			residual.axpy(-1.0,predTry);
-			boolean isStop;
-			for (int i=0; i<stopCriteria.size(); i++){
-				IStopCriterion object = stopCriteria.get(i);
-				double threshold = stopCriteriaThreshold.get(i);
-				if (obsDescr!=null) {
-					isStop = object.checkForStop(pars[0],residual,obsDescr,costs[0],threshold);
-				} else {
-					isStop = object.checkForStop(pars[0],residual,costs[0],threshold);
-				}
-				Results.putMessage(object.toString());
-				moreToDo &= !isStop;
-			}
-		}
-		
 		// do not stop on a backtracking iteration
-		if (innerIter>0 && (imain < maxit)) moreToDo = true;
+		if (innerIter > 0 && imain < maxit) return true;
+
+		if (stopCriteria.isEmpty()) return moreToDo;
+		// additional stop criteria:
+		IVector residual = obs.clone();
+		residual.axpy(-1.0, predTry);
+		for (int i = 0; i < stopCriteria.size(); i++) {
+			IStopCriterion stopCriterion = stopCriteria.get(i);
+			double threshold = stopCriteriaThreshold.get(i);
+			boolean isStop = obsDescr != null ? stopCriterion.checkForStop(pars[0], residual, obsDescr, costs[0], threshold) : stopCriterion.checkForStop(pars[0], residual, costs[0], threshold);
+			Results.putMessage(stopCriterion.toString());
+			moreToDo &= !isStop;
+		}
 
 		return moreToDo;
 	}
