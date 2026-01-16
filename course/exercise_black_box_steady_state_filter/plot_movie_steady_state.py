@@ -18,6 +18,8 @@ import sequentialSimulation_results as sim
 import enkf_results as enkf
 import steadystate_results as steady
 c1,c2 = util.read_maps("twinTrue")
+step_assim=5
+
 
 # create initial plot
 plt.close("all")
@@ -49,7 +51,7 @@ def init():
 def update(frame):
     i=frame
     time = enkf.analysis_time[i]
-    c1_true = c1[i]
+    c1_true = c1[i*step_assim]
     c1_sim  = sim.x_a[i,(no_sources_sim):(no_sources_sim+ngrid)]
     c1_enkf = enkf.x_a[i,(no_sources_enkf):(no_sources_enkf+ngrid)]
     c1_steady = steady.x_a[i,(no_sources_steady):(no_sources_steady+ngrid)]
@@ -73,7 +75,7 @@ def update(frame):
     ax[0].plot(c1_enkf,'g')
     ax[0].plot(c1_steady,'r')
     
-    c2_true = c2[i]
+    c2_true = c2[i*step_assim]
     c2_sim  = sim.x_a[i,(no_sources_sim+ngrid):(no_sources_sim+2*ngrid)]
     c2_enkf = enkf.x_a[i,(no_sources_enkf+ngrid):(no_sources_enkf+2*ngrid)]
     c2_steady = steady.x_a[i,(no_sources_steady+ngrid):(no_sources_steady+2*ngrid)]
@@ -88,12 +90,12 @@ def update(frame):
 
     ax[0].plot(x_obs,obs_c1,'*')
     ax[1].plot(x_obs,obs_c2,'*')
-    ax[0].set_title("t="+str(int(time)))
+    ax[0].set_title("t="+str(int(time[0])))
     ax[0].legend(("Truth","First guess","EnKF","Steady-state"))
     return ln,
 
-ani = animation.FuncAnimation(fig, update, frames=range(len(c1)),
-                    init_func=init, repeat=False, interval=20,blit=False)
+ani = animation.FuncAnimation(fig, update, frames=range(len(enkf.x_a)),
+                    init_func=init, repeat=False, interval=100,blit=False)
 
 
 # Set up formatting for the movie files

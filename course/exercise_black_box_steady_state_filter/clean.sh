@@ -7,3 +7,4 @@ rm -f openda_logfile.txt
 rm -rf enkf_gain_*
 rm -rf __pycache__
 rm -rf work
+rm -f -- *.png

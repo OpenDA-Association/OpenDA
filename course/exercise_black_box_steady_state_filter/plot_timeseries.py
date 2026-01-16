@@ -2,6 +2,7 @@
 # Select the correct file with simulation results.
 import sequentialSimulation_results as sim
 #import enkf_results as sim
+#import steadystate_results as sim
 
 import matplotlib.pyplot as plt
 

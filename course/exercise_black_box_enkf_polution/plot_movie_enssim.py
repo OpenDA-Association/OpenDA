@@ -81,7 +81,7 @@ xdata, ydata = [], []
 ln, = plt.plot([], [], 'ro')
 
 ani = animation.FuncAnimation(fig, update, frames=range(len(sim.analysis_time)),
-                    init_func=init, repeat=False, interval=20,blit=False)
+                    init_func=init, repeat=False, interval=100,blit=False)
 
 # Set up formatting for the movie files
 #Writer = animation.writers['ffmpeg']

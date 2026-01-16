@@ -12,3 +12,4 @@ rm -f *.png
 rm -f *.pyc
 rm -f OpenDATimings_*
 rm -rf enkf_wave_*
+rm -f *.png

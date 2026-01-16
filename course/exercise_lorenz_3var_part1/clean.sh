@@ -4,7 +4,7 @@
 #
 
 echo "Removing working directories"
-rm -f *_results*.m
+#rm -f *_results*.m # Also removes load_results by accident. TODO refine
 rm -f *_results*.py
 rm -f openda_logfile.txt
 rm -f *.orp
