@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<blackBoxStochModel xmlns="http://www.openda.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxStochModelConfig.xsd">
+<modelConfig>
+<file>./openfoamModel.xml</file>
+</modelConfig>
+
+<vectorSpecification>
+		<parameters>
+			<regularisationConstant>
+				<stdDev value="0.5" transformation="identity" />
+				<vector id="HeatGroup01"/>
+			</regularisationConstant>
+			<regularisationConstant>
+				<stdDev value="0.5" transformation="identity" />
+				<vector id="HeatGroup02"/>
+			</regularisationConstant>
+		</parameters>
+		<predictor>
+			<vector id="probe_Assimilatie_T#0.T"/>
+			<vector id="probe_Assimilatie_T#1.T"/>
+			<vector id="probe_Assimilatie_T#2.T"/>
+			<vector id="probe_Assimilatie_T#3.T"/>
+		</predictor>
+</vectorSpecification>
+</blackBoxStochModel>

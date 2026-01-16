@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blackBoxWrapperConfig xmlns="http://www.openda.org"
+                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                       xsi:schemaLocation="http://www.openda.org http://schemas.openda.org/blackBoxWrapperConfig.xsd">
+
+    <!-- declare all the used aliases, specify the prefix and suffix of an alias key in a variable  -->
+    <aliasDefinitions defaultKeyPrefix="%" defaultKeySuffix="%">
+        <alias key="exedir"/>
+        <alias key="templateDir"/>
+        <alias key="instanceDir"/>
+        <alias key="runid"/>
+        <alias key="controlDict"/>
+        <alias key="numberOfSubdomains"/>
+        <alias key="foamSolver"/>
+        <alias key="referenceDateTime"/>
+    </aliasDefinitions>
+
+    <run>
+
+        <!-- for each model instance, the template directory will be cloned to create the instance directory -->
+        <initializeActionsUsingDirClone instanceDir="%instanceDir%/referencedatetime/work%instanceNumber%" templateDir="%templateDir%"/>
+
+        <computeActions>
+            <action workingDirectory="%instanceDir%" linuxExe="%exedir%/start_openfoam.sh" windowsExe="%exedir%/start_openfoam.bat"  checkReturnStatus="true">
+                <arg>-p %numberOfSubdomains%</arg>
+                <arg>-s %foamSolver%</arg>
+                <arg>-v</arg>
+                <!-- <arg>-d</arg> -->
+            </action>
+        </computeActions>
+
+        <finalizeActions>
+        </finalizeActions>
+
+    </run>
+
+    <inputOutput>
+        <ioObject className="org.openda.model_openfoam.DictionaryDataObject">
+            <file>system/%controlDict%</file>
+            <id>controlDict</id>
+            <arg>%referenceDateTime%</arg>
+        </ioObject>
+        <ioObject className="org.openda.model_openfoam.DictionaryDataObject">
+            <file>system/HEATING</file>
+            <id>HEATING</id>
+        </ioObject>
+        <ioObject className="org.openda.model_openfoam.ProbeDataObject">
+            <file>postProcessing/probe_Assimilatie_T/OPENFOAM_TIME_DIR/T</file>
+            <id>ProbesT</id>
+            <arg>%referenceDateTime%</arg>
+        </ioObject>
+    </inputOutput>
+
+</blackBoxWrapperConfig>

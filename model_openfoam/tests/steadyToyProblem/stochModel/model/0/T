@@ -1,0 +1,49 @@
+/*--------------------------------*4D-COOL*----------------------------------*\
+|------------------------------OpenFOAM v 1712 -------------------------------|
+\*--------------------------------*4D-COOL*----------------------------------*/
+FoamFile
+{
+version    2.0;
+format     ascii;
+class      volScalarField;
+object     T;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [ 0 0 0 1 0 0 0 ];
+
+internalField   uniform 295.15;//22 Graden Celsius.
+
+boundaryField
+{
+    ".*"
+    {
+        type            zeroGradient;
+        value           $internalField;
+    }
+    cyclic
+    {
+        type            cyclic;
+        value           $internalField;
+    }
+    CRAC_Supply
+    {
+        type            inletOutlet;
+        inletValue      uniform 295.15;// 22 C
+        value           uniform 295.15;
+    }
+    CRAC_Return
+    {
+        type            inletOutlet;
+        inletValue      uniform 307.15;// 34 C
+        value           uniform 295.15;
+    }
+    "open.*"
+    {
+        type            inletOutlet;
+        inletValue      uniform 285.15;
+        value           $internalField;
+    }
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

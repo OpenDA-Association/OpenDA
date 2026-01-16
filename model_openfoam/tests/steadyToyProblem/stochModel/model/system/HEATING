@@ -1,0 +1,76 @@
+/*--------------------------------*4D-COOL*----------------------------------*\
+|------------------------------OpenFOAM v 1712 -------------------------------|
+\*--------------------------------*4D-COOL*----------------------------------*/
+FoamFile
+{
+version    2.0;
+format     ascii;
+class      dictionary;
+object     HEATING;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+Group01 ( 1.0 );//#oda:HeatGroup01
+Group02 ( 1.0 );//#oda:HeatGroup02
+heatX0Y0
+{
+    type          scalarSemiImplicitSource;
+    active        true;
+    scalarSemiImplicitSourceCoeffs
+    {
+        selectionMode      cellZone;
+        cellZone           rackX0Y0;
+        volumeMode         absolute;
+        injectionRateSuSp
+        {
+               T       (#calc "1.678000 * $Group01" 0);
+        }
+    }
+}
+heatX0Y1
+{
+    type          scalarSemiImplicitSource;
+    active        true;
+    scalarSemiImplicitSourceCoeffs
+    {
+        selectionMode      cellZone;
+        cellZone           rackX0Y1;
+        volumeMode         absolute;
+        injectionRateSuSp
+        {
+               T       (#calc "4.194000 * $Group02" 0);
+        }
+    }
+}
+heatX1Y0
+{
+    type          scalarSemiImplicitSource;
+    active        true;
+    scalarSemiImplicitSourceCoeffs
+    {
+        selectionMode      cellZone;
+        cellZone           rackX1Y0;
+        volumeMode         absolute;
+        injectionRateSuSp
+        {
+               T       (#calc "4.194000 * $Group02" 0);
+        }
+    }
+}
+heatX1Y1
+{
+    type          scalarSemiImplicitSource;
+    active        true;
+    scalarSemiImplicitSourceCoeffs
+    {
+        selectionMode      cellZone;
+        cellZone           rackX1Y1;
+        volumeMode         absolute;
+        injectionRateSuSp
+        {
+               T       (4.194000 0);
+        }
+    }
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

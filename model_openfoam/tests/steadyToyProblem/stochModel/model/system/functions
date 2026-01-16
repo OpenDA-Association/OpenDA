@@ -1,0 +1,116 @@
+/*--------------------------------*4D-COOL*----------------------------------*\
+|------------------------------OpenFOAM v 1712 -------------------------------|
+\*--------------------------------*4D-COOL*----------------------------------*/
+FoamFile
+{
+version    2.0;
+format     ascii;
+class      dictionary;
+object     functions;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+functions
+{
+residuals
+{
+    type        residuals;
+    functionObjectLibs ("libutilityFunctionObjects.so");
+    writeControl    timeStep;
+    writeInterval   1;
+    fields        (U p_rgh k omega T        );
+}
+probe_Assimilatie_T
+{
+type    probes;
+libs    ("libsampling.so");
+writeControl    timeStep;
+writeInterval    1;
+fields    (T );
+probeLocations
+(
+        (2.4 3.0 4.5)
+        (4.8 0.9 4.5)
+        (4.8 3.0 4.5)
+
+    );
+
+}
+probe_Monitoring_T
+{
+type    probes;
+libs    ("libsampling.so");
+writeControl    timeStep;
+writeInterval    1;
+fields    (T );
+probeLocations
+(
+        (4.8 5.4 4.5)
+
+    );
+
+}
+QtileX0Y0
+{
+    type            surfaceFieldValue;
+    libs            ("libfieldFunctionObjects.so");
+    log             false;
+    writeControl    timeStep;
+    writeFields     false;
+    regionType      patch;
+    name            tileX0Y0_master;
+    operation       sum;
+    fields          (phi);
+}
+QtileX1Y1
+{
+    type            surfaceFieldValue;
+    libs            ("libfieldFunctionObjects.so");
+    log             false;
+    writeControl    timeStep;
+    writeFields     false;
+    regionType      patch;
+    name            tileX1Y1_master;
+    operation       sum;
+    fields          (phi);
+}
+QtileX2Y0
+{
+    type            surfaceFieldValue;
+    libs            ("libfieldFunctionObjects.so");
+    log             false;
+    writeControl    timeStep;
+    writeFields     false;
+    regionType      patch;
+    name            tileX2Y0_master;
+    operation       sum;
+    fields          (phi);
+}
+QtileX3Y0
+{
+    type            surfaceFieldValue;
+    libs            ("libfieldFunctionObjects.so");
+    log             false;
+    writeControl    timeStep;
+    writeFields     false;
+    regionType      patch;
+    name            tileX3Y0_master;
+    operation       sum;
+    fields          (phi);
+}
+T_Avg_CRAC
+{
+    type            surfaceFieldValue;
+    libs            ("libfieldFunctionObjects.so");
+    log             false;
+    writeControl    timeStep;
+    writeFields     false;
+    regionType      patch;
+    name        CRAC_Return;
+    operation weightedAverage;
+    fields  ( T );
+    weightField phi;
+}
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

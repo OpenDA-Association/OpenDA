@@ -1,0 +1,123 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1712                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : v1712
+Arch   : "LSB;label=32;scalar=64"
+Exec   : checkMesh -case /results/34_e7d070f4f8534a27b2692aad04a61def/steadyToyProblem -constant
+Date   : Jul 07 2020
+Time   : 12:08:39
+Host   : "293cbf513829"
+PID    : 1187
+I/O    : uncollated
+Case   : /results/34_e7d070f4f8534a27b2692aad04a61def/steadyToyProblem
+nProcs : 1
+trapFpe: Floating point exception trapping enabled (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 10)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Create mesh for time = constant
+
+Time = constant
+
+Mesh stats
+    points:           9177
+    faces:            25472
+    internal faces:   21760
+    cells:            7872
+    faces per cell:   6
+    boundary patches: 16
+    point zones:      0
+    face zones:       16
+    cell zones:       7
+
+Overall number of cells of each type:
+    hexahedra:     7872
+    prisms:        0
+    wedges:        0
+    pyramids:      0
+    tet wedges:    0
+    tetrahedra:    0
+    polyhedra:     0
+
+Checking topology...
+    Boundary definition OK.
+    Cell to face addressing OK.
+    Point usage OK.
+    Upper triangular ordering OK.
+    Face vertices OK.
+    Number of regions: 1 (OK).
+
+Checking patch topology for multiply connected surfaces...
+    Patch               Faces    Points   Surface topology                  
+    Wand                1568     1659     ok (non-closed singly connected)  
+    Vloer               400      441      ok (non-closed singly connected)  
+    Tegelvloer          352      405      ok (non-closed singly connected)  
+    Tegelvloer_shadow   352      405      ok (non-closed singly connected)  
+    Plafond             400      441      ok (non-closed singly connected)  
+    CRAC_Wand           96       117      ok (non-closed singly connected)  
+    CRAC_Supply         16       25       ok (non-closed singly connected)  
+    CRAC_Return         16       25       ok (non-closed singly connected)  
+    Top_Koude_Gang      32       45       ok (non-closed singly connected)  
+    Top_Koude_Gang_shadow32       45       ok (non-closed singly connected)  
+    Top_Servers         64       90       ok (non-closed singly connected)  
+    Top_Servers_shadow  64       90       ok (non-closed singly connected)  
+    Wand_Tussen_Servers 64       90       ok (non-closed singly connected)  
+    Wand_Tussen_Servers_shadow64       90       ok (non-closed singly connected)  
+    Wand_Tussen_Alley_En_Ruimte96       117      ok (non-closed singly connected)  
+    Wand_Tussen_Alley_En_Ruimte_shadow96       117      ok (non-closed singly connected)  
+
+Checking faceZone topology for multiply connected surfaces...
+    FaceZone            Faces    Points   Surface topology                  
+    tileX0Y0            4        9        ok (non-closed singly connected)  
+    tileX0Y1            4        9        ok (non-closed singly connected)  
+    tileX1Y0            4        9        ok (non-closed singly connected)  
+    tileX1Y1            4        9        ok (non-closed singly connected)  
+    tileX2Y0            4        9        ok (non-closed singly connected)  
+    tileX2Y1            4        9        ok (non-closed singly connected)  
+    tileX3Y0            4        9        ok (non-closed singly connected)  
+    tileX3Y1            4        9        ok (non-closed singly connected)  
+    Inlet_rackX0Y0      32       45       ok (non-closed singly connected)  
+    Inlet_rackX0Y1      32       45       ok (non-closed singly connected)  
+    Inlet_rackX1Y0      32       45       ok (non-closed singly connected)  
+    Inlet_rackX1Y1      32       45       ok (non-closed singly connected)  
+    Outlet_rackX0Y0     32       45       ok (non-closed singly connected)  
+    Outlet_rackX0Y1     32       45       ok (non-closed singly connected)  
+    Outlet_rackX1Y0     32       45       ok (non-closed singly connected)  
+    Outlet_rackX1Y1     32       45       ok (non-closed singly connected)  
+
+Checking basic cellZone addressing...
+    CellZone            Cells    Points    BoundingBox
+    rackX0Y0            128      225       (4.8 1.2 0) (6 2.4 2.4)
+    rackX0Y1            128      225       (4.8 3.6 0) (6 4.8 2.4)
+    rackX1Y0            128      225       (3.6 1.2 0) (4.8 2.4 2.4)
+    rackX1Y1            128      225       (3.6 3.6 0) (4.8 4.8 2.4)
+    COLD_PLENUM         1600     2205      (0 0 -1.2) (6 6 2.6645352e-16)
+    COLD_ALLEY          256      405       (3.6 2.4 0) (6 3.6 2.4)
+    HOT_ROOM            5504     6697      (0 0 0) (6 6 4.8)
+
+Checking geometry...
+    Overall domain bounding box (0 0 -1.2) (6 6 4.8)
+    Mesh has 3 geometric (non-empty/wedge) directions (1 1 1)
+    Mesh has 3 solution (non-empty) directions (1 1 1)
+    Boundary openness (-1.3459061e-17 9.554272e-18 1.719769e-17) OK.
+    Max cell openness = 8.6350685e-17 OK.
+    Max aspect ratio = 1 OK.
+    Minimum face area = 0.09. Maximum face area = 0.09.  Face area magnitudes OK.
+    Min volume = 0.027. Max volume = 0.027.  Total volume = 212.544.  Cell volumes OK.
+    Mesh non-orthogonality Max: 0 average: 0
+    Non-orthogonality check OK.
+    Face pyramids OK.
+    Max skewness = 1.7763568e-14 OK.
+    Coupled point location match (average 0) OK.
+
+Mesh OK.
+
+End
+
