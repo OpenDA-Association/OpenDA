@@ -7,7 +7,7 @@ are described in this `issue <https://github.com/OpenDA-Association/OpenDA/issue
 The D-Flow FM wrapper has been developed and is maintained by our OpenDA
 partner Deltares. On this page, we describe the different data objects for the
 D-Flow FM wrapper. Examples based on the dcsmv5 (North Sea) model are available
-from OpenDA release 3.1 in the directories ``examples\model_dflowfm_blackbox``.
+from OpenDA release 3.1 in the directories ``examples/model_dflowfm_blackbox``.
 
 Start and end time of model runs
 --------------------------------
@@ -41,12 +41,19 @@ Model state
 
 In order to change the model state, the Java class
 ``org.openda.model_dflowfm.DFlowFMRestartFileWrapper`` is used.  It will read,
-edit and rewrite either a ``*map.nc`` file or a ``*_rst.nc`` file. These files
-contain the model state from which a model run can restart and continue based
-on how a previous run ended. More information about the ``_rst.nc`` file can be
-found in Section 5.6.3 of the `D-Flow FM documentation <https://usermanual.wiki/Pdf/DFlowFMUserManual.1771347134/view>`__, and
-:ref:`below <rst nc>`). More information about map files can be found in
-Section 5.6.2 of the same `D-Flow FM documentation <https://usermanual.wiki/Pdf/DFlowFMUserManual.1771347134/view>`__.
+edit and rewrite either a ``*map.nc`` file or a ``*_rst.nc`` file.
+``*map.nc`` files relate to older functionality and are mostly used to store
+model results in grid format for all time steps in a run. While they can be used
+for restarting, the preferred option is to use ``*_rst.nc`` files. 
+These files contain more complete data for only one time step (the one used for
+restarting), making them more efficient.
+More information about map files can be found in Section 5.6.2 of the `D-Flow
+FM documentation
+<https://usermanual.wiki/Pdf/DFlowFMUserManual.1771347134/view>`__, and more
+information about the ``_rst.nc`` file can be found in Section 5.6.3 of the
+same `D-Flow FM documentation
+<https://usermanual.wiki/Pdf/DFlowFMUserManual.1771347134/view>`__, and
+:ref:`below <rst nc>`. 
 
 The previously mentioned Java class will create exchange items for each
 variable with the variable name as "exchange item id".  An example
@@ -101,7 +108,7 @@ in order to merge them together, OpenDA has a NetcdfFileConcatenater. This is
 general functionality available in OpenDA and can be used for many different
 models that create NetCDF output files.  This concatenater (formally spelled as
 concatenator) should be configured as compute action after the compute action
-of the model run.  It takes two arguments: the first argument is the name of
+of the model run. [#action]_  It takes two arguments: the first argument is the name of
 the file with all concatenated data and the second argument is the file that
 should be concatenated to it. Since the concatenator will run after each small
 model run, only 1 NetCDF file has to be concatenated to the main file
@@ -128,7 +135,7 @@ Since OpenDA 3.1, we support the use of D-Flow FM models that restart from
 ``*_rst.nc`` files (see the Section on :ref:`restarts of a model<restart>`). 
 
 An example setup can be found in the folder
-``examples\model_dflowfm_blackbox\dcsmv5_kalman_rst``.
+``examples/model_dflowfm_blackbox/dcsmv5_kalman_rst``.
 
 To let this work, the argument ``useRstForRestart=true`` must be added to the
 ``org.openda.model_dflowfm.DFlowFMTimeInfo`` data object.  This prevents OpenDA
@@ -154,9 +161,9 @@ that runs from January 3 2007 at midnight until January 5 2007 at midnight.
 Furthermore, we assume that a restart file is written every day at midnight. At
 the end of the run, the following restart files are created::
 
-%workingDirectory%\subdir\dcsmv5_20070103_000000_rst.nc
-%workingDirectory%\subdir\dcsmv5_20070104_000000_rst.nc
-%workingDirectory%\subdir\dcsmv5_20070105_000000_rst.nc
+%workingDirectory%/subdir/dcsmv5_20070103_000000_rst.nc
+%workingDirectory%/subdir/dcsmv5_20070104_000000_rst.nc
+%workingDirectory%/subdir/dcsmv5_20070105_000000_rst.nc
 
 The ``DFlowFMRestartFilePostProcessor`` will be looking for files with pattern
 ``<runId>_'yyyyMMdd'_'HHmmss'_rst.nc`` where the ``<runId>`` is passed as an
@@ -197,8 +204,8 @@ were the following required and optional arguments are related to
 Let us return to our example. The compute action will copy and rename the file
 with the highest time stamp to ``<runId>_<targetRestartFileNamePostFix>`` in
 the ``workingDirectory``. This means
-``%workingDirectory%\subdir\dcsmv5_20070105_000000_rst.nc`` will be copied and
-renamed to ``%workingDirectory%\dcsmv5_00000000_000000_rst.nc``. For this
+``%workingDirectory%/subdir/dcsmv5_20070105_000000_rst.nc`` will be copied and
+renamed to ``%workingDirectory%/dcsmv5_00000000_000000_rst.nc``. For this
 mechanism to work properly, ``RestartFile = dcsmv5_00000000_000000_rst.nc``
 should be configured in the ``[restart]`` section of the ``.mdu`` file.
 
@@ -217,7 +224,7 @@ More information on D-Flow FM partitioning can be found in Section 5.2.2 of the
 the restarting section above, this setup is specifically designed for an
 operational context.  An example setup can be found in 
 
-``model_dflowfm_blackbox\tests\dcsmv5_kalman_rst_partitioning\stochModel\dflowfmWrapper.xml``
+``model_dflowfm_blackbox/tests/dcsmv5_kalman_rst_partitioning/stochModel/dflowfmWrapper.xml``
 
 For this to work, multiple configuration changes are needed:
 
@@ -268,15 +275,15 @@ For this to work, multiple configuration changes are needed:
   As an example, we revisit the same North Sea example again, using three
   partitions. At the end of the run, the following restart files are created::
 
-        %workingDirectory%\subdir\dcsmv5_0000_20070103_000000_rst.nc
-        %workingDirectory%\subdir\dcsmv5_0000_20070104_000000_rst.nc
-        %workingDirectory%\subdir\dcsmv5_0000_20070105_000000_rst.nc
-        %workingDirectory%\subdir\dcsmv5_0001_20070103_000000_rst.nc
-        %workingDirectory%\subdir\dcsmv5_0001_20070104_000000_rst.nc
-        %workingDirectory%\subdir\dcsmv5_0001_20070105_000000_rst.nc
-        %workingDirectory%\subdir\dcsmv5_0002_20070103_000000_rst.nc
-        %workingDirectory%\subdir\dcsmv5_0002_20070104_000000_rst.nc
-        %workingDirectory%\subdir\dcsmv5_0002_20070105_000000_rst.nc
+        %workingDirectory%/subdir/dcsmv5_0000_20070103_000000_rst.nc
+        %workingDirectory%/subdir/dcsmv5_0000_20070104_000000_rst.nc
+        %workingDirectory%/subdir/dcsmv5_0000_20070105_000000_rst.nc
+        %workingDirectory%/subdir/dcsmv5_0001_20070103_000000_rst.nc
+        %workingDirectory%/subdir/dcsmv5_0001_20070104_000000_rst.nc
+        %workingDirectory%/subdir/dcsmv5_0001_20070105_000000_rst.nc
+        %workingDirectory%/subdir/dcsmv5_0002_20070103_000000_rst.nc
+        %workingDirectory%/subdir/dcsmv5_0002_20070104_000000_rst.nc
+        %workingDirectory%/subdir/dcsmv5_0002_20070105_000000_rst.nc
 
   The ``DFlowFMRestartFilePostProcessor`` will be looking for files with
   pattern ``<runId>_<partitionNumber>_'yyyyMMdd'_'HHmmss'_rst.nc`` where the
@@ -287,8 +294,17 @@ For this to work, multiple configuration changes are needed:
   individually, it will copy and rename the files with the highest time stamp
   to ``<runId>_<partitionNumber>_<targetRestartFileNamePostFix>`` in the
   ``workingDirectory``. In the example above, this means
-  ``%workingDirectory%\subdir\dcsmv5_000n_20070105_000000_rst.nc``, n = 0,1,2
+  ``%workingDirectory%/subdir/dcsmv5_000n_20070105_000000_rst.nc``, n = 0,1,2
   (the partition number), will be copied and renamed to
-  ``%workingDirectory%\dcsmv5_000n_00000000_000000_rst.nc``. For this mechanism
+  ``%workingDirectory%/dcsmv5_000n_00000000_000000_rst.nc``. For this mechanism
   to work properly, ``RestartFile = dcsmv5_000n_00000000_000000_rst.nc`` should
   be configured in the ``[restart]`` section of the partitioned ``.mdu`` file. 
+
+.. rubric:: Footnotes
+
+.. [#action]
+   Actions are configurations that specify which (external) executables
+   OpenDA should run. Typically, this would be the model itself. Other actions can
+   include pre- or post-processing steps. For example, the NetCDF concatenator is
+   a post-processing step that merges smaller NetCDF result files from multiple
+   runs into a single NetCDF file.
