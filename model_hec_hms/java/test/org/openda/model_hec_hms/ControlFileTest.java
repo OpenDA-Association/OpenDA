@@ -1,6 +1,7 @@
 package org.openda.model_hec_hms;
 
 import junit.framework.TestCase;
+import org.openda.exchange.DoubleExchangeItem;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 
@@ -33,23 +34,28 @@ public class ControlFileTest extends TestCase {
 			assertEquals(1, exchangeItemIds.length);
 
 			// Then exchange items contains values for:
-			IExchangeItem exchangeItem = dataObject.getDataObjectExchangeItem("Control_File");
-			assertNotNull(exchangeItem);
-			assertTrue(exchangeItem instanceof ControlFileExchangeItem);
-			ControlFileExchangeItem controlFileExchangeItem = (ControlFileExchangeItem) exchangeItem;
+			IExchangeItem startTimeExchangeItem = dataObject.getDataObjectExchangeItem("start_time");
+			assertNotNull(startTimeExchangeItem);
+			assertTrue(startTimeExchangeItem instanceof DoubleExchangeItem);
+			DoubleExchangeItem mjdStartTimeExchangeItem = (DoubleExchangeItem) startTimeExchangeItem;
+
+			IExchangeItem endTimeExchangeItem = dataObject.getDataObjectExchangeItem("end_time");
+			assertNotNull(endTimeExchangeItem);
+			assertTrue(endTimeExchangeItem instanceof DoubleExchangeItem);
+			DoubleExchangeItem mjdEndTimeExchangeItem = (DoubleExchangeItem) endTimeExchangeItem;
 
 			// Then the exchange item has an array of values
-			double[] values = controlFileExchangeItem.getValuesAsDoubles();
-			assertEquals(2, values.length);
-			assertEquals(60611.958, values[0], DELTA);
-			assertEquals(60612.166, values[1], DELTA);
+			double startValue = mjdStartTimeExchangeItem.getValue();
+			assertEquals(60611.958, startValue, DELTA);
+			double endValue = mjdEndTimeExchangeItem.getValue();
+			assertEquals(60612.166, endValue, DELTA);
 
 			// When the values are updated
-			double[] newTimes = new double[2];
-			newTimes[0] = 60637.875; // 23 November 2024 21:00 UTC
-			newTimes[1] = 60678.25; // 03 January 2025 06:00 UTC
+			double newStartTime = 60637.875; // 23 November 2024 21:00 UTC
+			double newEndTime = 60678.25; // 03 January 2025 06:00 UTC
 
-			exchangeItem.setTimes(newTimes);
+			mjdStartTimeExchangeItem.setValue(newStartTime);
+			mjdEndTimeExchangeItem.setValue(newEndTime);
 
 			// And the file is output
 			dataObject.finish();

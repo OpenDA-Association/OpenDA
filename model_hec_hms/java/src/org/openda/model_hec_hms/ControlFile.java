@@ -1,24 +1,28 @@
 package org.openda.model_hec_hms;
 
+import org.openda.exchange.DoubleExchangeItem;
 import org.openda.exchange.timeseries.TimeUtils;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 
 import java.io.*;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class ControlFile implements IDataObject {
 	private static final String[] EMPTY_STRING_ARRAY = new String[0];
+	private static final String START_TIME = "start_time";
+	private static final String END_TIME = "end_time";
 	private File workingDirectory;
 	private String filename = null;
 
-	private String controlFileId = null;
-	private final Map<String, IExchangeItem> exchangeItems = new HashMap<>();
+	private final Map<String, DoubleExchangeItem> exchangeItems = new HashMap<>();
 	private String timeZoneId = null;
 
 	private final Map<Integer, String> lines = new LinkedHashMap<>();
@@ -47,18 +51,10 @@ public class ControlFile implements IDataObject {
 		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy").withZone(zoneId);
 		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm").withZone(zoneId);
 
-		IExchangeItem exchangeItem = exchangeItems.get(controlFileId);
-		double[] times = exchangeItem.getTimes();
-
 		ZoneId utcZoneId = ZoneId.of("UTC");
 
-		Date startDate = TimeUtils.mjdToDate(times[0]);
-		startDate.setHours((int) Math.round((times[0] % 1) * 24));
-		LocalDateTime startDateTime = startDate.toInstant().atZone(utcZoneId).toLocalDateTime();
-
-		Date endDate = TimeUtils.mjdToDate(times[1]);
-		endDate.setHours((int) Math.round((times[1] % 1) * 24));
-		LocalDateTime endDateTime = endDate.toInstant().atZone(utcZoneId).toLocalDateTime();
+		LocalDateTime startDateTime = getDateTime(utcZoneId, START_TIME);
+		LocalDateTime endDateTime = getDateTime(utcZoneId, END_TIME);
 
 		try (FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
 			 OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream);
@@ -99,6 +95,14 @@ public class ControlFile implements IDataObject {
 		} catch (IOException ioException) {
 			throw new RuntimeException(ioException);
 		}
+	}
+
+	private LocalDateTime getDateTime(ZoneId utcZoneId, String timeId) {
+		DoubleExchangeItem dateTimeExchangeItem = exchangeItems.get(timeId);
+		double mjdDateTime = dateTimeExchangeItem.getValue();
+		Date dateTime = TimeUtils.mjdToDate(mjdDateTime);
+		dateTime.setHours((int) Math.round((mjdDateTime % 1) * 24));
+		return dateTime.toInstant().atZone(utcZoneId).toLocalDateTime();
 	}
 
 	@Override
@@ -152,9 +156,6 @@ public class ControlFile implements IDataObject {
 					String label = labelAndValue[0].trim();
 
 					switch (label) {
-						case "Control":
-							controlFileId = labelAndValue[1].trim();
-							break;
 						case "Time Zone ID":
 							timeZoneId = labelAndValue[1].trim();
 							break;
@@ -184,17 +185,18 @@ public class ControlFile implements IDataObject {
 			}
 
 			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyyHH:mmVV");
+
 			ZonedDateTime startDateTime = ZonedDateTime.parse(startDate + startTime + timeZoneId, dateTimeFormatter);
-			ZonedDateTime endDateTime = ZonedDateTime.parse(endDate + endTime + timeZoneId, dateTimeFormatter);
-
-			double[] times = new double[2];
-
 			long startDateTimeMillis = startDateTime.toInstant().toEpochMilli();
-			times[0] = TimeUtils.date2Mjd(new Date(startDateTimeMillis));
-			long endDateTimeMillis = endDateTime.toInstant().toEpochMilli();
-			times[1] = TimeUtils.date2Mjd(new Date(endDateTimeMillis));
+			double startMjdDateTime = TimeUtils.date2Mjd(new Date(startDateTimeMillis));
+			DoubleExchangeItem startMjdDateTimeExchangeItem = new DoubleExchangeItem(START_TIME, IExchangeItem.Role.InOut, startMjdDateTime);
+			exchangeItems.putIfAbsent(START_TIME, startMjdDateTimeExchangeItem);
 
-			exchangeItems.putIfAbsent(controlFileId, new ControlFileExchangeItem(controlFileId, times));
+			ZonedDateTime endDateTime = ZonedDateTime.parse(endDate + endTime + timeZoneId, dateTimeFormatter);
+			long endDateTimeMillis = endDateTime.toInstant().toEpochMilli();
+			double endMjdDateTime = TimeUtils.date2Mjd(new Date(endDateTimeMillis));
+			DoubleExchangeItem endMjdDateTimeExchangeItem = new DoubleExchangeItem(END_TIME, IExchangeItem.Role.InOut, endMjdDateTime);
+			exchangeItems.putIfAbsent(END_TIME, endMjdDateTimeExchangeItem);
 		} catch (IOException ioException) {
 			throw new RuntimeException(ioException);
 		}
