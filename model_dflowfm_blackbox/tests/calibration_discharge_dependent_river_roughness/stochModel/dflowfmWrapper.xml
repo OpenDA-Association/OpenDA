@@ -55,6 +55,7 @@
             <id>%netcdfoutput%</id>
             <arg>true</arg>
             <arg>false</arg>
+            <arg>stationDimensionVarName=station</arg>
         </dataObject>
         <dataObject className="org.openda.model_dflowfm.DFlowFMTimeSeriesDataObject">
             <file>%mduFile%</file>

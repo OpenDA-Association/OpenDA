@@ -31,6 +31,7 @@ Kmx                                 =                                    # Max n
 Makeorthocenters                    = 0                                  # 1=yes, 0=no switch from circumcentres to orthocentres in geominit
 Dcenterinside                       = 1.                                 # limit cell center; 1.0:in cell <-> 0.0:on c/g
 PartitionFile                       =                                    # *_part.pol, polyline(s) x,y
+IniFieldFile                        = new-initial-conditions.ini
 
 [numerics]
 CFLMax                              = 0.7                                # Max. Courant nr.
@@ -87,15 +88,15 @@ DtMax                               = 600.0000000                        # Max t
 DtInit                              = 1.                                 # Initial timestep in seconds
 AutoTimestep                        = 1                                  # Use CFL timestep limit or not (1/0)
 TStart                              = 0.0000000e+00                      # Start time w.r.t. RefDate (in TUnit)
-#TStop                               = 5760.0                             # 4 days (in TUnit)
-TStop                               = 43200.0                            # 30 days
+TStop                               = 5760.0                             # 4 days (in TUnit)
+#TStop                               = 43200.0                            # 30 days
 
 [restart]
 RestartFile                         =                                    # Restart file, only map, hence: *_map.nc
 RestartDateTime                     = 19910101000000                     # Restart time (yyyymmddhhmmss)
 
 [external forcing]
-ExtForceFile                        = estuary.ext                        # *.ext
+ExtForceFileNew                     = estuary.ext
 
 [output]
 OutputDir                           =                                    # Output directory of map-, his-, rst-, dat- and timings-files, default: DFM_OUTPUT_<modelname>. Set to . for no dir/current dir.
@@ -113,7 +114,6 @@ S1incinterval                       =                                    # Inter
 WaqFileBase                         =                                    # Basename (without extension) for all Delwaq files to be written.
 WaqInterval                         =                                    # Interval (in s) between Delwaq file outputs
 StatsInterval                       = 3600.                              # Interval (in s) between simulation statistics output.
-WriteBalancefile                    = 0                                  # Write Balancefile, 1=yes, 0=no
 SnapshotDir                         =                                    # Directory where snapshots/screendumps are saved.
 TimingsInterval                     =                                    # Timings output interval
 TimeSplitInterval                   = 0X                                 # Time splitting interval, after which a new output file is started. value+unit, e.g. '1 M', valid units: Y,M,D,h,m,s.

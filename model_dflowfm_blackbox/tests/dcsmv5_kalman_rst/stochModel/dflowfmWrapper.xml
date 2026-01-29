@@ -65,6 +65,7 @@
             <id>hisfile</id>
             <arg>true</arg>
             <arg>false</arg>
+			<arg>stationDimensionVarName=station</arg>
         </dataObject>
         <dataObject className="org.openda.exchange.dataobjects.NetcdfDataObject">
             <file>%meteofile_p%</file>
