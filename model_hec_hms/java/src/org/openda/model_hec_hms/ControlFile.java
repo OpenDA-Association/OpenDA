@@ -30,7 +30,7 @@ public class ControlFile implements IDataObject {
 
 	@Override
 	public String[] getExchangeItemIDs() {
-		return new String[]{"ControlFileExchangeItem"};
+		return exchangeItems.keySet().toArray(EMPTY_STRING_ARRAY);
 	}
 
 	@Override
