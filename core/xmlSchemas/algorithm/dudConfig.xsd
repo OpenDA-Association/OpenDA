@@ -26,7 +26,12 @@
 		</xs:sequence>
 		<xs:attribute name="maxIterations" type="xs:integer" use="optional" default="6">
 			<xs:annotation>
-				<xs:documentation>Maximum number of inner iterations.</xs:documentation>
+				<xs:documentation>Maximum number of inner iterations within outer iteration.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="totalMaxIterations" type="xs:integer" default="-1">
+			<xs:annotation>
+				<xs:documentation>Maximum number of total (inner) iterations over all outer iterations. Default is unlimited.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 		<xs:attribute name="maxRelStepSize" type="xs:double" use="optional" default="10.0">
