@@ -41,6 +41,7 @@ public abstract class BaseDudCoreOptimizer {
 	// settings
 	public int maxit = 3;                // maximum number of outer iterations
 	public int maxInnerIter = 6;         // maximum number of inner iterations
+	public int maxTotalInnerIter = -1;	 // maximum total number of inner iterations over all outer iterations
 	public double innerScaleFac = 0.5;   // scaling factor for bactracking
 	public int minInnerNegativeLook = 3; // when to start looking into the negative direction
 	public double maxStep = 10.0;        // maximum relative step size (compared to the spread of the parameters)
@@ -65,6 +66,7 @@ public abstract class BaseDudCoreOptimizer {
 	// stopping
 	private boolean moreToDo = true; // is this optimization finished
 	private int imain = 0;           // main iterations done
+	private int totalInnerIt = 0;           // total number of (inner) iterations done over all outer iterations
 
 	protected IMatrix sqrtCovEst = null;   // estimate of square root of error covariance
 	public double relTolLinCost = 0.01;  // compares linearity error to improvement
@@ -427,11 +429,12 @@ public abstract class BaseDudCoreOptimizer {
 		Results.putMessage("stop criterion 3, |new - previous cost|/|new cost| < reltol:\t " + relDiff + " > " + relTol);
 		Results.putMessage("stop criterion 4, linearized cost relative error: "+relErrorLinCost+" < "+relTolLinCost);
 
-		boolean moreToDo = 
-				imain < this.maxit  
+		boolean moreToDo =
+			imain < this.maxit
+				&& (this.maxTotalInnerIter == -1 || totalInnerIt < this.maxTotalInnerIter)
 				&& diff > this.absTol
 				&& diff > relTol * Math.abs(costs[0])
-				&& relErrorLinCost>relTolLinCost;
+				&& relErrorLinCost > relTolLinCost;
 
 		// do not stop on a backtracking iteration
 		if (innerIter > 0 && imain < maxit) return true;
@@ -960,6 +963,7 @@ public abstract class BaseDudCoreOptimizer {
 
 			if (costTry <= costs[0] || innerIter > this.maxInnerIter) break;
 			innerIter++;
+			totalInnerIt++;
 
 			Results.putMessage("Cost is worse! Reducing stepsize.");
 			if ( innerIter == minInnerNegativeLook+2 && innerScaleFac > 0.0) {
