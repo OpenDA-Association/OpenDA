@@ -219,11 +219,11 @@ public abstract class BaseDud extends Instance implements IAlgorithm {
 		Results.putMessage(this, "outerLoop@relTolerance="+this.optimizer.relTol);
 		this.optimizer.relTolLinCost = configtree.getAsDouble("outerLoop@relToleranceLinearCost",this.optimizer.relTolLinCost);
 		Results.putMessage(this, "outerLoop@relToleranceLinearCost="+this.optimizer.relTolLinCost);
+		this.optimizer.maxTotalEvaluations = configtree.getAsInt("outerLoop@maxTotalEvaluations", optimizer.maxTotalEvaluations);
+		Results.putMessage(this, "outerLoop@maxTotalIterations="+this.optimizer.maxTotalEvaluations);
 		//linesearch
 		this.optimizer.maxInnerIter = configtree.getAsInt("lineSearch@maxIterations", optimizer.maxInnerIter);
 		Results.putMessage(this, "lineSearch@maxIterations="+this.optimizer.maxInnerIter);
-		this.optimizer.maxTotalInnerIter = configtree.getAsInt("lineSearch@maxTotalIterations", optimizer.maxTotalInnerIter);
-		Results.putMessage(this, "lineSearch@maxTotalIterations="+this.optimizer.maxTotalInnerIter);
 		this.optimizer.maxStep = configtree.getAsDouble("lineSearch@maxRelStepSize", optimizer.maxStep);
 		Results.putMessage(this, "lineSearch@maxRelStepSize="+this.optimizer.maxStep);
 		this.optimizer.minInnerNegativeLook = configtree.getAsInt("lineSearch/backtracking@startIterationNegativeLook", optimizer.minInnerNegativeLook);

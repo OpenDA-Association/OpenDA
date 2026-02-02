@@ -22,5 +22,10 @@
 				<xs:documentation>Maximum relative difference between the linearized costs of two best parameter estimates.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+    <xs:attribute name="maxTotalEvaluations" type="xs:integer" default="-1">
+      <xs:annotation>
+        <xs:documentation>Maximum number of total evaluations over all outer iterations. Default is unlimited.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
 	</xs:complexType>
 </xs:schema>
