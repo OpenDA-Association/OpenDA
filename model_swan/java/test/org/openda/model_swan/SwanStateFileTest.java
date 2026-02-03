@@ -22,6 +22,7 @@ package org.openda.model_swan;
 
 import junit.framework.TestCase;
 import org.openda.interfaces.IExchangeItem;
+import org.openda.interfaces.IGeometryInfo;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
@@ -46,10 +47,21 @@ public class SwanStateFileTest extends TestCase {
 
         String exchangeItemID = swanStateFile.getExchangeItemIDs()[0];
         IExchangeItem swnStateExchItem = swanStateFile.getDataObjectExchangeItem(exchangeItemID);
-//        assertEquals("swnStateExchItems.length", 1, swnStateExchItems.length);
         assertEquals("swnStateExchItems[0].id", "swanstate", swnStateExchItem.getId());
 
-        // test getValuesAsDoubles:
+		IGeometryInfo geometryInfo = swnStateExchItem.getGeometryInfo();
+		assertNotNull(geometryInfo);
+		assertTrue(geometryInfo instanceof SwanSpectralGeometryInfo);
+		SwanSpectralGeometryInfo swanSpectralGeometry = (SwanSpectralGeometryInfo) geometryInfo;
+		assertEquals(2601, swanSpectralGeometry.getNLocations());
+		assertEquals(0.0, swanSpectralGeometry.getLocationX(0), 0.000001);
+		assertEquals(0.0, swanSpectralGeometry.getLocationY(0), 0.000001);
+		assertEquals(2000.0, swanSpectralGeometry.getLocationX(2600), 0.000001);
+		assertEquals(2000.0, swanSpectralGeometry.getLocationY(2600), 0.000001);
+		assertEquals(840.0, swanSpectralGeometry.getLocationX(1104), 0.000001);
+		assertEquals(1320.0, swanSpectralGeometry.getLocationY(1104), 0.000001);
+
+		// test getValuesAsDoubles:
         double[] allStateValues = swnStateExchItem.getValuesAsDoubles();
         int nDir = swanParameters.getCDir();
         int nFreq = swanParameters.getRFreq();

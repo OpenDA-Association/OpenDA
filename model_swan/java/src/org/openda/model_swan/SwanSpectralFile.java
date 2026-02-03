@@ -22,6 +22,7 @@ package org.openda.model_swan;
 
 import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.timeseries.TimeUtils;
+import org.openda.interfaces.IGeometryInfo;
 
 import java.io.*;
 import java.text.ParseException;
@@ -50,6 +51,8 @@ public class SwanSpectralFile {
     private double epsilon = 0.1E-100;
     private boolean isNegativeSpectrum = false;
     private ArrayList<Double> dirArray = new ArrayList<Double>();
+	private double[] location_m;
+	private double[] location_n;
 
 
     public SwanSpectralFile(File spectralFile){
@@ -91,6 +94,11 @@ public class SwanSpectralFile {
     public Integer getNTimes() {
         return nTimes;
     }
+
+	public IGeometryInfo getGeometryInfo() {
+		if (location_m == null || location_n == null) return null;
+		return new SwanSpectralGeometryInfo(nLocations, location_m, location_n);
+	}
 
     public String[] getTimesStr() {
         String[] times = new String[nTimes];
@@ -410,8 +418,9 @@ public class SwanSpectralFile {
             } else {
                 throw new RuntimeException("Keyword LOCATIONS or LONLAT is not found in " + spectralFile.getAbsolutePath());
             }
-            double[] location_m = new double[nLocations];
-            double[] location_n = new double[nLocations];
+			location_m = new double[nLocations];
+			location_n = new double[nLocations];
+
             for (int i=0; i<nLocations; i++){
                 line = inputFileBufferedReader.readLine();
                 fields = line.trim().split("[ ]");
