@@ -44,10 +44,6 @@ public class SwanStateFileExchangeItem implements IExchangeItem {
         return null; // no description
     }
 
-    public Class getValueType() {
-        return double[].class;
-    }
-
     public ValueType getValuesType() {
         return ValueType.doublesType;
     }
@@ -120,8 +116,7 @@ public class SwanStateFileExchangeItem implements IExchangeItem {
 		throw new UnsupportedOperationException("org.openda.model_swan.SwanStateFileExchangeItem.getQuantityInfo(): Not implemented yet.");
 	}
 
-	
 	public IGeometryInfo getGeometryInfo() {
-		return null;
+		return swanStateFile.getGeometryInfo();
 	}
 }

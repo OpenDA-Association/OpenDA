@@ -22,6 +22,7 @@ package org.openda.model_swan;
 
 import org.openda.interfaces.IExchangeItem;
 import org.openda.interfaces.IDataObject;
+import org.openda.interfaces.IGeometryInfo;
 
 import java.io.File;
 import java.io.IOException;
@@ -97,4 +98,8 @@ public class SwanStateFile implements IDataObject {
         System.arraycopy(arguments, 1, remainingArguments, 0, remainingArguments.length);
         initialize(workingDir, fileName, remainingArguments);
     }
+
+	public IGeometryInfo getGeometryInfo() {
+		return swanState.getGeometryInfo();
+	}
 }
