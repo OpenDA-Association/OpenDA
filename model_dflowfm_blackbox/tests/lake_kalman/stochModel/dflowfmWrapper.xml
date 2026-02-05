@@ -52,6 +52,7 @@
             <id>hisfile</id>
             <arg>true</arg>
             <arg>false</arg>
+            <arg>stationDimensionVarName=station</arg>
         </dataObject>
         <dataObject className="org.openda.model_dflowfm.DFlowFMMeteoFile">
             <file>%meteofile%</file>

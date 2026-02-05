@@ -34,8 +34,6 @@ import ucar.nc2.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -339,7 +337,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 					int[] nDims=this.ExchangeItems.get(key).nDims;
 					// Get the dimension of the exchangeItem.
 					if (nDims!=null){
-						Array array=Array.factory(DataType.FLOAT,nDims);
+						Array array = Array.factory(DataType.DOUBLE, nDims);
 						double[] vals = exchangeItem.getValuesAsDoubles();
 						//Check Dimensions
 						int totalNumberOfValues = 1;
@@ -351,7 +349,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 						}
 						int offset = totalNumberOfValues * time_index;
 						for (int i=0; i<vals.length; i++){
-							array.setFloat(i+offset, (float) vals[i]);
+							array.setDouble(i + offset, vals[i]);
 						}
 						Variable myVar =  netcdfFileWriter.findVariable(this.ExchangeItems.get(key).shortName);
 						try {

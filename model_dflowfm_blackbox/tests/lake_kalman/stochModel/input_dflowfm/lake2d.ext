@@ -1,52 +1,23 @@
-* QUANTITY    : waterlevelbnd, velocitybnd, dischargebnd, tangentialvelocitybnd, normalvelocitybnd  filetype=9         method=2,3
-*             : salinitybnd                                                                         filetype=9         method=2,3
-*             : lowergatelevel, damlevel                                                            filetype=9         method=2,3
-*             : frictioncoefficient, horizontaleddyviscositycoefficient, advectiontype              filetype=4,10      method=4
-*             : initialwaterlevel, initialsalinity                                                  filetype=4,10      method=4
-*             : windx, windy, windxy, rain, atmosphericpressure                                     filetype=1,2,4,7,8 method=1,2,3
-*
-* kx = Vectormax = Nr of variables specified on the same time/space frame. Eg. Wind magnitude,direction: kx = 2
-* FILETYPE=1  : uniform              kx = 1 value               1 dim array      uni
-* FILETYPE=2  : unimagdir            kx = 2 values              1 dim array,     uni mag/dir transf to u,v, in index 1,2
-* FILETYPE=3  : svwp                 kx = 3 fields  u,v,p       3 dim array      nointerpolation
-* FILETYPE=4  : arcinfo              kx = 1 field               2 dim array      bilin/direct
-* FILETYPE=5  : spiderweb            kx = 3 fields              3 dim array      bilin/spw
-* FILETYPE=6  : curvi                kx = ?                                      bilin/findnm
-* FILETYPE=7  : triangulation        kx = 1 field               1 dim array      triangulation
-* FILETYPE=8  : triangulation_magdir kx = 2 fields consisting of Filetype=2      triangulation in (wind) stations
-* FILETYPE=9  : poly_tim             kx = 1 field  consisting of Filetype=1      line interpolation in (boundary) stations
-* FILETYPE=10 : inside_polygon       kx = 1 field                                uniform value inside polygon for INITIAL fields
-*
-* METHOD  =0  : provider just updates, another provider that pointers to this one does the actual interpolation
-*         =1  : intp space and time (getval) keep  2 meteofields in memory
-*         =2  : first intp space (update), next intp. time (getval) keep 2 flowfields in memory
-*         =3  : save weightfactors, intp space and time (getval),   keep 2 pointer- and weight sets in memory
-*         =4  : only spatial interpolation
-*
-* OPERAND =+  : Add
-*         =O  : Override
-*
-* VALUE   =   : Offset value for this provider
-*
-* FACTOR  =   : Conversion factor for this provider
-*
-**************************************************************************************************************
+# written by HYDROLIB-core 0.9.8
 
-QUANTITY=waterlevelbnd
-FILENAME=lake2d_01.pli
-FILETYPE=9
-METHOD=3
-OPERAND=O
+[Boundary]
+quantity     = waterlevelbnd
+locationFile = lake2d_01.pli
+forcingFile  = lake2d_01.bc
 
-QUANTITY=windxy
-FILENAME=lake2d-original.wnd
-FILETYPE=2
-METHOD=1
-OPERAND=O
+[Meteo]
+quantity             = windxy              # Name of the quantity. See UM Section C.5.3
+forcingFile          = lake2d-original.wnd # Name of file containing the forcing for this meteo quantity.
+forcingFileType      = uniMagDir           # Type of forcingFile.
+interpolationMethod  = linearSpaceTime     # Type of (spatial) interpolation.
+operand              = O                   # How this data is combined with previous data for the same quantity (if any).
+extrapolationAllowed = 0                   # Optionally allow nearest neighbour extrapolation in space (0: no, 1: yes). Default off.
 
-QUANTITY=windx
-FILENAME=lake2d_windx_noise.amu
-FILETYPE=4
-METHOD=1
-OPERAND=+
+[Meteo]
+quantity             = windx                  # Name of the quantity. See UM Section C.5.3
+forcingFile          = lake2d_windx_noise.amu # Name of file containing the forcing for this meteo quantity.
+forcingFileType      = arcInfo                # Type of forcingFile.
+interpolationMethod  = linearSpaceTime        # Type of (spatial) interpolation.
+operand              = +                      # How this data is combined with previous data for the same quantity (if any).
+extrapolationAllowed = 0                      # Optionally allow nearest neighbour extrapolation in space (0: no, 1: yes). Default off.
 

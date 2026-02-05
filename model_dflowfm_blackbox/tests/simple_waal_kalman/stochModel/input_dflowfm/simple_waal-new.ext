@@ -2,6 +2,11 @@
 
 [Boundary]
 quantity     = dischargebnd
+locationFile = sw_east_dis_noise.pli
+forcingFile  = sw_east_dis_noise.bc
+
+[Boundary]
+quantity     = dischargebnd
 locationFile = sw_east_dis.pli
 forcingFile  = sw_east_dis.bc
 
