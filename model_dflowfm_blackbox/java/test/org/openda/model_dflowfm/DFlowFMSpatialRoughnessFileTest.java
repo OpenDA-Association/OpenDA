@@ -18,6 +18,6 @@ public class DFlowFMSpatialRoughnessFileTest extends TestCase {
 		DFlowFMSpatialRoughnessFile dFlowFMSpatialRoughnessFile = new DFlowFMSpatialRoughnessFile();
 		dFlowFMSpatialRoughnessFile.initialize(testRunDataDir, new String[]{"roughness-Main.ini", "observationFile=obsFile1D_obs.ini"});
 		String[] exchangeItemIDs = dFlowFMSpatialRoughnessFile.getExchangeItemIDs();
-		assertEquals(2, exchangeItemIDs.length);
+		assertEquals(4, exchangeItemIDs.length);
 	}
 }

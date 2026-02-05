@@ -19,7 +19,7 @@ public class DFlowFMSpatialRoughnessExchangeItem implements IExchangeItem {
 	private final int chainageEndIndex;
 	private InitialBranchDefinitions initialBranchDefinitions;
 
-	public DFlowFMSpatialRoughnessExchangeItem(String id, String type, double[] values, int chainageStartIndex, int chainageEndIndex) {
+	public DFlowFMSpatialRoughnessExchangeItem(String id, String type, double[] values, int chainageStartIndex, int chainageEndIndex, double[] levels) {
 		this.id = id;
 		this.type = type;
 		this.values = values;
@@ -199,7 +199,7 @@ public class DFlowFMSpatialRoughnessExchangeItem implements IExchangeItem {
 				double[] listOfValueArray = listOfValueArrays.get(j);
 				values[j - chainageStartIndex] = listOfValueArray[0];
 			}
-			DFlowFMSpatialRoughnessExchangeItem exchangeItem = new DFlowFMSpatialRoughnessExchangeItem(id, roughnessType, values, chainageStartIndex, chainageEndIndex);
+			DFlowFMSpatialRoughnessExchangeItem exchangeItem = new DFlowFMSpatialRoughnessExchangeItem(id, roughnessType, values, chainageStartIndex, chainageEndIndex, levels);
 			exchangeItem.setInitialBranchDefinitions(this);
 			list.add(exchangeItem);
 		}
@@ -226,7 +226,7 @@ public class DFlowFMSpatialRoughnessExchangeItem implements IExchangeItem {
 					double[] listOfValueArray = listOfValueArrays.get(j);
 					values[j - chainageStartIndex] = listOfValueArray[i];
 				}
-				DFlowFMSpatialRoughnessExchangeItem exchangeItem = new DFlowFMSpatialRoughnessExchangeItem(id, roughnessType, values, chainageStartIndex, chainageEndIndex);
+				DFlowFMSpatialRoughnessExchangeItem exchangeItem = new DFlowFMSpatialRoughnessExchangeItem(id, roughnessType, values, chainageStartIndex, chainageEndIndex, levels);
 				exchangeItem.setInitialBranchDefinitions(this);
 				list.add(exchangeItem);
 			}
