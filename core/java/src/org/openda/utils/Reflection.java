@@ -24,6 +24,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -78,7 +79,7 @@ public class Reflection {
 		for(String className : this.classCache){
 			Class aClass;
 			try {
-				if(!className.contains("Cta") && !className.contains("NetcdfResultWriterNative")){
+				if(Stream.of("costa", "Native", "NetcdfResultWriter").noneMatch(className::contains)){
 					aClass = Class.forName(className);
 					boolean test = iface.isAssignableFrom(aClass); //MVL
 					if(test){

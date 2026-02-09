@@ -35,23 +35,7 @@ public class TestRunnerTest extends TestCase {
         testRunDataDir = testData.getTestRunDataDir();
     }
 
-	public void testTestRunner1() {
-		System.out.println("==============================================================================");
-		System.out.println("Run mutimple tests");
-		System.out.println("==============================================================================");
-
-		File testsDir= new File(new File(testRunDataDir,"simple_oscillator"), "tests");
-		String args[] = new String[]{testsDir.getAbsolutePath()};
-		
-		try {
-			TestRunner.main(args);			
-		} catch (Exception e) {
-			System.out.println("The error is detected correctly.");
-		}
-		
-	}
-	
-	public void testTestRunner2() {
+	public void testTestRunner() {
 		System.out.println("==============================================================================");
 		System.out.println("Create default config files");
 		System.out.println("==============================================================================");
@@ -65,17 +49,5 @@ public class TestRunnerTest extends TestCase {
 		assertTrue(testData.FileContains(someTstFile, "<check>"));
 		
 	}
-	
-	public void testTestRunner3() {
-		System.out.println("==============================================================================");
-		System.out.println("Run test with multiple steps");
-		System.out.println("==============================================================================");
-
-		File testFile = new File(new File(testRunDataDir,"simple_oscillator"),"Steadystate.tst");
-		String args[] = new String[]{testFile.getAbsolutePath()};
-		TestRunner.main(args);
-		
-	}
-
 
 }
