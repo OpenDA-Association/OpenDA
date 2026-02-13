@@ -351,6 +351,16 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 				frictionValues[i] = Double.parseDouble(splitFrictionValue);
 			}
 
+			if (observationPoints.containsKey(branchId)) {
+				int lastChainage = 0;
+				for (ObservationPoint observationPoint : observationPoints.get(branchId)) {
+					int chainageSplit = findChainageSplit(observationPoint, chainages);
+					String id = getIdWithLevel(chainages[chainageSplit - 1], 0, branchId, functionType, frictionType);
+					exchangeItems.put(id, new DFlowFMSpatialRoughnessExchangeItem(id, frictionType, frictionValues, lastChainage, chainageSplit - 1, null));
+				}
+				return;
+			}
+
 			String id = getIdWithoutLevel(chainages[0], branchId, frictionType);
 			exchangeItems.put(id, new DFlowFMSpatialRoughnessExchangeItem(id, frictionType, frictionValues, 0, numLocations - 1, null));
 			return;
@@ -397,10 +407,31 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 			value = lineReader.readLine();
 		}
 
+		if (observationPoints.containsKey(branchId)) {
+			int lastChainage = 0;
+			for (ObservationPoint observationPoint : observationPoints.get(branchId)) {
+				int chainageSplit = findChainageSplit(observationPoint, chainages);
+				String id = getIdWithLevel(chainages[chainageSplit - 1], 0, branchId, functionType, frictionType);
+				exchangeItems.put(id, new DFlowFMSpatialRoughnessExchangeItem(id, frictionType, frictionValues, lastChainage, chainageSplit - 1, null));
+			}
+			return;
+		}
+
 		for (int i = 0; i < numLevels; i++) {
 			String id = getIdWithLevel(chainages[0], 0, branchId, functionType, frictionType);
 			exchangeItems.put(id, new DFlowFMSpatialRoughnessExchangeItem(id, frictionType, frictionValues[i], 0, numLocations - 1, levels));
 		}
+	}
+
+	private int findChainageSplit(ObservationPoint observationPoint, double[] chainages) {
+		double chainageObservation = observationPoint.getChainage();
+		int size = chainages.length;
+		for (int i = 0; i < size; i++) {
+			double chainage = chainages[i];
+			if (chainage == chainageObservation) return i;
+			if (chainage > chainageObservation) return i - 1;
+		}
+		return size - 1;
 	}
 
 	private String getLevelString(String functionType, int levelIndex) {
