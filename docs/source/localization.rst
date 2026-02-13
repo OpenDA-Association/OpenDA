@@ -13,8 +13,8 @@ In OpenDA, we have two different options for localization: `Hamill localization 
 
 Example configurations can be found in 
 
-- ``model_dflowfm_blackbox\tests\dcsmv5_kalman_rst\algorithm\Enkf_localization.xml``, and
-- ``model_dflowfm_blackbox\tests\dcsmv5_kalman_rst_partitioning\algorithm\Enkf_localization.xml``.
+- ``model_dflowfm_blackbox/tests/dcsmv5_kalman_rst/algorithm/Enkf_localization.xml``, and
+- ``model_dflowfm_blackbox/tests/dcsmv5_kalman_rst_partitioning/algorithm/Enkf_localization.xml``.
 
 They look as follows::
 

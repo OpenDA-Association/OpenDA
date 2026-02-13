@@ -171,7 +171,8 @@ observation point Huy could look like::
 
   # selection of observation points for calibration
   Huy     
- 
+
+.. _exchange item configuration: 
 Exchange item configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

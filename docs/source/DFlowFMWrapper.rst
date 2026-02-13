@@ -1,13 +1,10 @@
 =================
 D-Flow FM wrapper
 =================
-Disclaimer: this page has not been finished yet. Current open questions 
-are described in this `issue <https://github.com/OpenDA-Association/OpenDA/issues/431>`__.
-
 The D-Flow FM wrapper has been developed and is maintained by our OpenDA
 partner Deltares. On this page, we describe the different data objects for the
 D-Flow FM wrapper. Examples based on the dcsmv5 (North Sea) model are available
-from OpenDA release 3.1 in the directories ``examples\model_dflowfm_blackbox``.
+from OpenDA release 3.1 in the directories ``examples/model_dflowfm_blackbox``.
 
 Start and end time of model runs
 --------------------------------
@@ -18,8 +15,8 @@ stored in the so-called ``.mdu`` file (the input file for the hydrodynamic
 simulation program). More information about this file can be found in Section
 4.2 of the `D-Flow FM documentation <https://usermanual.wiki/Pdf/DFlowFMUserManual.1771347134/view>`__.
 
-In order to use :ref:`restarts of a model<restart>`, OpenDA should be able to
-change the run period of the model.  The data object related to the start and
+In order to use :ref:`restarts of a model<restart>`, OpenDA must be able to
+change the model's run period.  The data object related to the start and
 end times of model runs has been implemented in the Java class
 ``org.openda.model_dflowfm.DFlowFMTimeInfo``. This data object reads
 ``TStart``, ``TStop``, ``Tunit`` and ``RefDate`` from the ``[time]`` section in
@@ -29,24 +26,33 @@ and ``end_date``. The run period of the model (as set in ``TStart`` and
 items. In the ``dflowfmModel.xml``, the time exchange items are set as
 ``<timeInfoExchangeItems start="start_time" end="end_time"/>``.
 
-Example configuration for this data object can be found below::
+Example configuration for the wrapper of this data object can be found below::
 
   <dataObject className="org.openda.model_dflowfm.DFlowFMTimeInfo">
       <file>%mdufile%</file>
       <id>mdufile</id>
   </dataObject>
 
+See for example the file ``model_dflowfm_blackbox/tests/dcsmv5_kalman_rst/stochModel/dflowfmWrapper.xml``.
+
 Model state
 -----------
 
 In order to change the model state, the Java class
 ``org.openda.model_dflowfm.DFlowFMRestartFileWrapper`` is used.  It will read,
-edit and rewrite either a ``*map.nc`` file or a ``*_rst.nc`` file. These files
-contain the model state from which a model run can restart and continue based
-on how a previous run ended. More information about the ``_rst.nc`` file can be
-found in Section 5.6.3 of the `D-Flow FM documentation <https://usermanual.wiki/Pdf/DFlowFMUserManual.1771347134/view>`__, and
-:ref:`below <rst nc>`). More information about map files can be found in
-Section 5.6.2 of the same `D-Flow FM documentation <https://usermanual.wiki/Pdf/DFlowFMUserManual.1771347134/view>`__.
+edit and rewrite either a ``*map.nc`` file or a ``*_rst.nc`` file.
+``*map.nc`` files relate to older functionality and are mostly used to store
+model results in grid format for all time steps in a run. While they can be used
+for restarting, the preferred option is to use ``*_rst.nc`` files. 
+These files contain more complete data for only one time step (the one used for
+restarting), making them more efficient.
+More information about map files can be found in Section 5.6.2 of the `D-Flow
+FM documentation
+<https://usermanual.wiki/Pdf/DFlowFMUserManual.1771347134/view>`__, and more
+information about the ``_rst.nc`` file can be found in Section 5.6.3 of the
+same `D-Flow FM documentation
+<https://usermanual.wiki/Pdf/DFlowFMUserManual.1771347134/view>`__, and
+:ref:`below <rst nc>`. 
 
 The previously mentioned Java class will create exchange items for each
 variable with the variable name as "exchange item id".  An example
@@ -64,32 +70,18 @@ Boundary files
 --------------
 
 D-Flow FM boundary files are explained in Section 7.4.1 of the `D-Flow FM documentation <https://usermanual.wiki/Pdf/DFlowFMUserManual.1771347134/view>`__. Here, we
-describe the approach for ``.tim`` and ``.bc`` files.
-
-- In order to read, edit and rewrite boundary files in the ``.tim`` format,
-  the data object with class name
-  ``org.openda.model_dflowfm.DFlowFMTimeSeriesDataObject`` should be used.
-  This data object will use the file references in the ``.mdu``, ``.ext``, and
-  ``.pli`` files to locate the ``.tim`` files (see the `D-Flow FM documentation <https://usermanual.wiki/Pdf/DFlowFMUserManual.1771347134/view>`__). 
-  
-  An example configuration for this data object is::
-  		
-          <dataObject className="org.openda.model_dflowfm.DFlowFMTimeSeriesDataObject">
-              <file>%mdufile%</file>
-              <id>boundaries</id>
-          </dataObject>
+describe the approach for ``.bc`` files.
+In order to read, edit and rewrite boundary files in the ``.bc`` format, the
+data object with class name ``org.openda.model_dflowfm.BcFile`` must be used.
+As an extra argument, the file(name) of the ``.bc`` file after editing must
+be provided in ``<arg>``. If this filename is identical to the original, then
+OpenDA will overwrite the original ``.bc`` file. As an example, we provide::
 		
-- In order to read, edit and rewrite boundary files in the ``.bc`` format, the
-  data object with class name ``org.openda.model_dflowfm.BcFile`` must be used.
-  As an extra argument, the file(name) of the ``.bc`` file after editing must
-  be provided in ``<arg>``. If this filename is identical to the original, then
-  OpenDA will overwrite the original ``.bc`` file. As an example, we provide::
-  		
-          <dataObject className="org.openda.model_dflowfm.BcFile">
-              <file>boundary_conditions/flow/TielNewNoise_0001.bc</file>
-              <id>bcfile</id>
-              <arg>boundary_conditions/flow/TielNewNoise_0001.bc</arg>
-          </dataObject>
+        <dataObject className="org.openda.model_dflowfm.BcFile">
+            <file>boundary_conditions/flow/TielNewNoise_0001.bc</file>
+            <id>bcfile</id>
+            <arg>boundary_conditions/flow/TielNewNoise_0001.bc</arg>
+        </dataObject>
 
 NetCDF concatenater
 -------------------
@@ -101,13 +93,13 @@ in order to merge them together, OpenDA has a NetcdfFileConcatenater. This is
 general functionality available in OpenDA and can be used for many different
 models that create NetCDF output files.  This concatenater (formally spelled as
 concatenator) should be configured as compute action after the compute action
-of the model run.  It takes two arguments: the first argument is the name of
+of the model run. [#action]_  It takes two arguments: the first argument is the name of
 the file with all concatenated data and the second argument is the file that
 should be concatenated to it. Since the concatenator will run after each small
 model run, only 1 NetCDF file has to be concatenated to the main file
 containing all concatenated data.  If the concatenated file does not exist yet
 it will be created with identical content to the file that it should be
-concatenated with. This will happen after the first model run.
+concatenated with. This occurs after the first model run.
  
 In the ``dflowfmWrapper.xml``, of the ``model_dflowfm_blackbox`` examples, the
 examples ``dcsmv5_kalman_rst`` and ``dcsmv5_kalman_rst_partitioning`` can be
@@ -128,7 +120,7 @@ Since OpenDA 3.1, we support the use of D-Flow FM models that restart from
 ``*_rst.nc`` files (see the Section on :ref:`restarts of a model<restart>`). 
 
 An example setup can be found in the folder
-``examples\model_dflowfm_blackbox\dcsmv5_kalman_rst``.
+``examples/model_dflowfm_blackbox/dcsmv5_kalman_rst``.
 
 To let this work, the argument ``useRstForRestart=true`` must be added to the
 ``org.openda.model_dflowfm.DFlowFMTimeInfo`` data object.  This prevents OpenDA
@@ -154,9 +146,9 @@ that runs from January 3 2007 at midnight until January 5 2007 at midnight.
 Furthermore, we assume that a restart file is written every day at midnight. At
 the end of the run, the following restart files are created::
 
-%workingDirectory%\subdir\dcsmv5_20070103_000000_rst.nc
-%workingDirectory%\subdir\dcsmv5_20070104_000000_rst.nc
-%workingDirectory%\subdir\dcsmv5_20070105_000000_rst.nc
+%workingDirectory%/subdir/dcsmv5_20070103_000000_rst.nc
+%workingDirectory%/subdir/dcsmv5_20070104_000000_rst.nc
+%workingDirectory%/subdir/dcsmv5_20070105_000000_rst.nc
 
 The ``DFlowFMRestartFilePostProcessor`` will be looking for files with pattern
 ``<runId>_'yyyyMMdd'_'HHmmss'_rst.nc`` where the ``<runId>`` is passed as an
@@ -168,13 +160,13 @@ stamps.
 We choose the following configuration for the compute action::
 
     <action className="org.openda.model_dflowfm.DFlowFMRestartFilePostProcessor" workingDirectory="%instanceDir%">
-        <arg>runId=%runid%</arg>
+        <arg>runId=dcsmv5</arg>
         <arg>sourceRestartFileSubDir=%outputDir%</arg>
         <arg>targetRestartFileNamePostFix=00000000_000000_rst.nc</arg>
         <arg>deleteOlderRstFiles=true</arg>
     </action>
 
-were the following required and optional arguments are related to
+where the following required and optional arguments are related to
 ``DFlowFMRestartFilePostProcessor``:
 
 - Required arguments for the renaming are ``runId=<runId>`` and
@@ -197,8 +189,8 @@ were the following required and optional arguments are related to
 Let us return to our example. The compute action will copy and rename the file
 with the highest time stamp to ``<runId>_<targetRestartFileNamePostFix>`` in
 the ``workingDirectory``. This means
-``%workingDirectory%\subdir\dcsmv5_20070105_000000_rst.nc`` will be copied and
-renamed to ``%workingDirectory%\dcsmv5_00000000_000000_rst.nc``. For this
+``%workingDirectory%/subdir/dcsmv5_20070105_000000_rst.nc`` will be copied and
+renamed to ``%workingDirectory%/dcsmv5_00000000_000000_rst.nc``. For this
 mechanism to work properly, ``RestartFile = dcsmv5_00000000_000000_rst.nc``
 should be configured in the ``[restart]`` section of the ``.mdu`` file.
 
@@ -211,13 +203,16 @@ to match the time stamps.
 Partitioning
 ------------
 
+D-Flow FM splits its total model grid into smaller parts.  This is done such
+that the model calculations can be done in parallel using multiple cores of a
+computer processor.  This behavior is called *partitioning*. 
 Since OpenDA 3.1, support for D-Flow FM models that are partitioned is added.
 More information on D-Flow FM partitioning can be found in Section 5.2.2 of the
 `D-Flow FM documentation <https://usermanual.wiki/Pdf/DFlowFMUserManual.1771347134/view>`__.  Similar to
 the restarting section above, this setup is specifically designed for an
 operational context.  An example setup can be found in 
 
-``model_dflowfm_blackbox\tests\dcsmv5_kalman_rst_partitioning\stochModel\dflowfmWrapper.xml``
+``model_dflowfm_blackbox/tests/dcsmv5_kalman_rst_partitioning/stochModel/dflowfmWrapper.xml``
 
 For this to work, multiple configuration changes are needed:
 
@@ -268,15 +263,15 @@ For this to work, multiple configuration changes are needed:
   As an example, we revisit the same North Sea example again, using three
   partitions. At the end of the run, the following restart files are created::
 
-        %workingDirectory%\subdir\dcsmv5_0000_20070103_000000_rst.nc
-        %workingDirectory%\subdir\dcsmv5_0000_20070104_000000_rst.nc
-        %workingDirectory%\subdir\dcsmv5_0000_20070105_000000_rst.nc
-        %workingDirectory%\subdir\dcsmv5_0001_20070103_000000_rst.nc
-        %workingDirectory%\subdir\dcsmv5_0001_20070104_000000_rst.nc
-        %workingDirectory%\subdir\dcsmv5_0001_20070105_000000_rst.nc
-        %workingDirectory%\subdir\dcsmv5_0002_20070103_000000_rst.nc
-        %workingDirectory%\subdir\dcsmv5_0002_20070104_000000_rst.nc
-        %workingDirectory%\subdir\dcsmv5_0002_20070105_000000_rst.nc
+        %workingDirectory%/subdir/dcsmv5_0000_20070103_000000_rst.nc
+        %workingDirectory%/subdir/dcsmv5_0000_20070104_000000_rst.nc
+        %workingDirectory%/subdir/dcsmv5_0000_20070105_000000_rst.nc
+        %workingDirectory%/subdir/dcsmv5_0001_20070103_000000_rst.nc
+        %workingDirectory%/subdir/dcsmv5_0001_20070104_000000_rst.nc
+        %workingDirectory%/subdir/dcsmv5_0001_20070105_000000_rst.nc
+        %workingDirectory%/subdir/dcsmv5_0002_20070103_000000_rst.nc
+        %workingDirectory%/subdir/dcsmv5_0002_20070104_000000_rst.nc
+        %workingDirectory%/subdir/dcsmv5_0002_20070105_000000_rst.nc
 
   The ``DFlowFMRestartFilePostProcessor`` will be looking for files with
   pattern ``<runId>_<partitionNumber>_'yyyyMMdd'_'HHmmss'_rst.nc`` where the
@@ -287,8 +282,23 @@ For this to work, multiple configuration changes are needed:
   individually, it will copy and rename the files with the highest time stamp
   to ``<runId>_<partitionNumber>_<targetRestartFileNamePostFix>`` in the
   ``workingDirectory``. In the example above, this means
-  ``%workingDirectory%\subdir\dcsmv5_000n_20070105_000000_rst.nc``, n = 0,1,2
+  ``%workingDirectory%/subdir/dcsmv5_000n_20070105_000000_rst.nc``, n = 0,1,2
   (the partition number), will be copied and renamed to
-  ``%workingDirectory%\dcsmv5_000n_00000000_000000_rst.nc``. For this mechanism
+  ``%workingDirectory%/dcsmv5_000n_00000000_000000_rst.nc``. For this mechanism
   to work properly, ``RestartFile = dcsmv5_000n_00000000_000000_rst.nc`` should
   be configured in the ``[restart]`` section of the partitioned ``.mdu`` file. 
+
+Note: when a too-high partition number is entered, there will be a FileNotFound
+exception because files for the higher partitioning do not exist. When the
+number of partitions is set too small, then only part of the grid will be taken
+into account, leading to inconsistent changes which makes model runs
+unpredictable.
+
+.. rubric:: Footnotes
+
+.. [#action]
+   Actions are configurations that specify which (external) executables
+   OpenDA should run. Typically, this would be the model itself. Other actions can
+   include pre- or post-processing steps. For example, the NetCDF concatenator is
+   a post-processing step that merges smaller NetCDF result files from multiple
+   runs into a single NetCDF file.
