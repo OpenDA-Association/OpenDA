@@ -10,6 +10,7 @@ A model that conforms to the OpenDA standard can use all the tools that are avai
 OpenDA has been designed for high performance. Hence, even large-scale models can use it. Also, OpenDA allows users to optimize the interaction between their model and the data-assimilation/calibration methods. Hence, data-assimilation with OpenDA can be as efficient as with custom-made implementations of data-assimilation methods.
 
 OpenDA is an Open Source project. Contributions are welcome from anyone wishing to participate in the further development of the OpenDA toolset.
+More information about the development process is found [here](./INSTALL.md)
 
 ## Features of OpenDA
 
