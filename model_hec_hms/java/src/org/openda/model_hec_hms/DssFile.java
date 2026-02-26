@@ -17,6 +17,7 @@ import org.openda.interfaces.IExchangeItem;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 public class DssFile extends AbstractDataObject {
@@ -39,84 +40,86 @@ public class DssFile extends AbstractDataObject {
 
 		DSSFile dssFile = DSS.open(inputFile.getPath());
 		try {
-			Map<String, ArrayList<double[]>> idTimesMap = new LinkedHashMap<>();
-			Map<String, ArrayList<double[]>> idValuesMap = new LinkedHashMap<>();
-			List<String> pathNames = new ArrayList<String>(dssFile.getCatalogedPathnames());
-			// TODO filrst order pathnames on part D
-			for (String pathname : pathNames) {
-
-				try {
-					//System.out.println(pathname);
-					if (dssFile.getDataManager().recordType(pathname) == 106) continue;
-					HecMath hecMath = dssFile.read(pathname);
-					DataContainer container = hecMath.getData();
-
-					if (!(container instanceof TimeSeriesContainer)) continue;
-
-					TimeSeriesContainer timeSeriesContainer = (TimeSeriesContainer) container;
-					DSSPathname dssPathName = new DSSPathname();
-					dssPathName.setPathname(pathname);
-					StringBuilder idBuilder = new StringBuilder();
-					String aPart = dssPathName.getAPart();
-					idBuilder.append(aPart);
-					idBuilder.append('/');
-					String bPart = dssPathName.getBPart();
-					idBuilder.append(bPart);
-					idBuilder.append('/');
-					String cPart = dssPathName.getCPart();
-					idBuilder.append(cPart);
-					idBuilder.append('/');
-					String fPart = dssPathName.getFPart();
-					idBuilder.append(fPart);
-
-					String exchangeItemId = idBuilder.toString();
-					ArrayList<double[]> valuesList = idValuesMap.getOrDefault(exchangeItemId, new ArrayList<>());
-					valuesList.add(timeSeriesContainer.values);
-					idValuesMap.putIfAbsent(exchangeItemId, valuesList);
-					double[] times = new double[timeSeriesContainer.numberValues];
-					for (int i = 0; i < timeSeriesContainer.numberValues; i++) {
-						times[i] = hecTimeToMJD(timeSeriesContainer.times[i]);
-					}
-					ArrayList<double[]> timesList = idTimesMap.getOrDefault(exchangeItemId, new ArrayList<>());
-					timesList.add(times);
-					idTimesMap.putIfAbsent(exchangeItemId, timesList);
-				} catch (Exception e) {
-					System.out.println("Error reading " + pathname + ": " + e.getMessage());
-				}
-			}
-			for (Map.Entry<String, ArrayList<double[]>> entry : idValuesMap.entrySet()) {
-				String exchangeItemId = entry.getKey();
-				ArrayList<double[]> valuesList = entry.getValue();
-				int totalValuesLength = 0;
-				for (double[] arr : valuesList) totalValuesLength += arr.length;
-				double[] combinedValues = new double[totalValuesLength];
-				int valPos = 0;
-				for (double[] arr : valuesList) {
-					System.arraycopy(arr, 0, combinedValues, valPos, arr.length);
-					valPos += arr.length;
-				}
-				ArrayList<double[]> timesList = idTimesMap.get(exchangeItemId);
-				double[] combinedTimes = new double[totalValuesLength];
-				int timePos = 0;
-				for (double[] arr : timesList) {
-					System.arraycopy(arr, 0, combinedTimes, timePos, arr.length);
-					timePos += arr.length;
-				}
-				if (!isAscending(combinedTimes)) throw new IllegalStateException("Times for exchange item " + exchangeItemId + " are not in ascending order");
-				TimeInfo timeInfo = new TimeInfo(combinedTimes);
-				DoublesExchangeItem exchangeItem = new DoublesExchangeItem(exchangeItemId, IExchangeItem.Role.Output, combinedValues);
-				exchangeItem.setTimeInfo(timeInfo);
-				exchangeItems.put(exchangeItemId, exchangeItem);
-				System.out.println(exchangeItemId);
-			}
+			Map<String, List<TimeSeriesContainer>> idContainersMap = getContainersPerExchangeItemIdMap(dssFile);
+			mergeContainersIntoExchangeItems(idContainersMap);
 		} finally {
 			dssFile.close();
+			File dscFile = new File(inputFile.getPath().replace(".dss", ".dsc"));
+			Path dscPath = dscFile.toPath();
 			try {
-				Files.deleteIfExists(new File(inputFile.getPath().replace(".dss", ".dsc")).toPath());
+				Files.deleteIfExists(dscPath);
 			} catch (IOException e) {
-				throw new RuntimeException(e);
+				System.out.println("Error deleting " + dscFile.getAbsolutePath() + ": " + e.getMessage());
 			}
 		}
+	}
+
+	private void mergeContainersIntoExchangeItems(Map<String, List<TimeSeriesContainer>> idContainersMap) {
+		for (Map.Entry<String, List<TimeSeriesContainer>> entry : idContainersMap.entrySet()) {
+			String exchangeItemId = entry.getKey();
+			List<TimeSeriesContainer> valuesList = entry.getValue();
+			valuesList.sort(Comparator.comparingLong(c -> c.startHecTime.getTimeInMillis()));
+			int totalValuesLength = 0;
+			for (TimeSeriesContainer arr : valuesList) totalValuesLength += arr.times.length;
+			double[] combinedValues = new double[totalValuesLength];
+			double[] combinedTimes = new double[totalValuesLength];
+			int valPos = 0;
+			for (TimeSeriesContainer container : valuesList) {
+				System.arraycopy(container.values, 0, combinedValues, valPos, container.values.length);
+				double[] times = new double[container.numberValues];
+				for (int i = 0; i < container.numberValues; i++) {
+					times[i] = hecTimeToMJD(container.times[i]);
+				}
+				System.arraycopy(times, 0, combinedTimes, valPos, times.length);
+				valPos += container.values.length;
+			}
+			if (!isAscending(combinedTimes)) throw new IllegalStateException("Programming error: Times for exchange item " + exchangeItemId + " are not in ascending order");
+			TimeInfo timeInfo = new TimeInfo(combinedTimes);
+			DoublesExchangeItem exchangeItem = new DoublesExchangeItem(exchangeItemId, IExchangeItem.Role.Output, combinedValues);
+			exchangeItem.setTimeInfo(timeInfo);
+			exchangeItems.put(exchangeItemId, exchangeItem);
+		}
+	}
+
+	private Map<String, List<TimeSeriesContainer>> getContainersPerExchangeItemIdMap(DSSFile dssFile) {
+		List<String> pathNames = new ArrayList<String>(dssFile.getCatalogedPathnames());
+		Map<String, List<TimeSeriesContainer>> idContainersMap = new LinkedHashMap<>();
+		for (String pathname : pathNames) {
+			try {
+				if (dssFile.getDataManager().recordType(pathname) == 106) continue;
+				HecMath hecMath = dssFile.read(pathname);
+				DataContainer container = hecMath.getData();
+
+				if (!(container instanceof TimeSeriesContainer)) continue;
+				TimeSeriesContainer timeSeriesContainer = (TimeSeriesContainer) container;
+				String exchangeItemId = getExchangeItemId(pathname);
+				List<TimeSeriesContainer> valuesList = idContainersMap.getOrDefault(exchangeItemId, new ArrayList<>());
+				valuesList.add(timeSeriesContainer);
+				idContainersMap.putIfAbsent(exchangeItemId, valuesList);
+			} catch (Exception e) {
+				System.out.println("Error reading " + pathname + ": " + e.getMessage());
+			}
+		}
+		return idContainersMap;
+	}
+
+	private String getExchangeItemId(String pathname) {
+		DSSPathname dssPathName = new DSSPathname();
+		dssPathName.setPathname(pathname);
+		StringBuilder idBuilder = new StringBuilder();
+		String aPart = dssPathName.getAPart();
+		idBuilder.append(aPart);
+		idBuilder.append('/');
+		String bPart = dssPathName.getBPart();
+		idBuilder.append(bPart);
+		idBuilder.append('/');
+		String cPart = dssPathName.getCPart();
+		idBuilder.append(cPart);
+		idBuilder.append('/');
+		String fPart = dssPathName.getFPart();
+		idBuilder.append(fPart);
+
+		return idBuilder.toString();
 	}
 
 	private double hecTimeToMJD(int hecTime) {
@@ -131,7 +134,7 @@ public class DssFile extends AbstractDataObject {
 		double lastValue = array[0];
 		for (int i = 1; i < array.length; i++) {
 			double v = array[i];
-			if (v <= lastValue) return false;
+			if (v < lastValue) return false;
 			lastValue = v;
 		}
 
