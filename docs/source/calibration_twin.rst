@@ -173,6 +173,7 @@ observation point Huy could look like::
   Huy     
 
 .. _exchange item configuration: 
+
 Exchange item configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
