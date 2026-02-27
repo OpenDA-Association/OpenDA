@@ -598,6 +598,7 @@
         <buildmoduletests module="model_efdc_dll"/> -->
         <buildmoduletests module="model_example_blackbox" />
         <buildmoduletests module="model_example_fortran" />
+        <buildmoduletests module="model_hec_hms" />
         <buildmoduletests module="model_hspf" />
         <!--<buildmoduletests module="model_swan"/>-->
         <buildmoduletests module="model_wflow"/>
@@ -667,6 +668,7 @@
             <classpath>
                 <fileset dir="${projectbin}">
                     <include name="*.jar"/>
+                    <include name="*.dll"/>
                 </fileset>
                 <pathelement path="${testbuilddir}"/>
             </classpath>
@@ -706,6 +708,7 @@
             <classpath>
                 <fileset dir="${projectbin}">
                     <include name="*.jar"/>
+                    <include name="*.dll"/>
                 </fileset>
                 <pathelement path="${testbuilddir}"/>
             </classpath>
