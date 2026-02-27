@@ -5,31 +5,30 @@ import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 
 public class DssFileTest extends TestCase {
 	OpenDaTestSupport testData = null;
-	private File testRunDataRestartFileDir;
+	private File testRunDataDir;
 
 
-	protected void setUp() throws IOException {
+	protected void setUp() {
 		testData = new OpenDaTestSupport(DssFileTest.class, "model_hec_hms");
-		testRunDataRestartFileDir = testData.getTestRunDataDir();
+		testRunDataDir = testData.getTestRunDataDir();
 	}
 
 	public void testRead() {
-		File dssFile = new File(testRunDataRestartFileDir, "Hec.dss");
+		File dssFile = new File(testRunDataDir, "Hec.dss");
 		DssFile dssDataObject = new DssFile();
-		dssDataObject.initialize(testRunDataRestartFileDir, new String[]{dssFile.getName()});
+		dssDataObject.initialize(testRunDataDir, new String[]{dssFile.getName()});
 		String[] exchangeItemIDs = dssDataObject.getExchangeItemIDs();
 		assertEquals(1, exchangeItemIDs.length);
 	}
 
 	public void testReadReal() {
-		File dssFile = new File(testRunDataRestartFileDir, "Run_2.dss");
+		File dssFile = new File(testRunDataDir, "Run_2.dss");
 		DssFile dssDataObject = new DssFile();
-		dssDataObject.initialize(testRunDataRestartFileDir, new String[]{dssFile.getName()});
+		dssDataObject.initialize(testRunDataDir, new String[]{dssFile.getName()});
 
 		String[] exchangeItemIDs = dssDataObject.getExchangeItemIDs();
 		Arrays.sort(exchangeItemIDs);
