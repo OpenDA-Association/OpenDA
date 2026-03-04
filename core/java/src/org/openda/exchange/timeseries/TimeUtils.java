@@ -73,11 +73,7 @@ public class TimeUtils {
     * @return date as string
     */
    public static String mjdToString(double mjd, String format, TimeZone tz) {
-      final long timeInMillis = Math.round((mjd - mjdAtJanFirst1970) * daysToMillis);
-      final Date t = new java.util.Date(timeInMillis);
-      final SimpleDateFormat formatter = new SimpleDateFormat(format);
-      formatter.setTimeZone(tz);
-	   return formatter.format(t);
+	   return mjdToString(mjd, format, tz, null);
    }
 
    /**
@@ -90,13 +86,17 @@ public class TimeUtils {
     * @return date as string
     */
    public static String mjdToString(double mjd, String format) {
-      final TimeZone tz = TimeZone.getTimeZone("UTC");
-      final long timeInMillis = Math.round((mjd - mjdAtJanFirst1970) * daysToMillis);
-      final Date t = new java.util.Date(timeInMillis);
-      final SimpleDateFormat formatter = new SimpleDateFormat(format);
-      formatter.setTimeZone(tz);
-	   return formatter.format(t);
+	   TimeZone tz = TimeZone.getTimeZone("UTC");
+	   return mjdToString(mjd, format, tz, null);
    }
+
+	public static String mjdToString(double mjd, String format, TimeZone tz, Locale locale) {
+		long timeInMillis = Math.round((mjd - mjdAtJanFirst1970) * daysToMillis);
+		Date date = new java.util.Date(timeInMillis);
+		SimpleDateFormat formatter = locale == null ? new SimpleDateFormat(format) : new SimpleDateFormat(format, locale);
+		if (tz != null) formatter.setTimeZone(tz);
+		return formatter.format(date);
+	}
 
    /**
     * Add days, hours, minutes to Modified Julian Date (days since 00:00 November 17, 1858 UTC) and return the result

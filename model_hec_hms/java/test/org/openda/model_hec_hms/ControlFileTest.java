@@ -22,7 +22,7 @@ public class ControlFileTest extends TestCase {
 		testRunDataDir = testData.getTestRunDataDir();
 	}
 
-	private static final double DELTA = 0.001;
+	private static final double DELTA = 0.0001;
 
 	public void testControlFile() throws IOException {
 		// Given input file
@@ -40,7 +40,7 @@ public class ControlFileTest extends TestCase {
 
 			// Then exchange items are found
 			String[] exchangeItemIds = dataObject.getExchangeItemIDs();
-			assertEquals(1, exchangeItemIds.length);
+			assertEquals(2, exchangeItemIds.length);
 
 			// Then exchange items contains values for:
 			IExchangeItem startTimeExchangeItem = dataObject.getDataObjectExchangeItem("start_time");
@@ -55,9 +55,9 @@ public class ControlFileTest extends TestCase {
 
 			// Then the exchange item has an array of values
 			double startValue = mjdStartTimeExchangeItem.getValue();
-			assertEquals(60611.958, startValue, DELTA);
+			assertEquals(60612, startValue, DELTA);
 			double endValue = mjdEndTimeExchangeItem.getValue();
-			assertEquals(60612.166, endValue, DELTA);
+			assertEquals(60612.2083, endValue, DELTA);
 
 			// When the values are updated
 			double newStartTime = 60637.875; // 23 November 2024 21:00 UTC
@@ -70,8 +70,8 @@ public class ControlFileTest extends TestCase {
 			dataObject.finish();
 
 			// Then the values are updated
-			List<String> expectedLines = Files.readAllLines(new File(testRunDataDir, "expected-exchange-items.control").toPath());
-			List<String> actualLines = Files.readAllLines(temporaryInputFile.toPath());
+			String expectedLines = Files.readString(new File(testRunDataDir, "expected-exchange-items.control").toPath());
+			String actualLines = Files.readString(temporaryInputFile.toPath());
 			assertEquals(expectedLines, actualLines);
 		} finally {
 			Files.deleteIfExists(temporaryInputFile.toPath());
