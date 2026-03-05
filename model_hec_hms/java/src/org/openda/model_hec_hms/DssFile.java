@@ -24,7 +24,7 @@ public class DssFile extends AbstractDataObject {
 	private HecTime hecTimeObject;
 
 	static {
-		if (System.getProperty("os.name").startsWith("Linux")) System.loadLibrary("libjavaHeclib.so");
+		if (System.getProperty("os.name").startsWith("Linux")) System.loadLibrary("libjavaHeclib");
 		Heclib.zset("MLEVEL", "", 0); // set log level
 	}
 
