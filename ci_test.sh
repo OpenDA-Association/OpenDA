@@ -7,7 +7,7 @@ export TZ='Europe/Amsterdam'
 export OPENDADIR=$PWD/bin
 export LD_LIBRARY_PATH=$OPENDADIR/linux64_gnu/lib:$LD_LIBRARY_PATH
 
-echo LIBDIR
+echo LIBDIR $OPENDADIR/linux64_gnu/lib
 ls -tral "$OPENDADIR/linux64_gnu/lib"
 
 echo "Start of ant test-ci"
