@@ -43,7 +43,6 @@
       <classpath>
         <fileset dir="${projectdir}">
           <include name="${projectlib}/*.jar"/>
-          <include name="${projectlib}/*.dll"/>
         </fileset>
       </classpath>
     </javac>
@@ -64,7 +63,6 @@
       <classpath>
         <fileset dir=".">
           <include name="${modulelibdir}/*.jar"/>
-          <include name="${modulelibdir}/*.dll"/>
         </fileset>
         <fileset dir="${projectdir}">
           <include name="${projectlib}/*.jar"/>

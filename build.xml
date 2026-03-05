@@ -668,7 +668,6 @@
             <classpath>
                 <fileset dir="${projectbin}">
                     <include name="*.jar"/>
-                    <include name="*.dll"/>
                 </fileset>
                 <pathelement path="${testbuilddir}"/>
             </classpath>
@@ -708,7 +707,6 @@
             <classpath>
                 <fileset dir="${projectbin}">
                     <include name="*.jar"/>
-                    <include name="*.dll"/>
                 </fileset>
                 <pathelement path="${testbuilddir}"/>
             </classpath>
