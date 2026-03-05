@@ -151,6 +151,12 @@
         <include name="**/*"/>
       </fileset>
     </copy>
-    <chmod dir="${modulebindir}" perm="ugo+rx" includes="**/*.sh"/>
+  <copy todir="${modulebindir}" flatten="no">
+    <fileset dir="${native_bin}">
+      <include name="**/*"/>
+    </fileset>
+  </copy>
+
+  <chmod dir="${modulebindir}" perm="ugo+rx" includes="**/*.sh"/>
   </target>
 </project>
