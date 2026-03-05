@@ -151,7 +151,7 @@
         <include name="**/*"/>
       </fileset>
     </copy>
-  <copy todir="${modulebindir}" flatten="yes">
+  <copy todir="${modulebindir}" flatten="no">
     <fileset dir="${native_bin}">
       <include name="**/*"/>
     </fileset>
