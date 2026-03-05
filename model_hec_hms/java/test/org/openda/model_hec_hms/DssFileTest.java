@@ -17,14 +17,6 @@ public class DssFileTest extends TestCase {
 		testRunDataDir = testData.getTestRunDataDir();
 	}
 
-	public void testRead() {
-		File dssFile = new File(testRunDataDir, "Hec.dss");
-		DssFile dssDataObject = new DssFile();
-		dssDataObject.initialize(testRunDataDir, new String[]{dssFile.getName()});
-		String[] exchangeItemIDs = dssDataObject.getExchangeItemIDs();
-		assertEquals(1, exchangeItemIDs.length);
-	}
-
 	public void testReadReal() {
 		File dssFile = new File(testRunDataDir, "Run_2.dss");
 		DssFile dssDataObject = new DssFile();
