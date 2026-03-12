@@ -112,6 +112,7 @@ public class NetcdfUtils {
 
 	//dimension lengths.
 	private static final int CHARLENGTH_ID = 64;
+	private static final boolean isUnsigned = false;
 
 	/**
 	 * Converts the data in the given netcdf file to text format and returns this as a String.
@@ -1368,7 +1369,7 @@ public class NetcdfUtils {
 													List<String> stationIdList) throws Exception {
 		if (stationIdList == null || stationIdList.isEmpty()) return;
 
-		ArrayObject.D1 statidsArray = new ArrayObject.D1(String.class, stationIdList.size());
+		ArrayObject.D1 statidsArray = new ArrayObject.D1(DataType.STRING, String.class, false, stationIdList.size());
 		for (int i=0; i<stationIdList.size(); i++){
 			statidsArray.set(i,stationIdList.get(i));
 		}
@@ -1382,7 +1383,7 @@ public class NetcdfUtils {
 	private static void writeRealizationVariableValues(NetcdfFileWriter netcdfFileWriter, List<Integer> ensembleMemberIndexList) throws Exception {
 		if (ensembleMemberIndexList == null || ensembleMemberIndexList.isEmpty()) return;
 
-		ArrayInt.D1 ensembleMemberIndices = new ArrayInt.D1(ensembleMemberIndexList.size());
+		ArrayInt.D1 ensembleMemberIndices = new ArrayInt.D1(ensembleMemberIndexList.size(), isUnsigned);
 		for (int n = 0; n < ensembleMemberIndexList.size(); n++) {
 			ensembleMemberIndices.set(n, ensembleMemberIndexList.get(n));
 		}
