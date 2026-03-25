@@ -10,11 +10,13 @@ import java.util.List;
 public class DFlowFMNetcdfSampleFileExchangeItem implements IExchangeItem {
 
 	private final String id;
+	private final String varName;
 	private final List<Integer> indices;
 	private final double[] eiValues;
 
-	public DFlowFMNetcdfSampleFileExchangeItem(String id, List<Integer> indices, double[] eiValues) {
+	public DFlowFMNetcdfSampleFileExchangeItem(String id, String varName, List<Integer> indices, double[] eiValues) {
 		this.id = id;
+		this.varName = varName;
 		this.indices = indices;
 		this.eiValues = eiValues;
 	}
@@ -110,5 +112,9 @@ public class DFlowFMNetcdfSampleFileExchangeItem implements IExchangeItem {
 
 	public List<Integer> getIndices() {
 		return indices;
+	}
+
+	public String getVarName() {
+		return varName;
 	}
 }

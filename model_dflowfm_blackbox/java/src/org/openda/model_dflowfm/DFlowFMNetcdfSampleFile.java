@@ -2,10 +2,13 @@ package org.openda.model_dflowfm;
 
 import org.openda.exchange.AbstractDataObject;
 import org.openda.utils.generalJavaUtils.StringUtilities;
+import ucar.ma2.ArrayFloat;
 import ucar.nc2.NetcdfFile;
+import ucar.nc2.NetcdfFileWriter;
 import ucar.nc2.Variable;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 public class DFlowFMNetcdfSampleFile extends AbstractDataObject {
@@ -17,7 +20,6 @@ public class DFlowFMNetcdfSampleFile extends AbstractDataObject {
 		DataFormat(int variableDimensions) {
 			this.variableDimensions = variableDimensions;
 		}
-
 	}
 
 	public static final String AREA_NUMBER = "area_number";
@@ -25,7 +27,8 @@ public class DFlowFMNetcdfSampleFile extends AbstractDataObject {
 	private static final String NETCDF_VARIABLE = "netcdfVariable";
 	private static final String DATA_FORMAT = "dataFormat";
 
-	private Set<String> variablesForExchangeItems = new HashSet<>();
+	private int[] areaNumbers;
+	private final Set<String> variablesForExchangeItems = new HashSet<>();
 	private DataFormat dataFormat;
 	private String idPrefix;
 	private File file = null;
@@ -65,14 +68,14 @@ public class DFlowFMNetcdfSampleFile extends AbstractDataObject {
 			List<Variable> variables = netcdfFile.getVariables();
 			Variable areaNumberVar = netcdfFile.findVariable(AREA_NUMBER);
 			if (areaNumberVar == null) throw new RuntimeException(String.format("Variable %s not found in netCDF file", AREA_NUMBER));
-			int[] areaNumbers = (int[]) areaNumberVar.read().get1DJavaArray(int.class);
+			areaNumbers = (int[]) areaNumberVar.read().get1DJavaArray(int.class);
 			Map<Integer, List<Integer>> areaNumberIndexListMap = new LinkedHashMap<>();
 			for (int i = 0; i < areaNumbers.length; i++) {
 				int areaNumber = areaNumbers[i];
 				List<Integer> indexList = areaNumberIndexListMap.computeIfAbsent(areaNumber, k -> new ArrayList<>());
 				indexList.add(i);
 			}
-			areaNumberIndexListMap.forEach((index, list) -> System.out.printf("Area number %d has %d indices%n", index, list.size()));
+
 			for (Variable variable : variables) {
 				String varName = variable.getShortName();
 				int[] shape = variable.getShape();
@@ -88,17 +91,59 @@ public class DFlowFMNetcdfSampleFile extends AbstractDataObject {
 						eiValues[i] = values[indices.get(i)];
 					}
 					String id = String.format("%s_%s_%d", idPrefix, varName, entry.getKey());
-					exchangeItems.put(id, new DFlowFMNetcdfSampleFileExchangeItem(id, indices, eiValues));
+					exchangeItems.put(id, new DFlowFMNetcdfSampleFileExchangeItem(id, varName, indices, eiValues));
 				}
 			}
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
+		} finally {
+			try {
+				if (netcdfFile != null) netcdfFile.close();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 
 	@Override
 	public void finish() {
+		NetcdfFileWriter netcdfFileWriter = null;
+		try {
+			Map<String, double[]> variableValuesMap = new HashMap<>();
+			exchangeItems.values().forEach(exchangeItem -> {
+				DFlowFMNetcdfSampleFileExchangeItem item = (DFlowFMNetcdfSampleFileExchangeItem) exchangeItem;
+				double[] values = variableValuesMap.computeIfAbsent(item.getVarName(), k -> new double[areaNumbers.length]);
+				List<Integer> indices = item.getIndices();
+				double[] valuesAsDoubles = item.getValuesAsDoubles();
+				for (int i = 0; i < indices.size(); i++) {
+					values[indices.get(i)] = valuesAsDoubles[i];
+				}
+			});
 
+			netcdfFileWriter = NetcdfFileWriter.openExisting(this.file.getAbsolutePath());
+			NetcdfFileWriter finalNetcdfFileWriter = netcdfFileWriter;
+			variableValuesMap.forEach((varName, values) -> {
+				try {
+					Variable variable = finalNetcdfFileWriter.findVariable(varName);
+					if (variable == null) throw new RuntimeException(String.format("Variable %s not found in netCDF file", varName));
+					ArrayFloat.D1 array = new ArrayFloat.D1(values.length);
+					for (int i = 0; i < values.length; i++) {
+						array.set(i, (float) values[i]);
+					}
+					finalNetcdfFileWriter.write(variable, variable.getShape(), array);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			});
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		} finally {
+			try {
+				if (netcdfFileWriter != null) netcdfFileWriter.close();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
 	}
 }
