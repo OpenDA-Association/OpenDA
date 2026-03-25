@@ -6,10 +6,7 @@ import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class DFlowFMNetcdfSampleFile extends AbstractDataObject {
 
@@ -66,20 +63,36 @@ public class DFlowFMNetcdfSampleFile extends AbstractDataObject {
 		try {
 			this.netcdfFile = NetcdfFile.open(this.file.getAbsolutePath());
 			List<Variable> variables = netcdfFile.getVariables();
-			int[] areaNumbers = null;
+			Variable areaNumberVar = netcdfFile.findVariable(AREA_NUMBER);
+			if (areaNumberVar == null) throw new RuntimeException(String.format("Variable %s not found in netCDF file", AREA_NUMBER));
+			int[] areaNumbers = (int[]) areaNumberVar.read().get1DJavaArray(int.class);
+			Map<Integer, List<Integer>> areaNumberIndexListMap = new LinkedHashMap<>();
+			for (int i = 0; i < areaNumbers.length; i++) {
+				int areaNumber = areaNumbers[i];
+				List<Integer> indexList = areaNumberIndexListMap.computeIfAbsent(areaNumber, k -> new ArrayList<>());
+				indexList.add(i);
+			}
+			areaNumberIndexListMap.forEach((index, list) -> System.out.printf("Area number %d has %d indices%n", index, list.size()));
 			for (Variable variable : variables) {
 				String varName = variable.getShortName();
 				int[] shape = variable.getShape();
-				if (varName.equals(AREA_NUMBER)) {
-					areaNumbers = (int[]) variable.read().get1DJavaArray(int.class);
-					continue;
-				}
 				if (!variablesForExchangeItems.contains(varName)) continue;
-				if (dataFormat.variableDimensions != shape.length) throw new RuntimeException(String.format("Variable %s has %d dimensions, but expected %d dimensions for data format %s", variable.getShortName(), shape.length, dataFormat.variableDimensions, dataFormat.name()));
-
+				if (dataFormat.variableDimensions != shape.length) throw new RuntimeException(String.format("Variable %s has length %d dimensions, but expected %d dimensions for data format %s", variable.getShortName(), shape.length, dataFormat.variableDimensions, dataFormat.name()));
+				double[] values = (double[]) variable.read().get1DJavaArray(Double.class);
+				if (values.length != areaNumbers.length) throw new RuntimeException(String.format("Variable %s has length %d, but expected length %d equal to the number of areas in variable %s", variable.getShortName(), values.length, areaNumbers.length, AREA_NUMBER));
+				Set<Map.Entry<Integer, List<Integer>>> indicesPerAreaNumber = areaNumberIndexListMap.entrySet();
+				for (Map.Entry<Integer, List<Integer>> entry : indicesPerAreaNumber) {
+					List<Integer> indices = entry.getValue();
+					double[] eiValues = new double[indices.size()];
+					for (int i = 0; i < indices.size(); i++) {
+						eiValues[i] = values[indices.get(i)];
+					}
+					String id = String.format("%s_%s_%d", idPrefix, varName, entry.getKey());
+					exchangeItems.put(id, new DFlowFMNetcdfSampleFileExchangeItem(id, indices, eiValues));
+				}
 			}
-			if (areaNumbers == null) throw new RuntimeException(String.format("Variable %s not found in netCDF file", AREA_NUMBER));
-		} catch (IOException e) {
+
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}

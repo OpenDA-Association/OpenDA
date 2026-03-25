@@ -18,8 +18,8 @@ public class DFlowFMNetcdfSampleFileTest extends TestCase {
 
 	public void testTimeConstant() {
 		DFlowFMNetcdfSampleFile dataObject = new DFlowFMNetcdfSampleFile();
-		dataObject.initialize(testRunDataRestartFileDir, new String[]{"ExampleTimeIndependent.nc", "idPrefix=prefix", "netcdfVariable=Phase", "dataFormat=TimeConstant"});
+		dataObject.initialize(testRunDataRestartFileDir, new String[]{"ExampleTimeIndependent.nc", "idPrefix=prefix", "netcdfVariable=phase", "dataFormat=TimeIndependent"});
 		String[] exchangeItemIDs = dataObject.getExchangeItemIDs();
-		assertEquals(0, exchangeItemIDs.length);
+		assertEquals(67, exchangeItemIDs.length);
 	}
 }
