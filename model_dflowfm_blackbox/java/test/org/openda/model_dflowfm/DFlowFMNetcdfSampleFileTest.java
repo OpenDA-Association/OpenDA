@@ -30,5 +30,17 @@ public class DFlowFMNetcdfSampleFileTest extends TestCase {
 			ei.setValuesAsDoubles(values);
 		}
 		dataObject.finish();
+
+		DFlowFMNetcdfSampleFile dataObjectReloaded = new DFlowFMNetcdfSampleFile();
+		dataObjectReloaded.initialize(testRunDataRestartFileDir, new String[]{"ExampleTimeIndependent.nc", "idPrefix=prefix", "netcdfVariable=phase", "netcdfVariable=amplitude", "dataFormat=TimeIndependent"});
+		String[] exchangeItemIdsReloaded = dataObjectReloaded.getExchangeItemIDs();
+		assertEquals(134, exchangeItemIdsReloaded.length);
+		for (int i = 0; i < exchangeItemIdsReloaded.length; i++) {
+			IExchangeItem ei = dataObjectReloaded.getDataObjectExchangeItem(exchangeItemIdsReloaded[i]);
+			double[] values = ei.getValuesAsDoubles();
+			for (double value : values) {
+				assertEquals((double) i, value);
+			}
+		}
 	}
 }
