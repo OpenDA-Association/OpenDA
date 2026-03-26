@@ -18,7 +18,7 @@ public class DFlowFMNetcdfSampleFileTest extends TestCase {
 		testRunDataRestartFileDir = new File(testData.getTestRunDataDir(), "DFlowFMNetCDFSample");
 	}
 
-	public void testTimeIndependent() {
+	public void testTimeIndependent() throws IOException {
 		DFlowFMNetcdfSampleFile dataObject = new DFlowFMNetcdfSampleFile();
 		dataObject.initialize(testRunDataRestartFileDir, new String[]{"ExampleTimeIndependent.nc", "idPrefix=prefix", "netcdfVariable=phase", "netcdfVariable=amplitude", "dataFormat=TimeIndependent"});
 		String[] exchangeItemIDs = dataObject.getExchangeItemIDs();
@@ -42,9 +42,10 @@ public class DFlowFMNetcdfSampleFileTest extends TestCase {
 				assertEquals((double) i, value);
 			}
 		}
+		OpenDaTestSupport.compareNetcdfFiles(new File(testRunDataRestartFileDir, "ExampleTimeIndependent_Expected.nc"), new File(testRunDataRestartFileDir, "ExampleTimeIndependent.nc"));
 	}
 
-	public void testTimeConstant() {
+	public void testTimeConstant() throws IOException {
 		DFlowFMNetcdfSampleFile dataObject = new DFlowFMNetcdfSampleFile();
 		dataObject.initialize(testRunDataRestartFileDir, new String[]{"ExampleTimeConstant.nc", "idPrefix=prefix", "netcdfVariable=friction_coefficient", "dataFormat=TimeConstant"});
 		String[] exchangeItemIDs = dataObject.getExchangeItemIDs();
@@ -61,7 +62,6 @@ public class DFlowFMNetcdfSampleFileTest extends TestCase {
 		dataObjectReloaded.initialize(testRunDataRestartFileDir, new String[]{"ExampleTimeConstant.nc", "idPrefix=prefix", "netcdfVariable=friction_coefficient", "dataFormat=TimeConstant"});
 		String[] exchangeItemIdsReloaded = dataObjectReloaded.getExchangeItemIDs();
 		assertEquals(67, exchangeItemIdsReloaded.length);
-		// TODO EP: check for full netcdf contents
 		for (int i = 0; i < exchangeItemIdsReloaded.length; i++) {
 			IExchangeItem ei = dataObjectReloaded.getDataObjectExchangeItem(exchangeItemIdsReloaded[i]);
 			double[] values = ei.getValuesAsDoubles();
@@ -69,5 +69,6 @@ public class DFlowFMNetcdfSampleFileTest extends TestCase {
 				assertEquals((double) i, value);
 			}
 		}
+		OpenDaTestSupport.compareNetcdfFiles(new File(testRunDataRestartFileDir, "ExampleTimeConstant_Expected.nc"), new File(testRunDataRestartFileDir, "ExampleTimeConstant.nc"));
 	}
 }
