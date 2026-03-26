@@ -22,6 +22,7 @@ import org.openda.exchange.TimeInfo;
 import org.openda.exchange.dataobjects.NetcdfUtils;
 import org.openda.interfaces.*;
 import ucar.ma2.Array;
+import ucar.ma2.DataType;
 import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.NetcdfFileWriter;
@@ -116,7 +117,7 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 			e.printStackTrace();
 		}
 		// Extraction of station names
-		char[] nameCharArray = (char[]) stationNamesChar.get1DJavaArray(char.class);
+		char[] nameCharArray = (char[]) stationNamesChar.get1DJavaArray(DataType.CHAR);
 		int stringLength=stationNamesChar.getShape()[1];
 
 		for (Variable variable : this.netcdfFile.getVariables()) {
@@ -140,7 +141,7 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 						throw new RuntimeException("NetcdfD3dHisDataObject could not read time variable " + timeVariable.getShortName() +
 								"from netcdf file " + netcdfFile.getLocation());
 					}
-					timesInNetcdfFile = (double[]) timesArray.get1DJavaArray(double.class);
+					timesInNetcdfFile = (double[]) timesArray.get1DJavaArray(DataType.DOUBLE);
 				}
 				timeInfoForAllTimeDepVars = new TimeInfo(timesInNetcdfFile);
 
@@ -217,7 +218,7 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 						throw new RuntimeException("NetcdfD3dHisDataObject could not read time variable " + timeVariable.getShortName() +
 							"from netcdf file " + netcdfFile.getLocation());
 					}
-					timesInNetcdfFile = (double[]) timesArray.get1DJavaArray(double.class);
+					timesInNetcdfFile = (double[]) timesArray.get1DJavaArray(DataType.DOUBLE);
 				}
 				timeInfoForAllTimeDepVars = new TimeInfo(timesInNetcdfFile);
 

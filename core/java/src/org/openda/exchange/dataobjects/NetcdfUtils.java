@@ -576,7 +576,7 @@ public class NetcdfUtils {
 		if ((timeVariable != null) && timeVariable.isCoordinateVariable()) {
 			//read times.
 			ucar.ma2.Array timesArray = timeVariable.read();
-			double[] times = (double[]) timesArray.get1DJavaArray(double.class);
+			double[] times = (double[]) timesArray.get1DJavaArray(DataType.DOUBLE);
 
 			//convert times.
 			convertedTimes = new double[times.length];
@@ -607,7 +607,7 @@ public class NetcdfUtils {
 	public static Object readData(Variable variable) {
 		double[] values;
 		try {
-			values = (double[]) variable.read().get1DJavaArray(double.class);
+			values = (double[]) variable.read().get1DJavaArray(DataType.DOUBLE);
 		} catch (IOException e) {
 			throw new RuntimeException("Error while reading data from netcdf variable '" + variable.getShortName()
 					+ "'. Message was: " + e.getMessage(), e);
@@ -648,7 +648,7 @@ public class NetcdfUtils {
 			array = array.flip(dimensionIndexToFlip);
 		}
 
-		double[] values = (double[]) array.get1DJavaArray(Double.class);
+		double[] values = (double[]) array.get1DJavaArray(DataType.DOUBLE);
 
 		//apply scale factor and offset and replace missing values with Double.NaN.
 		double missingValue = getMissingValueDouble(variable);

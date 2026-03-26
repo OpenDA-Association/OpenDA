@@ -22,6 +22,7 @@ import org.openda.blackbox.config.BBUtils;
 import org.openda.exchange.TimeInfo;
 import org.openda.exchange.dataobjects.NetcdfUtils;
 import org.openda.interfaces.*;
+import ucar.ma2.DataType;
 import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.NetcdfFileWriter;
@@ -184,7 +185,7 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 						throw new RuntimeException("NetcdfD3dMapDataObject could not read time variable " + timeVariable.getShortName() +
 								"from netcdf file " + netcdfFile.getLocation());
 					}
-					timesInNetcdfFile = (double[]) timesArray.get1DJavaArray(double.class);
+					timesInNetcdfFile = (double[]) timesArray.get1DJavaArray(DataType.DOUBLE);
 				}
 
 				// get the number of spatial dimensions

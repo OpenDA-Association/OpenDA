@@ -22,6 +22,7 @@ package org.openda.exchange.dataobjects;
 import junit.framework.TestCase;
 import org.openda.blackbox.config.BBUtils;
 import org.openda.utils.OpenDaTestSupport;
+import ucar.ma2.DataType;
 import ucar.nc2.NetcdfFile;
 
 import java.io.File;
@@ -161,9 +162,9 @@ public class NetcdfFileConcatenaterTest extends TestCase {
 			firstNetcdf = NetcdfFile.open(firstFile.toString());
 			secondNetcdf = NetcdfFile.open(secondFile.toString());
 			concatenatedNetcdf = NetcdfFile.open(targetFile.toString());
-			double[] firstValues = (double[]) firstNetcdf.findVariable(variableName).read().get1DJavaArray(Double.TYPE);
-			double[] secondValues = (double[]) secondNetcdf.findVariable(variableName).read().get1DJavaArray(Double.TYPE);
-			double[] concatenatedValues = (double[]) concatenatedNetcdf.findVariable(variableName).read().get1DJavaArray(Double.TYPE);
+			double[] firstValues = (double[]) firstNetcdf.findVariable(variableName).read().get1DJavaArray(DataType.DOUBLE);
+			double[] secondValues = (double[]) secondNetcdf.findVariable(variableName).read().get1DJavaArray(DataType.DOUBLE);
+			double[] concatenatedValues = (double[]) concatenatedNetcdf.findVariable(variableName).read().get1DJavaArray(DataType.DOUBLE);
 			assertEquals(firstValues.length + secondValues.length - 125, concatenatedValues.length);
 			for (int i = 0; i < split; i++) {
 				assertEquals(firstValues[i], concatenatedValues[i]);
@@ -249,9 +250,9 @@ public class NetcdfFileConcatenaterTest extends TestCase {
 			firstNetcdf = NetcdfFile.open(firstFile.toString());
 			secondNetcdf = NetcdfFile.open(secondFile.toString());
 			concatenatedNetcdf = NetcdfFile.open(targetFile.toString());
-			double[] firstValues = (double[]) firstNetcdf.findVariable("Runoff").read().get1DJavaArray(Double.TYPE);
-			double[] secondValues = (double[]) secondNetcdf.findVariable("Runoff").read().get1DJavaArray(Double.TYPE);
-			double[] concatenatedValues = (double[]) concatenatedNetcdf.findVariable("Runoff").read().get1DJavaArray(Double.TYPE);
+			double[] firstValues = (double[]) firstNetcdf.findVariable("Runoff").read().get1DJavaArray(DataType.DOUBLE);
+			double[] secondValues = (double[]) secondNetcdf.findVariable("Runoff").read().get1DJavaArray(DataType.DOUBLE);
+			double[] concatenatedValues = (double[]) concatenatedNetcdf.findVariable("Runoff").read().get1DJavaArray(DataType.DOUBLE);
 			assertEquals(firstValues.length + secondValues.length - 1, concatenatedValues.length);
 			for (int i = 0; i < split; i++) {
 				assertEquals(firstValues[i], concatenatedValues[i]);

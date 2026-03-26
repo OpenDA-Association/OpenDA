@@ -197,13 +197,13 @@ public class NetcdfFileConcatenater {
 				int targetLocationDimensionLength = targetLocationDimension.getLength();
 				if (addedLocationDimension.getLength() != targetLocationDimensionLength) throw new RuntimeException("Variables from source and target must have same location dimension size");
 			}
-			double[] targetValues = (double[]) targetVariable.read().get1DJavaArray(Double.TYPE);
-			double[] addedValues = (double[]) variable.read().get1DJavaArray(Double.TYPE);
+			double[] targetValues = (double[]) targetVariable.read().get1DJavaArray(DataType.DOUBLE);
+			double[] addedValues = (double[]) variable.read().get1DJavaArray(DataType.DOUBLE);
 
 			Array read = timeVariableTarget.read();
-			double[] timesTarget = (double[]) read.get1DJavaArray(Double.TYPE);
+			double[] timesTarget = (double[]) read.get1DJavaArray(DataType.DOUBLE);
 			String timeVariableTargetUnitsString = timeVariableTarget.getUnitsString();
-			double[] timesToBeAdded = (double[]) timeVariableToBeAdded.read().get1DJavaArray(Double.TYPE);
+			double[] timesToBeAdded = (double[]) timeVariableToBeAdded.read().get1DJavaArray(DataType.DOUBLE);
 			String timeVariableToBeAddedUnitsString = timeVariableToBeAdded.getUnitsString();
 			DateUnit targetDateUnit;
 			DateUnit toBeAddedDateUnit;

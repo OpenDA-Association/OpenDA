@@ -658,11 +658,11 @@ public class KalmanGainStorage {
 				continue;
 			}
 			if (OBSERVATION_OFFSET.equals(shortName)) {
-				this.observationOffsetInDays = (double[]) variable.read().get1DJavaArray(double.class);
+				this.observationOffsetInDays = (double[]) variable.read().get1DJavaArray(DataType.DOUBLE);
 				continue;
 			}
 			if (TIME_STAMP.equals(shortName)) {
-				this.timeStampAsMJD = ((double[]) variable.read().get1DJavaArray(double.class))[0];
+				this.timeStampAsMJD = ((double[]) variable.read().get1DJavaArray(DataType.DOUBLE))[0];
 				continue;
 			}
 			if ("HK".equals(shortName)) {
@@ -688,7 +688,7 @@ public class KalmanGainStorage {
 	}
 
 	private String[] read1DimensionalStringArray(Variable variable) throws IOException {
-		Object[] array = (Object[]) variable.read().get1DJavaArray(String.class);
+		Object[] array = (Object[]) variable.read().get1DJavaArray(DataType.STRING);
 		String[] strings = new String[array.length];
 		for (int i = 0; i < array.length; i++) {
 			strings[i] = (String) array[i];
@@ -720,7 +720,7 @@ public class KalmanGainStorage {
 
 	private void read2DimensionalArray(Variable variable, String shortName, int[] shape, int[] shapeForRead, int[] originForRead, TreeVector kalmanGainColumns) throws IOException, InvalidRangeException {
 		Array read = variable.read(originForRead, shapeForRead);
-		double[] doubleArray = (double[]) read.get1DJavaArray(Double.TYPE);
+		double[] doubleArray = (double[]) read.get1DJavaArray(DataType.DOUBLE);
 		DimensionIndex[] dimensionIndices = {new DimensionIndex(shape[1]), new DimensionIndex(shape[2])};
 		Vector doubleVector = new Vector(doubleArray);
 		Attribute parentVectorIdAttribute = variable.findAttribute(PARENT_VECTOR_ID);
@@ -732,7 +732,7 @@ public class KalmanGainStorage {
 
 	private void read1DimensionalArray(Variable variable, String shortName, int[] shape, int[] shapeForRead, int[] originForRead, TreeVector kalmanGainColumns) throws IOException, InvalidRangeException {
 		Array read = variable.read(originForRead, shapeForRead);
-		double[] doubleArray = (double[]) read.get1DJavaArray(Double.TYPE);
+		double[] doubleArray = (double[]) read.get1DJavaArray(DataType.DOUBLE);
 		DimensionIndex dimensionIndex = new DimensionIndex(shape[1]);
 		Vector doubleVector = new Vector(doubleArray);
 		TreeVector vector = new TreeVector(shortName, doubleVector, new DimensionIndex[]{dimensionIndex});
