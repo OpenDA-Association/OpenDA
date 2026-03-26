@@ -12,13 +12,13 @@ public class DFlowFMNetcdfSampleFileExchangeItem implements IExchangeItem {
 	private final String id;
 	private final String varName;
 	private final List<Integer> indices;
-	private final double[] eiValues;
+	private final double[] eiValue;
 
-	public DFlowFMNetcdfSampleFileExchangeItem(String id, String varName, List<Integer> indices, double[] eiValues) {
+	public DFlowFMNetcdfSampleFileExchangeItem(String id, String varName, List<Integer> indices, double eiValue) {
 		this.id = id;
 		this.varName = varName;
 		this.indices = indices;
-		this.eiValues = eiValues;
+		this.eiValue = new double[]{eiValue};
 	}
 
 
@@ -43,7 +43,7 @@ public class DFlowFMNetcdfSampleFileExchangeItem implements IExchangeItem {
 			throw new IllegalArgumentException(String.format("Expected sourceItem to have values of type %s, but got %s", ValueType.doublesType, sourceItem.getValuesType()));
 		}
 		double[] sourceValues = sourceItem.getValuesAsDoubles();
-		System.arraycopy(sourceValues, 0, this.eiValues, 0, sourceValues.length);
+		System.arraycopy(sourceValues, 0, this.eiValue, 0, sourceValues.length);
 	}
 
 	@Override
@@ -68,25 +68,25 @@ public class DFlowFMNetcdfSampleFileExchangeItem implements IExchangeItem {
 
 	@Override
 	public Object getValues() {
-		return eiValues;
+		return eiValue;
 	}
 
 	@Override
 	public double[] getValuesAsDoubles() {
-		return eiValues;
+		return eiValue;
 	}
 
 	@Override
 	public void axpyOnValues(double alpha, double[] axpyValues) {
-		for (int i = 0; i < eiValues.length; i++) {
-			eiValues[i] += alpha * axpyValues[i];
+		for (int i = 0; i < eiValue.length; i++) {
+			eiValue[i] += alpha * axpyValues[i];
 		}
 	}
 
 	@Override
 	public void multiplyValues(double[] multiplicationFactors) {
-		for (int i = 0; i < eiValues.length; i++) {
-			eiValues[i] *= multiplicationFactors[i];
+		for (int i = 0; i < eiValue.length; i++) {
+			eiValue[i] *= multiplicationFactors[i];
 		}
 	}
 
@@ -97,7 +97,7 @@ public class DFlowFMNetcdfSampleFileExchangeItem implements IExchangeItem {
 
 	@Override
 	public void setValuesAsDoubles(double[] values) {
-		System.arraycopy(values, 0, eiValues, 0, values.length);
+		System.arraycopy(values, 0, eiValue, 0, values.length);
 	}
 
 	@Override

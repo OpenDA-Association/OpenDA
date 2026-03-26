@@ -18,7 +18,7 @@ public class DFlowFMNetcdfSampleFileTest extends TestCase {
 		testRunDataRestartFileDir = new File(testData.getTestRunDataDir(), "DFlowFMNetCDFSample");
 	}
 
-	public void testTimeConstant() {
+	public void testTimeIndependent() {
 		DFlowFMNetcdfSampleFile dataObject = new DFlowFMNetcdfSampleFile();
 		dataObject.initialize(testRunDataRestartFileDir, new String[]{"ExampleTimeIndependent.nc", "idPrefix=prefix", "netcdfVariable=phase", "netcdfVariable=amplitude", "dataFormat=TimeIndependent"});
 		String[] exchangeItemIDs = dataObject.getExchangeItemIDs();
@@ -35,6 +35,33 @@ public class DFlowFMNetcdfSampleFileTest extends TestCase {
 		dataObjectReloaded.initialize(testRunDataRestartFileDir, new String[]{"ExampleTimeIndependent.nc", "idPrefix=prefix", "netcdfVariable=phase", "netcdfVariable=amplitude", "dataFormat=TimeIndependent"});
 		String[] exchangeItemIdsReloaded = dataObjectReloaded.getExchangeItemIDs();
 		assertEquals(134, exchangeItemIdsReloaded.length);
+		for (int i = 0; i < exchangeItemIdsReloaded.length; i++) {
+			IExchangeItem ei = dataObjectReloaded.getDataObjectExchangeItem(exchangeItemIdsReloaded[i]);
+			double[] values = ei.getValuesAsDoubles();
+			for (double value : values) {
+				assertEquals((double) i, value);
+			}
+		}
+	}
+
+	public void testTimeConstant() {
+		DFlowFMNetcdfSampleFile dataObject = new DFlowFMNetcdfSampleFile();
+		dataObject.initialize(testRunDataRestartFileDir, new String[]{"ExampleTimeConstant.nc", "idPrefix=prefix", "netcdfVariable=friction_coefficient", "dataFormat=TimeConstant"});
+		String[] exchangeItemIDs = dataObject.getExchangeItemIDs();
+		assertEquals(67, exchangeItemIDs.length);
+		for (int i = 0; i < exchangeItemIDs.length; i++) {
+			IExchangeItem ei = dataObject.getDataObjectExchangeItem(exchangeItemIDs[i]);
+			double[] values = ei.getValuesAsDoubles();
+			Arrays.fill(values, i);
+			ei.setValuesAsDoubles(values);
+		}
+		dataObject.finish();
+
+		DFlowFMNetcdfSampleFile dataObjectReloaded = new DFlowFMNetcdfSampleFile();
+		dataObjectReloaded.initialize(testRunDataRestartFileDir, new String[]{"ExampleTimeConstant.nc", "idPrefix=prefix", "netcdfVariable=friction_coefficient", "dataFormat=TimeConstant"});
+		String[] exchangeItemIdsReloaded = dataObjectReloaded.getExchangeItemIDs();
+		assertEquals(67, exchangeItemIdsReloaded.length);
+		// TODO EP: check for full netcdf contents
 		for (int i = 0; i < exchangeItemIdsReloaded.length; i++) {
 			IExchangeItem ei = dataObjectReloaded.getDataObjectExchangeItem(exchangeItemIdsReloaded[i]);
 			double[] values = ei.getValuesAsDoubles();

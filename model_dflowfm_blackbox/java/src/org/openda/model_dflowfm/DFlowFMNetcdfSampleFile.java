@@ -15,10 +15,10 @@ public class DFlowFMNetcdfSampleFile extends AbstractDataObject {
 
 	enum DataFormat {TimeIndependent(1), TimeConstant(2);
 
-		private final int variableDimensions;
+		private final int numberOfDimensions;
 
-		DataFormat(int variableDimensions) {
-			this.variableDimensions = variableDimensions;
+		DataFormat(int numberOfDimensions) {
+			this.numberOfDimensions = numberOfDimensions;
 		}
 	}
 
@@ -80,18 +80,14 @@ public class DFlowFMNetcdfSampleFile extends AbstractDataObject {
 				String varName = variable.getShortName();
 				int[] shape = variable.getShape();
 				if (!variablesForExchangeItems.contains(varName)) continue;
-				if (dataFormat.variableDimensions != shape.length) throw new RuntimeException(String.format("Variable %s has length %d dimensions, but expected %d dimensions for data format %s", variable.getShortName(), shape.length, dataFormat.variableDimensions, dataFormat.name()));
+				if (dataFormat.numberOfDimensions != shape.length) throw new RuntimeException(String.format("Variable %s has length %d dimensions, but expected %d dimensions for data format %s", variable.getShortName(), shape.length, dataFormat.numberOfDimensions, dataFormat.name()));
 				double[] values = (double[]) variable.read().get1DJavaArray(Double.class);
-				if (values.length != areaNumbers.length) throw new RuntimeException(String.format("Variable %s has length %d, but expected length %d equal to the number of areas in variable %s", variable.getShortName(), values.length, areaNumbers.length, AREA_NUMBER));
+				if (values.length != areaNumbers.length * dataFormat.numberOfDimensions) throw new RuntimeException(String.format("Variable %s has length %d, but expected length %d equal to the number of areas in variable %s", variable.getShortName(), values.length, areaNumbers.length, AREA_NUMBER));
 				Set<Map.Entry<Integer, List<Integer>>> indicesPerAreaNumber = areaNumberIndexListMap.entrySet();
 				for (Map.Entry<Integer, List<Integer>> entry : indicesPerAreaNumber) {
 					List<Integer> indices = entry.getValue();
-					double[] eiValues = new double[indices.size()];
-					for (int i = 0; i < indices.size(); i++) {
-						eiValues[i] = values[indices.get(i)];
-					}
 					String id = String.format("%s_%s_%d", idPrefix, varName, entry.getKey());
-					exchangeItems.put(id, new DFlowFMNetcdfSampleFileExchangeItem(id, varName, indices, eiValues));
+					exchangeItems.put(id, new DFlowFMNetcdfSampleFileExchangeItem(id, varName, indices, values[indices.get(0)]));
 				}
 			}
 
@@ -113,11 +109,13 @@ public class DFlowFMNetcdfSampleFile extends AbstractDataObject {
 			Map<String, double[]> variableValuesMap = new HashMap<>();
 			exchangeItems.values().forEach(exchangeItem -> {
 				DFlowFMNetcdfSampleFileExchangeItem item = (DFlowFMNetcdfSampleFileExchangeItem) exchangeItem;
-				double[] values = variableValuesMap.computeIfAbsent(item.getVarName(), k -> new double[areaNumbers.length]);
+				double[] values = variableValuesMap.computeIfAbsent(item.getVarName(), k -> new double[areaNumbers.length * dataFormat.numberOfDimensions]);
 				List<Integer> indices = item.getIndices();
 				double[] valuesAsDoubles = item.getValuesAsDoubles();
-				for (int i = 0; i < indices.size(); i++) {
-					values[indices.get(i)] = valuesAsDoubles[i];
+				for (int i = 0; i < dataFormat.numberOfDimensions; i++) {
+					for (int index : indices) {
+						values[i * areaNumbers.length + index] = valuesAsDoubles[0];
+					}
 				}
 			});
 
