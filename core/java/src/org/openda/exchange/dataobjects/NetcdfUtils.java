@@ -33,11 +33,11 @@ import ucar.nc2.NetcdfFileWriter;
 import ucar.nc2.Variable;
 import ucar.nc2.Dimension;
 import ucar.nc2.Attribute;
-import ucar.nc2.NCdumpW;
-
+import ucar.nc2.util.CancelTask;
+import ucar.nc2.write.Ncdump;
 
 import ucar.nc2.units.DateUnit;
-
+import ucar.nc2.dataset.NetcdfDatasets;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -125,15 +125,19 @@ public class NetcdfUtils {
 	 * @throws IOException
 	 */
 	public static String netcdfFileToString(File netcdfFile, String variableNames) throws IOException {
-		boolean printAllVariables = false;
+		String options;
 		if (variableNames == null || variableNames.isEmpty()) {
-			printAllVariables = true;
-			variableNames = null;
+			options = "-vall";
+		} else {
+			options = "-v " + variableNames;
 		}
 
+
 		Writer writer = new StringWriter();
-		NCdumpW.print(netcdfFile.getAbsolutePath(), writer, printAllVariables, false, false, true, variableNames, null);
-		return writer.toString();
+		try (NetcdfFile nc = NetcdfDatasets.openFile(netcdfFile.getAbsolutePath(), new myCancelTask())) {
+			Ncdump.ncdump(nc, options, writer, null);
+			return writer.toString();
+		}
 	}
 
 	/**
@@ -1718,5 +1722,35 @@ public class NetcdfUtils {
 		netcdfFileWriter.addGroupAttribute(null, new Attribute("history", "Created at " + new Date(System.currentTimeMillis())));
 		netcdfFileWriter.addGroupAttribute(null, new Attribute("references", "http://www.openda.org"));
 		netcdfFileWriter.addGroupAttribute(null,new Attribute("Conventions", "CF-1.6"));
+	}
+
+	private static class myCancelTask implements CancelTask {
+
+		@Override
+		public boolean isCancel(){
+			return false;
+		}
+
+		@Override
+		public boolean isDone() {
+			return false;
+		}
+
+		@Override
+		public void setDone(boolean b) {
+		}
+
+		@Override
+		public void setSuccess() {
+			CancelTask.super.setSuccess();
+		}
+
+		@Override
+		public void setError(String s) {
+		}
+
+		@Override
+		public void setProgress(String s, int i) {
+		}
 	}
 }
