@@ -24,4 +24,7 @@
 	<timeSeries status="validate" standardDeviation="0.1" > <!-- status can be "use", "validate" or "ignore" -->
 		oscillator_filter.noos
 	</timeSeries>
+	<timeSeries status="ignore" standardDeviation="0.1" > <!-- status can be "use", "validate" or "ignore" -->
+		oscillator_ignore.noos
+	</timeSeries>
 </noosObserver>
