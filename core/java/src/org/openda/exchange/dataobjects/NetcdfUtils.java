@@ -29,7 +29,7 @@ import org.openda.utils.Time;
 import org.openda.utils.geometry.GeometryUtils;
 import ucar.ma2.*;
 import ucar.nc2.NetcdfFile;
-import ucar.nc2.NetcdfFileWriter;
+import ucar.nc2.write.NetcdfFormatWriter;
 import ucar.nc2.Variable;
 import ucar.nc2.Dimension;
 import ucar.nc2.Attribute;
@@ -720,7 +720,7 @@ public class NetcdfUtils {
 		return readSelectedData(variable, origin, sizeArray, dimensionIndexToFlip);
 	}
 
-	public static void writeDataForVariableForSingleTime(NetcdfFileWriter netcdfFileWriter, Variable variable, int timeDimensionIndex, int timeIndex, double[] values) {
+	public static void writeDataForVariableForSingleTime(NetcdfFormatWriter NetcdfFormatWriter, Variable variable, int timeDimensionIndex, int timeIndex, double[] values) {
 		int[] origin = createOrigin(variable);
 		int[] sizeArray = variable.getShape();
 
@@ -728,10 +728,10 @@ public class NetcdfUtils {
 		origin[timeDimensionIndex] = timeIndex;
 		sizeArray[timeDimensionIndex] = 1;
 
-		writeSelectedData(netcdfFileWriter, variable, origin, sizeArray, values);
+		writeSelectedData(NetcdfFormatWriter, variable, origin, sizeArray, values);
 	}
 
-	public static void writeDataForVariableForSingleTimeSingleLocation(NetcdfFileWriter netcdfFileWriter, Variable variable, int timeIndex, int stationDimensionIndex, int stationIndex, double[] values) {
+	public static void writeDataForVariableForSingleTimeSingleLocation(NetcdfFormatWriter NetcdfFormatWriter, Variable variable, int timeIndex, int stationDimensionIndex, int stationIndex, double[] values) {
 		int[] origin = createOrigin(variable);
 		int[] sizeArray = variable.getShape();
 
@@ -743,10 +743,10 @@ public class NetcdfUtils {
 		origin[stationDimensionIndex] = stationIndex;
 		sizeArray[stationDimensionIndex] = 1;
 
-		writeSelectedData(netcdfFileWriter, variable, origin, sizeArray, values);
+		writeSelectedData(NetcdfFormatWriter, variable, origin, sizeArray, values);
 	}
 
-	public static void writeDataForVariableForSingleTimeSingleLocationSingleRealization(NetcdfFileWriter netcdfFileWriter, Variable variable,
+	public static void writeDataForVariableForSingleTimeSingleLocationSingleRealization(NetcdfFormatWriter NetcdfFormatWriter, Variable variable,
 			int timeIndex, int realizationDimensionIndex, int realizationIndex, int stationDimensionIndex, int stationIndex, double[] values) {
 		int[] origin = createOrigin(variable);
 		int[] sizeArray = variable.getShape();
@@ -761,10 +761,10 @@ public class NetcdfUtils {
 		origin[stationDimensionIndex] = stationIndex;
 		sizeArray[stationDimensionIndex] = 1;
 
-		writeSelectedData(netcdfFileWriter, variable, origin, sizeArray, values);
+		writeSelectedData(NetcdfFormatWriter, variable, origin, sizeArray, values);
 	}
 
-    public static void writeSelectedData(NetcdfFileWriter netcdfFileWriter, Variable variable, int[] origin, int[] sizeArray, double[] values) {
+    public static void writeSelectedData(NetcdfFormatWriter NetcdfFormatWriter, Variable variable, int[] origin, int[] sizeArray, double[] values) {
 		//replace NaN values with missing value for variable.
 		double missingValue = getMissingValueDouble(variable);
 		if (!Double.isNaN(missingValue)) {
@@ -785,10 +785,10 @@ public class NetcdfUtils {
 
 		//write data.
 		try {
-			netcdfFileWriter.write(variable, origin, array);
+			NetcdfFormatWriter.write(variable, origin, array);
 		} catch (IOException | InvalidRangeException e) {
 			throw new RuntimeException("Error while writing data to netcdf variable '" + variable.getShortName()
-					+ "' in netcdf file " + netcdfFileWriter.getNetcdfFile().getLocation() + ". Message was: " + e.getMessage(), e);
+					+ "' in netcdf file " + NetcdfFormatWriter.getOutputFile().getLocation() + ". Message was: " + e.getMessage(), e);
 		}
 	}
 
@@ -986,28 +986,28 @@ public class NetcdfUtils {
 	 * Each exchangeItem stores a scalar timeseries for a single location (and a single ensemble member).
 	 * All exchangeItems must use the same ensemble member indices.
 	 */
-	public static void createMetadataAndDataVariablesForScalars(NetcdfFileWriter netcdfFileWriter,
+	public static void createMetadataAndDataVariablesForScalars(NetcdfFormatWriter.Builder NetcdfWriterBuilder,
 																List<IExchangeItem> exchangeItems, Map<String, Map<Integer, IExchangeItem>> ensembleExchangeItems, Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap, String stationNameVarName,
 																String stationDimensionVarName,
 																int stationCount, int ensembleMemberCount) {
 
 		//create stations variable.
-		Dimension stationDimension = createStationsVariable(netcdfFileWriter, stationNameVarName, stationDimensionVarName, stationCount);
+		Dimension stationDimension = createStationsVariable(NetcdfWriterBuilder, stationNameVarName, stationDimensionVarName, stationCount);
 
 		//create realization variable.
 		Dimension realizationDimension = null;
 		if (ensembleMemberCount > 0) {
-			realizationDimension = createRealizationVariable(netcdfFileWriter, ensembleMemberCount);
+			realizationDimension = createRealizationVariable(NetcdfWriterBuilder, ensembleMemberCount);
 		}
 
 		//create data variables.
-		NetcdfUtils.createDataVariables(netcdfFileWriter, exchangeItems, ensembleExchangeItems, realizationDimension, stationDimension, timeInfoTimeDimensionMap, null);
+		NetcdfUtils.createDataVariables(NetcdfWriterBuilder, exchangeItems, ensembleExchangeItems, realizationDimension, stationDimension, timeInfoTimeDimensionMap, null);
 	}
 
 	/**
 	 * Creates metadata for the given exchangeItem in the given netcdfFile, if not present yet.
 	 */
-	public static void createMetadataAndDataVariablesForGrids(NetcdfFileWriter netcdfFileWriter, List<IExchangeItem> exchangeItems, Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap,
+	public static void createMetadataAndDataVariablesForGrids(NetcdfFormatWriter.Builder NetcdfWriterBuilder, List<IExchangeItem> exchangeItems, Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap,
 			Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap) {
 
 		int[] uniqueTimeVariableCount = new int[]{0};
@@ -1017,22 +1017,22 @@ public class NetcdfUtils {
 			Dimension timeDimension = null;
 			ITimeInfo timeInfo = exchangeItem.getTimeInfo();
 			if (timeInfo != null && timeInfo.getTimes() != null) {//if variable depends on time.
-				timeDimension = createTimeVariable(netcdfFileWriter, timeInfo, uniqueTimeVariableCount, timeInfoTimeDimensionMap);
+				timeDimension = createTimeVariable(NetcdfWriterBuilder, timeInfo, uniqueTimeVariableCount, timeInfoTimeDimensionMap);
 			}
 
 			//create spatial coordinate variables, if not present yet.
 			//this only adds spatial dimensions, this does not add spatial variables with coordinates,
 			//because the coordinates are usually not available in exchangeItems that come from models.
 			if (!GeometryUtils.isScalar(exchangeItem.getGeometryInfo())) {//if grid.
-				createGridVariables(netcdfFileWriter, exchangeItem.getGeometryInfo(), uniqueGeometryCount, geometryInfoGridVariablePropertiesMap);
+				createGridVariables(NetcdfWriterBuilder, exchangeItem.getGeometryInfo(), uniqueGeometryCount, geometryInfoGridVariablePropertiesMap);
 			}
 
 			//create data variable.
-			createDataVariable(netcdfFileWriter, exchangeItem, timeDimension, null, null, geometryInfoGridVariablePropertiesMap);
+			createDataVariable(NetcdfWriterBuilder, exchangeItem, timeDimension, null, null, geometryInfoGridVariablePropertiesMap);
 		}
 	}
 
-	private static Dimension createTimeVariable(NetcdfFileWriter netcdfFileWriter, ITimeInfo timeInfo, int[] uniqueTimeVariableCount, Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap) {
+	private static Dimension createTimeVariable(NetcdfFormatWriter.Builder NetcdfWriterBuilder, ITimeInfo timeInfo, int[] uniqueTimeVariableCount, Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap) {
 		Dimension timeDimension = timeInfoTimeDimensionMap.get(timeInfo);
 
 		if (timeDimension == null) {//if timeVariable with correct times not yet present.
@@ -1043,7 +1043,7 @@ public class NetcdfUtils {
 			String postfix = uniqueTimeVariableCount[0] <= 1 ? "" : String.valueOf(uniqueTimeVariableCount[0]);
 			String timeVariableName = TIME_VARIABLE_NAME + postfix;
 			int timeCount = timeInfo.getTimes().length;
-			timeDimension = createTimeVariable(netcdfFileWriter, timeVariableName, timeCount, NetcdfUtils.createTimeUnitString());
+			timeDimension = createTimeVariable(NetcdfWriterBuilder, timeVariableName, timeCount, NetcdfUtils.createTimeUnitString());
 
 			//put timeDimension in map so that it can be re-used later by other variables in the same file.
 			timeInfoTimeDimensionMap.put(timeInfo, timeDimension);
@@ -1060,23 +1060,23 @@ public class NetcdfUtils {
 	 * @param timeUnitString
 	 * @return timeDimension
 	 */
-	public static Dimension createTimeVariable(NetcdfFileWriter dataFile, String timeVariableName, int timeCount, String timeUnitString) {
+	public static Dimension createTimeVariable(NetcdfFormatWriter.Builder dataFile, String timeVariableName, int timeCount, String timeUnitString) {
 		//create time dimension.
 		Dimension timeDimension;
 		if (timeCount == -1 || timeCount == 0) {
 			timeDimension = dataFile.addUnlimitedDimension(timeVariableName);
 		} else {
-			timeDimension = dataFile.addDimension(null,timeVariableName, timeCount);
+			timeDimension = dataFile.addDimension(timeVariableName, timeCount);
 		}
 
 		//create time variable.
-		Variable myVar = dataFile.addVariable(null,timeVariableName, ucar.ma2.DataType.DOUBLE, Arrays.asList(timeDimension) );
-		dataFile.addVariableAttribute(myVar, new Attribute (STANDARD_NAME_ATTRIBUTE_NAME, TIME_VARIABLE_NAME) );
-		dataFile.addVariableAttribute(myVar, new Attribute(LONG_NAME_ATTRIBUTE_NAME, TIME_VARIABLE_NAME));
-		dataFile.addVariableAttribute(myVar, new Attribute(UNITS_ATTRIBUTE_NAME, timeUnitString));
+		Variable.Builder myVar = dataFile.addVariable(timeVariableName, DataType.DOUBLE, Arrays.asList(timeDimension) );
+		myVar.addAttribute(new Attribute (STANDARD_NAME_ATTRIBUTE_NAME, TIME_VARIABLE_NAME) );
+		myVar.addAttribute(new Attribute(LONG_NAME_ATTRIBUTE_NAME, TIME_VARIABLE_NAME));
+		myVar.addAttribute(new Attribute(UNITS_ATTRIBUTE_NAME, timeUnitString));
 		//use default calendar.
-		dataFile.addVariableAttribute(myVar, new Attribute(CALENDAR_ATTRIBUTE_NAME, DEFAULT_CALENDAR_ATTRIBUTE_VALUE));
-		dataFile.addVariableAttribute(myVar, new Attribute(AXIS_ATTRIBUTE_NAME, T_AXIS));
+		dataFile.addAttribute(new Attribute(CALENDAR_ATTRIBUTE_NAME, DEFAULT_CALENDAR_ATTRIBUTE_VALUE));
+		dataFile.addAttribute(new Attribute(AXIS_ATTRIBUTE_NAME, T_AXIS));
 		return timeDimension;
 	}
 
@@ -1085,11 +1085,11 @@ public class NetcdfUtils {
 	 * and stores the properties of the created grid variables in the returned geometryGridVariablePropertiesMap.
 	 * These properties are used later in the method NetcdfUtils.createDataVariables.
 	 *
-	 * @param netcdfFileWriter
+	 * @param NetcdfWriterBuilder
 	 * @param geometryInfos
 	 * @return geometryGridVariablePropertiesMap
 	 */
-	public static Map<IGeometryInfo, GridVariableProperties> createGridVariables(NetcdfFileWriter netcdfFileWriter, IGeometryInfo[] geometryInfos) {
+	public static Map<IGeometryInfo, GridVariableProperties> createGridVariables(NetcdfFormatWriter.Builder NetcdfWriterBuilder, IGeometryInfo[] geometryInfos) {
 		Map<IGeometryInfo, GridVariableProperties> geometryGridVariablePropertiesMap = new LinkedHashMap<>();
 
 		int[] uniqueGeometryCount = new int[]{0};
@@ -1098,13 +1098,13 @@ public class NetcdfUtils {
 				continue;
 			}
 
-			createGridVariables(netcdfFileWriter, geometryInfo, uniqueGeometryCount, geometryGridVariablePropertiesMap);
+			createGridVariables(NetcdfWriterBuilder, geometryInfo, uniqueGeometryCount, geometryGridVariablePropertiesMap);
 		}
 
 		return geometryGridVariablePropertiesMap;
 	}
 
-	private static void createGridVariables(NetcdfFileWriter netcdfFileWriter, IGeometryInfo geometryInfo, int[] uniqueGeometryCount,
+	private static void createGridVariables(NetcdfFormatWriter.Builder NetcdfWriterBuilder, IGeometryInfo geometryInfo, int[] uniqueGeometryCount,
 			Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap) {
 
 		GridVariableProperties gridVariableProperties = geometryInfoGridVariablePropertiesMap.get(geometryInfo);
@@ -1120,7 +1120,7 @@ public class NetcdfUtils {
 
 				//create face dimension.
 				int gridCellCount = ((IrregularGridGeometryInfo) geometryInfo).getCellCount();
-				Dimension faceDimension = netcdfFileWriter.addDimension(null, faceDimensionName, gridCellCount);
+				Dimension faceDimension = NetcdfWriterBuilder.addDimension(faceDimensionName, gridCellCount);
 
 				//put faceDimension in map so that it can be re-used later by other variables in the same file.
 				gridVariableProperties = new GridVariableProperties();
@@ -1133,11 +1133,11 @@ public class NetcdfUtils {
 
 				//create face dimension.
 				int gridCellCount = ((LayeredIrregularGridGeometryInfo) geometryInfo).getCellCount();
-				Dimension faceDimension = netcdfFileWriter.addDimension(null,faceDimensionName, gridCellCount);
+				Dimension faceDimension = NetcdfWriterBuilder.addDimension(faceDimensionName, gridCellCount);
 
 				//create z dimension.
 				int layerCount = ((LayeredIrregularGridGeometryInfo) geometryInfo).getLayerCount();
-				Dimension layerDimension = netcdfFileWriter.addDimension(null,layerDimensionName, layerCount);
+				Dimension layerDimension = NetcdfWriterBuilder.addDimension(layerDimensionName, layerCount);
 
 				//put dimensions in map so that they can be re-used later by other variables in the same file.
 				gridVariableProperties = new GridVariableProperties();
@@ -1146,7 +1146,7 @@ public class NetcdfUtils {
 				geometryInfoGridVariablePropertiesMap.put(geometryInfo, gridVariableProperties);
 
 				//create z variable.
-				createZVariable(netcdfFileWriter, layerDimension);
+				createZVariable(NetcdfWriterBuilder, layerDimension);
 
 			} else if (geometryInfo instanceof ArrayGeometryInfo && !(geometryInfo instanceof PointGeometryInfo)) {
 				String yDimensionName = Y_VARIABLE_NAME + postfix;
@@ -1155,8 +1155,8 @@ public class NetcdfUtils {
 				//create y,x dimensions.
 				int rowCount = ((ArrayGeometryInfo) geometryInfo).getLatitudeArray().length();
 				int columnCount = ((ArrayGeometryInfo) geometryInfo).getLongitudeArray().length();
-				Dimension yDimension = netcdfFileWriter.addDimension(null,yDimensionName, rowCount);
-				Dimension xDimension = netcdfFileWriter.addDimension(null,xDimensionName, columnCount);
+				Dimension yDimension = NetcdfWriterBuilder.addDimension(yDimensionName, rowCount);
+				Dimension xDimension = NetcdfWriterBuilder.addDimension(xDimensionName, columnCount);
 
 				//put dimensions in map so that these can be re-used later by other variables in the same file.
 				gridVariableProperties = new GridVariableProperties();
@@ -1167,7 +1167,7 @@ public class NetcdfUtils {
 				IQuantityInfo xQuantityInfo = ((ArrayGeometryInfo) geometryInfo).getLongitudeQuantityInfo();
 				if (yQuantityInfo != null && xQuantityInfo != null) {
 					//create x and y variables.
-					createYX1DVariables(netcdfFileWriter, yDimension, xDimension, PROJECTION_Y_COORDINATE, PROJECTION_X_COORDINATE,
+					createYX1DVariables(NetcdfWriterBuilder, yDimension, xDimension, PROJECTION_Y_COORDINATE, PROJECTION_X_COORDINATE,
 							yQuantityInfo.getQuantity(), xQuantityInfo.getQuantity(), yQuantityInfo.getUnit(), xQuantityInfo.getUnit(), gridVariableProperties);
 
 					//TODO add grid mapping variable. This requires information about the coordinate system used for the grid. AK
@@ -1194,31 +1194,31 @@ public class NetcdfUtils {
 		}
 	}
 
-	private static void createDataVariables(NetcdfFileWriter netcdfFileWriter, List<IExchangeItem> exchangeItems, Map<String, Map<Integer, IExchangeItem>> ensembleExchangeItems,
+	private static void createDataVariables(NetcdfFormatWriter.Builder NetcdfWriterBuilder, List<IExchangeItem> exchangeItems, Map<String, Map<Integer, IExchangeItem>> ensembleExchangeItems,
 			Dimension realizationDimension, Dimension stationDimension, Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap, Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap) {
 
 		//non-ensemble exchange items.
 		int[] uniqueTimeVariableCount = new int[]{0};
-		createDataVariables(netcdfFileWriter, exchangeItems, null, stationDimension, timeInfoTimeDimensionMap, geometryInfoGridVariablePropertiesMap, uniqueTimeVariableCount);
+		createDataVariables(NetcdfWriterBuilder, exchangeItems, null, stationDimension, timeInfoTimeDimensionMap, geometryInfoGridVariablePropertiesMap, uniqueTimeVariableCount);
 
 		//ensemble exchange items.
 		if (ensembleExchangeItems != null) {
 			for (Map<Integer, IExchangeItem> ensemble : ensembleExchangeItems.values()) {
 				Collection<IExchangeItem> items = ensemble.values();
-				createDataVariables(netcdfFileWriter, items, realizationDimension, stationDimension, timeInfoTimeDimensionMap, geometryInfoGridVariablePropertiesMap, uniqueTimeVariableCount);
+				createDataVariables(NetcdfWriterBuilder, items, realizationDimension, stationDimension, timeInfoTimeDimensionMap, geometryInfoGridVariablePropertiesMap, uniqueTimeVariableCount);
 			}
 		}
 	}
 
-	private static void createDataVariables(NetcdfFileWriter netcdfFileWriter, Collection<IExchangeItem> exchangeItems, Dimension realizationDimension, Dimension stationDimension,
+	private static void createDataVariables(NetcdfFormatWriter.Builder NetcdfWriterBuilder, Collection<IExchangeItem> exchangeItems, Dimension realizationDimension, Dimension stationDimension,
 			Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap, Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap, int[] uniqueTimeVariableCount) {
 
 		for (IExchangeItem item : exchangeItems) {
 			String variableName = getVariableName(item);
-			if (netcdfFileWriter.findVariable(variableName) != null) {//if variable already exists.
+			//if (NetcdfWriter.findVariable(variableName) != null) {//if variable already exists.
 				//if the variable already exists, we do not need to add it again. This can happen for scalar time series.
-				continue;
-			}
+			//	continue;
+			//}
 
 			//if variable does not exist yet.
 			//create time coordinate variable, if not present yet.
@@ -1226,28 +1226,28 @@ public class NetcdfUtils {
 			Dimension timeDimension = null;
 			ITimeInfo timeInfo = item.getTimeInfo();
 			if (timeInfo != null && timeInfo.getTimes() != null) {//if variable depends on time.
-				timeDimension = createTimeVariable(netcdfFileWriter, timeInfo, uniqueTimeVariableCount, timeInfoTimeDimensionMap);
+				timeDimension = createTimeVariable(NetcdfWriterBuilder, timeInfo, uniqueTimeVariableCount, timeInfoTimeDimensionMap);
 			}
-			NetcdfUtils.createDataVariable(netcdfFileWriter, item, timeDimension, realizationDimension, stationDimension, geometryInfoGridVariablePropertiesMap);
+			NetcdfUtils.createDataVariable(NetcdfWriterBuilder, item, timeDimension, realizationDimension, stationDimension, geometryInfoGridVariablePropertiesMap);
 		}
 	}
 
-	public static void createDataVariables(NetcdfFileWriter netcdfFileWriter, Collection<IExchangeItem> exchangeItems,
+	public static void createDataVariables(NetcdfFormatWriter.Builder NetcdfWriterBuilder, Collection<IExchangeItem> exchangeItems,
 			Dimension timeDimension, Dimension realizationDimension, Dimension stationDimension, Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap) {
 
 		for (IExchangeItem item : exchangeItems) {
 			String variableName = getVariableName(item);
-			if (netcdfFileWriter.findVariable(variableName) != null) {//if variable already exists.
+			//if (NetcdfWriter.findVariable(variableName) != null) {//if variable already exists.
 				//if the variable already exists, we do not need to add it again. This can happen for scalar time series.
-				continue;
-			}
+			//	continue;
+			//}
 
 			//if variable does not exist yet.
-			NetcdfUtils.createDataVariable(netcdfFileWriter, item, timeDimension, realizationDimension, stationDimension, geometryInfoGridVariablePropertiesMap);
+			NetcdfUtils.createDataVariable(NetcdfWriterBuilder, item, timeDimension, realizationDimension, stationDimension, geometryInfoGridVariablePropertiesMap);
 		}
 	}
 
-	private static void createDataVariable(NetcdfFileWriter netcdfFileWriter, IExchangeItem exchangeItem, Dimension timeDimension, Dimension realizationDimension, Dimension stationDimension,
+	private static void createDataVariable(NetcdfFormatWriter.Builder NetcdfWriterBuilder, IExchangeItem exchangeItem, Dimension timeDimension, Dimension realizationDimension, Dimension stationDimension,
 			Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap) {
 		List<Dimension> dimensions = new ArrayList<Dimension>();
 		if (timeDimension != null) {
@@ -1268,11 +1268,11 @@ public class NetcdfUtils {
 
 		DataType dataType = getDataType(exchangeItem.getValuesType());
 		String variableName = getVariableName(exchangeItem);
-		Variable myVar = netcdfFileWriter.addVariable(null,variableName, dataType, dimensions);
+		Variable.Builder myVar = NetcdfWriterBuilder.addVariable(variableName, dataType, dimensions);
 		//at this point standard_name of data is unknown, so cannot add the optional standard_name attribute here.
-		netcdfFileWriter.addVariableAttribute(myVar, new Attribute(LONG_NAME_ATTRIBUTE_NAME, variableName));
-		netcdfFileWriter.addVariableAttribute(myVar, new Attribute(UNITS_ATTRIBUTE_NAME, exchangeItem.getQuantityInfo().getUnit() ));
-		netcdfFileWriter.addVariableAttribute(myVar, new Attribute(FILL_VALUE_ATTRIBUTE_NAME, DEFAULT_FILL_VALUE_DOUBLE));
+		myVar.addAttribute(new Attribute(LONG_NAME_ATTRIBUTE_NAME, variableName));
+		myVar.addAttribute(new Attribute(UNITS_ATTRIBUTE_NAME, exchangeItem.getQuantityInfo().getUnit() ));
+		myVar.addAttribute(new Attribute(FILL_VALUE_ATTRIBUTE_NAME, DEFAULT_FILL_VALUE_DOUBLE));
 
 		//TODO add grid mapping attribute. AK
 //		if (gridVariableProperties != null) {
@@ -1286,7 +1286,7 @@ public class NetcdfUtils {
 	/**
 	 * Creates y and x variables with the given properties.
 	 *
-	 * @param netcdfFileWriter
+	 * @param NetcdfWriterBuilder
 	 * @param yDimension
 	 * @param xDimension
 	 * @param yStandardName
@@ -1297,29 +1297,29 @@ public class NetcdfUtils {
 	 * @param xUnits
 	 * @param gridVariableProperties
 	 */
-	private static void createYX1DVariables(NetcdfFileWriter netcdfFileWriter,
+	private static void createYX1DVariables(NetcdfFormatWriter.Builder NetcdfWriterBuilder,
 			Dimension yDimension, Dimension xDimension, String yStandardName, String xStandardName,
 			String yLongName, String xLongName, String yUnits, String xUnits, GridVariableProperties gridVariableProperties) {
 
 		String yVariableName = yDimension.getShortName();
 		String xVariableName = xDimension.getShortName();
-		createCoordinateVariable(netcdfFileWriter, yVariableName, yDimension, yStandardName, yLongName, yUnits, Y_AXIS,
+		createCoordinateVariable(NetcdfWriterBuilder, yVariableName, yDimension, yStandardName, yLongName, yUnits, Y_AXIS,
 				DEFAULT_FILL_VALUE_DOUBLE);
-		createCoordinateVariable(netcdfFileWriter, xVariableName, xDimension, xStandardName, xLongName, xUnits, X_AXIS,
+		createCoordinateVariable(NetcdfWriterBuilder, xVariableName, xDimension, xStandardName, xLongName, xUnits, X_AXIS,
 				DEFAULT_FILL_VALUE_DOUBLE);
 		gridVariableProperties.setY1DVariableName(yVariableName);
 		gridVariableProperties.setX1DVariableName(xVariableName);
 	}
 
-	private static void createZVariable(NetcdfFileWriter netcdfFileWriter, Dimension zDimension) {
+	private static void createZVariable(NetcdfFormatWriter.Builder NetcdfWriterBuilder, Dimension zDimension) {
 		String zVariableName = zDimension.getShortName();
 		ArrayList<Dimension> dimensions = new ArrayList<>();
 		dimensions.add(zDimension);
-		Variable myVar = netcdfFileWriter.addVariable(null,zVariableName, DataType.DOUBLE, dimensions);
-		netcdfFileWriter.addVariableAttribute(myVar,new Attribute(UNITS_ATTRIBUTE_NAME, Z_UNITS));
-		netcdfFileWriter.addVariableAttribute(myVar,new Attribute(AXIS_ATTRIBUTE_NAME, Z_AXIS));
-		netcdfFileWriter.addVariableAttribute(myVar,new Attribute(POSITIVE_ATTRIBUTE_NAME, Z_POSITIVE));
-		netcdfFileWriter.addVariableAttribute(myVar,new Attribute(FILL_VALUE_ATTRIBUTE_NAME, DEFAULT_FILL_VALUE_DOUBLE));
+		Variable.Builder myVar = NetcdfWriterBuilder.addVariable(zVariableName, DataType.DOUBLE, dimensions);
+		myVar.addAttribute(new Attribute(UNITS_ATTRIBUTE_NAME, Z_UNITS));
+		myVar.addAttribute(new Attribute(AXIS_ATTRIBUTE_NAME, Z_AXIS));
+		myVar.addAttribute(new Attribute(POSITIVE_ATTRIBUTE_NAME, Z_POSITIVE));
+		myVar.addAttribute(new Attribute(FILL_VALUE_ATTRIBUTE_NAME, DEFAULT_FILL_VALUE_DOUBLE));
 	}
 
  	/**
@@ -1333,42 +1333,42 @@ public class NetcdfUtils {
 	 * @param units
 	 * @param axis
 	 */
-	private static void createCoordinateVariable(NetcdfFileWriter dataFile,
+	private static void createCoordinateVariable(NetcdfFormatWriter.Builder dataFile,
 			String variableName, Dimension dimension, String standardName,
 			String longName, String units, String axis, double fillValue) {
 
 		ArrayList<Dimension> dimensions = new ArrayList<Dimension>();
 		dimensions.add(dimension);
-		Variable myVar = dataFile.addVariable(null, variableName, DataType.DOUBLE, dimensions);
-		dataFile.addVariableAttribute(myVar,new Attribute(STANDARD_NAME_ATTRIBUTE_NAME, standardName));
-		dataFile.addVariableAttribute(myVar,new Attribute(LONG_NAME_ATTRIBUTE_NAME, longName));
-		dataFile.addVariableAttribute(myVar,new Attribute(UNITS_ATTRIBUTE_NAME, units));
-		dataFile.addVariableAttribute(myVar,new Attribute(AXIS_ATTRIBUTE_NAME, axis));
-		dataFile.addVariableAttribute(myVar,new Attribute( FILL_VALUE_ATTRIBUTE_NAME, fillValue));
+		Variable.Builder myVar = dataFile.addVariable(variableName, DataType.DOUBLE, dimensions);
+		myVar.addAttribute(new Attribute(STANDARD_NAME_ATTRIBUTE_NAME, standardName));
+		myVar.addAttribute(new Attribute(LONG_NAME_ATTRIBUTE_NAME, longName));
+		myVar.addAttribute(new Attribute(UNITS_ATTRIBUTE_NAME, units));
+		myVar.addAttribute(new Attribute(AXIS_ATTRIBUTE_NAME, axis));
+		myVar.addAttribute(new Attribute( FILL_VALUE_ATTRIBUTE_NAME, fillValue));
 	}
 
 	/**
 	 * Writes all metadata variables for the given maps to the given netcdfFile, i.e. times and spatial coordinates.
 	 */
-	public static void writeMetadata(NetcdfFileWriter netcdfFileWriter, Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap,
+	public static void writeMetadata(NetcdfFormatWriter NetcdfFormatWriter, Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap,
 									 Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap,
 									 String stationNameVarName,
 									 List<String> stationIdList, List<Integer> ensembleMemberIndexList) throws Exception {
 
 		//write time variable values.
-		NetcdfUtils.writeTimeVariablesValues(netcdfFileWriter, timeInfoTimeDimensionMap);
+		NetcdfUtils.writeTimeVariablesValues(NetcdfFormatWriter, timeInfoTimeDimensionMap);
 
 		//write geometry variable values.
-		NetcdfUtils.writeGridVariablesValues(netcdfFileWriter, geometryInfoGridVariablePropertiesMap);
+		NetcdfUtils.writeGridVariablesValues(NetcdfFormatWriter, geometryInfoGridVariablePropertiesMap);
 
 		//write station_id if available.
-		NetcdfUtils.writeStationIdVariableValues(netcdfFileWriter, stationNameVarName, stationIdList);
+		NetcdfUtils.writeStationIdVariableValues(NetcdfFormatWriter, stationNameVarName, stationIdList);
 
 		//write realization variable values.
-		NetcdfUtils.writeRealizationVariableValues(netcdfFileWriter, ensembleMemberIndexList);
+		NetcdfUtils.writeRealizationVariableValues(NetcdfFormatWriter, ensembleMemberIndexList);
 	}
 
-	public static void writeStationIdVariableValues(NetcdfFileWriter netcdfFileWriter,
+	public static void writeStationIdVariableValues(NetcdfFormatWriter NetcdfWriter,
 													String stationNameVarName,
 													List<String> stationIdList) throws Exception {
 		if (stationIdList == null || stationIdList.isEmpty()) return;
@@ -1377,39 +1377,39 @@ public class NetcdfUtils {
 		for (int i=0; i<stationIdList.size(); i++){
 			statidsArray.set(i,stationIdList.get(i));
 		}
-		Variable myVar = netcdfFileWriter.findVariable(stationNameVarName);
-		netcdfFileWriter.writeStringData(myVar, statidsArray);
+		Variable myVar = NetcdfWriter.findVariable(stationNameVarName);
+		NetcdfWriter.write(myVar,statidsArray);
 	}
 
 	/**
 	 * Fills the realization variable with values.
 	 */
-	private static void writeRealizationVariableValues(NetcdfFileWriter netcdfFileWriter, List<Integer> ensembleMemberIndexList) throws Exception {
+	private static void writeRealizationVariableValues(NetcdfFormatWriter NetcdfFormatWriter, List<Integer> ensembleMemberIndexList) throws Exception {
 		if (ensembleMemberIndexList == null || ensembleMemberIndexList.isEmpty()) return;
 
 		ArrayInt.D1 ensembleMemberIndices = new ArrayInt.D1(ensembleMemberIndexList.size(), isUnsigned);
 		for (int n = 0; n < ensembleMemberIndexList.size(); n++) {
 			ensembleMemberIndices.set(n, ensembleMemberIndexList.get(n));
 		}
-		Variable myVar = netcdfFileWriter.findVariable(REALIZATION_VARIABLE_NAME);
-		netcdfFileWriter.write(myVar, ensembleMemberIndices);
+		Variable myVar = NetcdfFormatWriter.findVariable(REALIZATION_VARIABLE_NAME);
+		NetcdfFormatWriter.write(myVar, ensembleMemberIndices);
 	}
 
 	/**
 	 * Write values for all time variables that are present.
 	 *
-	 * @param netcdfFileWriter
+	 * @param NetcdfFormatWriter
 	 * @param timeInfoTimeDimensionMap
 	 * @throws Exception
 	 */
-	public static void writeTimeVariablesValues(NetcdfFileWriter netcdfFileWriter,
+	public static void writeTimeVariablesValues(NetcdfFormatWriter NetcdfFormatWriter,
 			Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap) throws Exception {
 
 		for (Map.Entry<ITimeInfo, Dimension> entry : timeInfoTimeDimensionMap.entrySet()) {
 			ITimeInfo timeInfo = entry.getKey();
 			Dimension timeDimension = entry.getValue();
 
-			Variable timeVariable = netcdfFileWriter.findVariable(timeDimension.getShortName());
+			Variable timeVariable = NetcdfFormatWriter.findVariable(timeDimension.getShortName());
 			String timeUnitString = timeVariable.findAttribute(UNITS_ATTRIBUTE_NAME).getStringValue();
 			DateUnit dateUnit = new DateUnit(timeUnitString);
 
@@ -1420,11 +1420,11 @@ public class NetcdfUtils {
 				timesArray.set(n, newTime);
 			}
 
-			netcdfFileWriter.write(timeVariable, timesArray);
+			NetcdfFormatWriter.write(timeVariable, timesArray);
 		}
 	}
 
-	public static void writeTimeVariableSingleValue(NetcdfFileWriter netcdfFileWriter, Variable timeVariable, int timeIndex, double time) throws Exception {
+	public static void writeTimeVariableSingleValue(NetcdfFormatWriter NetcdfFormatWriter, Variable timeVariable, int timeIndex, double time) throws Exception {
 		String timeUnitString = timeVariable.findAttribute(UNITS_ATTRIBUTE_NAME).getStringValue();
 		DateUnit dateUnit = new DateUnit(timeUnitString);
 
@@ -1433,17 +1433,17 @@ public class NetcdfUtils {
 		timeArray.set(0, newTime);
 
 		int[] origin = new int[]{timeIndex};
-		netcdfFileWriter.write(timeVariable, origin, timeArray);
+		NetcdfFormatWriter.write(timeVariable, origin, timeArray);
 	}
 
 	/**
 	 * Write values for all grid variables that are present.
 	 *
-	 * @param netcdfFileWriter
+	 * @param NetcdfFormatWriter
 	 * @param geometryGridVariablePropertiesMap
 	 * @throws Exception
 	 */
-	public static void writeGridVariablesValues(NetcdfFileWriter netcdfFileWriter,
+	public static void writeGridVariablesValues(NetcdfFormatWriter NetcdfFormatWriter,
 			Map<IGeometryInfo, GridVariableProperties> geometryGridVariablePropertiesMap) throws Exception {
 
 		//this currently only writes YX1DVariables and only for ArrayGeometryInfo.
@@ -1455,13 +1455,13 @@ public class NetcdfUtils {
 			String y1DVariableName = gridVariableProperties.getY1DVariableName();
 			String x1DVariableName = gridVariableProperties.getX1DVariableName();
 			if (y1DVariableName != null && x1DVariableName != null && geometryInfo instanceof ArrayGeometryInfo) {
-				writeYX1DVariableValues(netcdfFileWriter, (ArrayGeometryInfo) geometryInfo, y1DVariableName, x1DVariableName);
+				writeYX1DVariableValues(NetcdfFormatWriter, (ArrayGeometryInfo) geometryInfo, y1DVariableName, x1DVariableName);
 			}
 
 			//write z variable values (if present).
 			String zVariableName = gridVariableProperties.getZVariableName();
 			if (zVariableName != null && geometryInfo instanceof LayeredIrregularGridGeometryInfo) {
-				writeZVariableValues(netcdfFileWriter, (LayeredIrregularGridGeometryInfo) geometryInfo, zVariableName);
+				writeZVariableValues(NetcdfFormatWriter, (LayeredIrregularGridGeometryInfo) geometryInfo, zVariableName);
 			}
 		}
 	}
@@ -1471,13 +1471,13 @@ public class NetcdfUtils {
 	 * The values are taken from the given geometry and are written as coordinates
 	 * in the coordinate system that is used by the given geometry.
 	 *
-	 * @param netcdfFileWriter
+	 * @param NetcdfFormatWriter
 	 * @param geometryInfo
 	 * @param yVariableName
 	 * @param xVariableName
 	 * @throws Exception
 	 */
-	private static void writeYX1DVariableValues(NetcdfFileWriter netcdfFileWriter,
+	private static void writeYX1DVariableValues(NetcdfFormatWriter NetcdfFormatWriter,
 			ArrayGeometryInfo geometryInfo, String yVariableName, String xVariableName) throws Exception {
 
 		IArray latitudeArray = geometryInfo.getLatitudeArray();
@@ -1490,8 +1490,8 @@ public class NetcdfUtils {
 			}
 			yArray.set(index, y);
 		}
-		Variable myYVar = netcdfFileWriter.findVariable(yVariableName);
-		netcdfFileWriter.write(myYVar, yArray);
+		Variable myYVar = NetcdfFormatWriter.findVariable(yVariableName);
+		NetcdfFormatWriter.write(myYVar, yArray);
 
 		IArray longitudeArray = geometryInfo.getLongitudeArray();
 		int columnCount = longitudeArray.length();
@@ -1503,18 +1503,18 @@ public class NetcdfUtils {
 			}
 			xArray.set(index, x);
 		}
-		Variable myXVar = netcdfFileWriter.findVariable(xVariableName);
-		netcdfFileWriter.write(myXVar, xArray);
+		Variable myXVar = NetcdfFormatWriter.findVariable(xVariableName);
+		NetcdfFormatWriter.write(myXVar, xArray);
 	}
 
-	private static void writeZVariableValues(NetcdfFileWriter netcdfFileWriter, LayeredIrregularGridGeometryInfo geometryInfo, String zVariableName) throws Exception {
+	private static void writeZVariableValues(NetcdfFormatWriter NetcdfFormatWriter, LayeredIrregularGridGeometryInfo geometryInfo, String zVariableName) throws Exception {
 		IVector zCoordinates = geometryInfo.getZCoordinates();
 		ArrayDouble.D1 zArray = new ArrayDouble.D1(zCoordinates.getSize());
 		for (int n = 0; n < zArray.getSize(); n++) {
 			zArray.set(n, zCoordinates.getValue(n));
 		}
-		Variable myZVar = netcdfFileWriter.findVariable(zVariableName);
-		netcdfFileWriter.write(myZVar, zArray);
+		Variable myZVar = NetcdfFormatWriter.findVariable(zVariableName);
+		NetcdfFormatWriter.write(myZVar, zArray);
 	}
 
 	/**
@@ -1612,9 +1612,9 @@ public class NetcdfUtils {
         return true;
     }
 
-	public static void addGlobalAttributes(NetcdfFileWriter netcdfFileWriter) {
-		netcdfFileWriter.addGroupAttribute(null,new Attribute("title", "Netcdf data"));
-		addGeneralGlobalAttributes(netcdfFileWriter);
+	public static void addGlobalAttributes(NetcdfFormatWriter.Builder NetcdfWriterBuilder) {
+		NetcdfWriterBuilder.addAttribute(new Attribute("title", "Netcdf data"));
+		addGeneralGlobalAttributes(NetcdfWriterBuilder);
 	}
 
 	public static double[] addMissingValuesForNonActiveGridCells(IGeometryInfo geometryInfo, double[] values) {
@@ -1671,16 +1671,16 @@ public class NetcdfUtils {
 	/**
 	 * Add variable for station_id.
 	 */
-	public static Dimension createStationsVariable(NetcdfFileWriter netcdfFileWriter, String stationNameVarName, String stationDimensionVarName, int stationCount) {
-		Dimension stationDimension = netcdfFileWriter.addDimension(null,stationDimensionVarName, stationCount);
-		Dimension charDimension = netcdfFileWriter.addDimension(null,CHAR_LEN_ID, CHARLENGTH_ID);
+	public static Dimension createStationsVariable(NetcdfFormatWriter.Builder NetcdfWriterBuilder, String stationNameVarName, String stationDimensionVarName, int stationCount) {
+		Dimension stationDimension = NetcdfWriterBuilder.addDimension(stationDimensionVarName, stationCount);
+		Dimension charDimension = NetcdfWriterBuilder.addDimension(CHAR_LEN_ID, CHARLENGTH_ID);
 		ArrayList<Dimension> dimensions = new ArrayList<Dimension>();
 		dimensions.add(stationDimension);
 		dimensions.add(charDimension);
 
-		Variable myVar = netcdfFileWriter.addVariable(null, stationNameVarName, DataType.CHAR, dimensions);
-		netcdfFileWriter.addVariableAttribute( myVar, new Attribute( LONG_NAME_ATTRIBUTE_NAME, "station identification code"));
-		netcdfFileWriter.addVariableAttribute( myVar, new Attribute(CF_ROLE_ATTRIBUTE_NAME, NetcdfUtils.TIME_SERIES_ID_CF_ROLE));
+		Variable.Builder myVar = NetcdfWriterBuilder.addVariable(stationNameVarName, DataType.CHAR, dimensions);
+		myVar.addAttribute(new Attribute( LONG_NAME_ATTRIBUTE_NAME, "station identification code"));
+		myVar.addAttribute(new Attribute(CF_ROLE_ATTRIBUTE_NAME, NetcdfUtils.TIME_SERIES_ID_CF_ROLE));
 
 		return stationDimension;
 	}
@@ -1688,7 +1688,7 @@ public class NetcdfUtils {
 	/**
 	 * Creates a realization dimension and variable.
 	 */
-	public static Dimension createRealizationVariable(NetcdfFileWriter netcdfFileWriter, int ensembleMemberCount) {
+	public static Dimension createRealizationVariable(NetcdfFormatWriter.Builder NetcdfWriterBuilder, int ensembleMemberCount) {
 		//See http://cf-pcmdi.llnl.gov/documents/cf-standard-names/standard-name-table/18/cf-standard-name-table.html
 		//standard name "realization":
 		//Realization is used to label a dimension that can be thought of as a statistical sample,
@@ -1703,28 +1703,28 @@ public class NetcdfUtils {
 		//float physical_field(time, realization, level, latitude, longitude) ;
 
 		//create realization dimension.
-		Dimension realizationDimension = netcdfFileWriter.addDimension(null, REALIZATION_VARIABLE_NAME, ensembleMemberCount);
+		Dimension realizationDimension = NetcdfWriterBuilder.addDimension(REALIZATION_VARIABLE_NAME, ensembleMemberCount);
 
 		//create realization variable.
 		ArrayList<Dimension> realizationDimensionList = new ArrayList<>();
 		realizationDimensionList.add(realizationDimension);
-		Variable myVar = netcdfFileWriter.addVariable(null, REALIZATION_VARIABLE_NAME, DataType.INT, realizationDimensionList);
-		netcdfFileWriter.addVariableAttribute(myVar, new Attribute(STANDARD_NAME_ATTRIBUTE_NAME, REALIZATION_VARIABLE_NAME));
-		netcdfFileWriter.addVariableAttribute(myVar, new Attribute(LONG_NAME_ATTRIBUTE_NAME, "Index of an ensemble member within an ensemble"));
-		netcdfFileWriter.addVariableAttribute(myVar, new Attribute(UNITS_ATTRIBUTE_NAME, "1"));
+		Variable.Builder myVar = NetcdfWriterBuilder.addVariable(REALIZATION_VARIABLE_NAME, DataType.INT, realizationDimensionList);
+		myVar.addAttribute(new Attribute(STANDARD_NAME_ATTRIBUTE_NAME, REALIZATION_VARIABLE_NAME));
+		myVar.addAttribute(new Attribute(LONG_NAME_ATTRIBUTE_NAME, "Index of an ensemble member within an ensemble"));
+		myVar.addAttribute(new Attribute(UNITS_ATTRIBUTE_NAME, "1"));
 
 		return realizationDimension;
 	}
 
-	public static void addGeneralGlobalAttributes(NetcdfFileWriter netcdfFileWriter) {
-		netcdfFileWriter.addGroupAttribute(null, new Attribute("institution", "OpenDA Association"));
-		netcdfFileWriter.addGroupAttribute(null, new Attribute("source", "Written by OpenDA"));
-		netcdfFileWriter.addGroupAttribute(null, new Attribute("history", "Created at " + new Date(System.currentTimeMillis())));
-		netcdfFileWriter.addGroupAttribute(null, new Attribute("references", "http://www.openda.org"));
-		netcdfFileWriter.addGroupAttribute(null,new Attribute("Conventions", "CF-1.6"));
+	public static void addGeneralGlobalAttributes(NetcdfFormatWriter.Builder NetcdfWriterBuilder) {
+		NetcdfWriterBuilder.addAttribute(new Attribute("institution", "OpenDA Association"));
+		NetcdfWriterBuilder.addAttribute(new Attribute("source", "Written by OpenDA"));
+		NetcdfWriterBuilder.addAttribute(new Attribute("history", "Created at " + new Date(System.currentTimeMillis())));
+		NetcdfWriterBuilder.addAttribute(new Attribute("references", "http://www.openda.org"));
+		NetcdfWriterBuilder.addAttribute(new Attribute("Conventions", "CF-1.6"));
 	}
 
-	private static class myCancelTask implements CancelTask {
+	public static class myCancelTask implements CancelTask {
 
 		@Override
 		public boolean isCancel(){

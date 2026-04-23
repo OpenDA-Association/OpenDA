@@ -34,8 +34,13 @@ import org.openda.utils.Vector;
 import org.openda.utils.*;
 import ucar.ma2.Array;
 import ucar.ma2.*;
-import ucar.nc2.*;
+import ucar.nc2.Attribute;
+import ucar.nc2.Dimension;
+import ucar.nc2.Variable;
 import ucar.nc2.dataset.NetcdfDataset;
+import ucar.nc2.dataset.NetcdfDatasets;
+import ucar.nc2.write.NetcdfFormatWriter;
+import ucar.nc2.write.NetcdfFormatWriter.*;
 
 import java.io.*;
 import java.util.*;
@@ -64,7 +69,7 @@ public class KalmanGainStorage {
 
 	// set in constructor
 	private File workingDir;
-	private double timeStampAsMJD = Double.MIN_VALUE;;
+	private double timeStampAsMJD = Double.MIN_VALUE;
 
 	// properties that be can be overridden before writing
 	private String storageDirPrefix = "kgStorage_";
@@ -104,21 +109,6 @@ public class KalmanGainStorage {
 	}
 
 	/**
-	 * Constructor for creating and writing kalman gain storage object, used to read or to write the kalman gain.
-	 * The kalman gain is stored in a separate directory, with a separate file for each kalman gain column
-	 * in the kalman gain matrix.
-	 *
-	 * @param workingDir			   The directory under which the directory for the kalman gain for the
-	 *                                 specified time stamp must be created
-	 * @param timeStampAsMJD		   The time stamp for which the kalman gain is valid
-	 */
-	public KalmanGainStorage(File workingDir, double timeStampAsMJD, boolean useTimeStampInDirectoryName) {
-		this.workingDir = workingDir;
-		this.timeStampAsMJD = timeStampAsMJD;
-		this.useTimeStampInDirectoryName = false;
-	}
-
-	/**
 	 * Constructor for reading kalman gain storage object, used to read the kalman gain.
 	 * The kalman gain is stored with a separate file for each kalman gain column
 	 * in the kalman gain matrix.
@@ -138,14 +128,6 @@ public class KalmanGainStorage {
 		this.storageDirPrefix = storageDirPrefix;
 	}
 
-	/**
-	 * Set the prefix to be used for the directory name for storing the kalman gain column files.
-	 * @param columnFilePrefix The file prefix for.
-	 */
-	public void setColumnFilePrefix(String columnFilePrefix) {
-		this.columnFilePrefix = columnFilePrefix;
-	}
-	
 	/**
 	 * Set the file type for storage of Kalman gain vectors
 	 * @param fileType 
@@ -188,9 +170,9 @@ public class KalmanGainStorage {
 	}
 
 	/**
-	 * Write the kalman gain matrix to xml file and, in case of large column vectors, to netdcf files.
-	 * A HashMap is used with Id's for each column. This helps to find the right column matching an observation
-	 * @param gainVectors each vector corresponds to a column of the the Kalman gain and matches an observation
+	 * Write the kalman gain matrix to XML file and, in case of large column vectors, to NetCDF files.
+	 * A HashMap is used with Ids for each column. This helps to find the right column matching an observation
+	 * @param gainVectors each vector corresponds to a column of the Kalman gain and matches an observation
 	 * @param obsId combination of location and quantity to map observations to the right column
 	 * @param obsTimeOffset For observations at a time preceding the analysis time this gives the offset in days.
 	 */
@@ -214,7 +196,7 @@ public class KalmanGainStorage {
 	}	
 	
 	/**
-	 * Write the kalman gain matrix to xml file and, in case of large column vectors, to netdcf files.
+	 * Write the kalman gain matrix to XML file and, in case of large column vectors, to NetCDF files.
 	 *
 	 * @param observationIds           The observation identifiers
 	 * @param observationOffsetsInDays The time offset of the observations, expressed in days,
@@ -302,32 +284,30 @@ public class KalmanGainStorage {
 	}
 
 	private void writeKalmanGainToNetcdfCF(String[] observationIds, double[] observationOffsetsInDays, IVector[] kalmanGainColumns, File directoryForStorage, double[][] hk) {
-		NetcdfFileWriter netcdfFileWriter = null;
+		NetcdfFormatWriter netcdfFileWriter = null;
 		try {
 			File file = new File(directoryForStorage, kalmanGainStorageFileName);
-			netcdfFileWriter = NetcdfFileWriter.createNew(NetcdfFileWriter.Version.netcdf3, file.getAbsolutePath());
-			netcdfFileWriter.setLargeFile(true);
-			addGlobalAttributes(netcdfFileWriter);
-			Variable timeStampVariable = createTimeStampVariable(netcdfFileWriter);
-			Dimension stationDimension = netcdfFileWriter.addDimension(null, STATION_DIMENSION, observationIds.length);
-			netcdfFileWriter.addDimension(null, CHAR_LENGTH_ID, STATION_ID_CHAR_LENGTH);
-			Variable observationOffsetVariable = createObservationOffsetVariable(netcdfFileWriter);
-			Variable hkVariable = hk != null ? createHKVariable(netcdfFileWriter) : null;
-			Variable stationVariable = createStationVariable(netcdfFileWriter);
+			NetcdfFormatWriter.Builder netcdfBuilder = NetcdfFormatWriter.createNewNetcdf3(file.getAbsolutePath());
+			addGlobalAttributes(netcdfBuilder);
+			createTimeStampVariable(netcdfBuilder);
+			Dimension stationDimension = netcdfBuilder.addDimension(STATION_DIMENSION, observationIds.length);
+			netcdfBuilder.addDimension(CHAR_LENGTH_ID, STATION_ID_CHAR_LENGTH);
+			createObservationOffsetVariable(netcdfBuilder);
+			createStationVariable(netcdfBuilder);
+			boolean hkVariable = hk != null ? createHKVariable(netcdfBuilder) : false;
 
-			KalmanGainVariableData[] kalmanGainVariableData = getKalmanGainVariableData(kalmanGainColumns, netcdfFileWriter, stationDimension);
-			netcdfFileWriter.create();
+			KalmanGainVariableData[] kalmanGainVariableData = getKalmanGainVariableData(kalmanGainColumns, netcdfBuilder, stationDimension);
+			netcdfFileWriter = netcdfBuilder.build();
 
-			writeStationData(observationIds, netcdfFileWriter, stationVariable);
-			writeTimeStampData(netcdfFileWriter, timeStampVariable);
-			writeObservationOffsetData(observationOffsetsInDays, netcdfFileWriter, observationOffsetVariable);
-			if (hkVariable != null) writeHK(hk, netcdfFileWriter, hkVariable);
-
+			writeStationData(observationIds, netcdfFileWriter);
+			writeTimeStampData(netcdfFileWriter);
+			writeObservationOffsetData(observationOffsetsInDays, netcdfFileWriter);
+			if (hkVariable) writeHK(hk, netcdfFileWriter);
 			for (int observationIndex = 0; observationIndex < kalmanGainColumns.length; observationIndex++) {
 
 				ITreeVector kalmanGainColumnForObservation = (ITreeVector) kalmanGainColumns[observationIndex];
 				for (KalmanGainVariableData kalmanGainVariableDatum : kalmanGainVariableData) {
-					Variable variable = kalmanGainVariableDatum.getVariable();
+					String variableId = kalmanGainVariableDatum.getVariableId();
 					ITreeVector dataVector = getDataVector(kalmanGainColumnForObservation, kalmanGainVariableDatum);
 					ArrayList<Dimension> dimensions = kalmanGainVariableDatum.getDimensions();
 					Array values = null;
@@ -339,7 +319,7 @@ public class KalmanGainStorage {
 					int[] origin = new int[dimensions.size() + 1];
 					origin[0] = observationIndex;
 					try {
-						netcdfFileWriter.write(variable, origin, values);
+						netcdfFileWriter.write(variableId, origin, values);
 					} catch (IOException ioe) {
 						throw new RuntimeException(ioe);
 					}
@@ -376,40 +356,40 @@ public class KalmanGainStorage {
 		return arrayDoubleD2;
 	}
 
-	private void writeObservationOffsetData(double[] observationOffsetsInDays, NetcdfFileWriter netcdfFileWriter, Variable observationOffsetVariable) throws IOException, InvalidRangeException {
+	private void writeObservationOffsetData(double[] observationOffsetsInDays, NetcdfFormatWriter netcdfFileWriter) throws IOException, InvalidRangeException {
 		ArrayDouble.D1 observationOffsetArray = new ArrayDouble.D1(observationOffsetsInDays.length);
 		for (int i = 0; i < observationOffsetsInDays.length; i++) {
 			observationOffsetArray.set(i, observationOffsetsInDays[i]);
 		}
-		netcdfFileWriter.write(observationOffsetVariable, observationOffsetArray);
+		netcdfFileWriter.write(OBSERVATION_OFFSET, observationOffsetArray);
 	}
 
-	private void writeHK(double[][] hk, NetcdfFileWriter netcdfFileWriter, Variable hkVariable) throws IOException, InvalidRangeException {
+	private void writeHK(double[][] hk, NetcdfFormatWriter netcdfFileWriter) throws IOException, InvalidRangeException {
 		ArrayDouble.D2 hkArray = new ArrayDouble.D2(hk.length, hk.length);
 		for (int i = 0; i < hk.length; i++) {
 			for (int j = 0; j < hk.length; j++) {
 				hkArray.set(i, j, hk[i][j]);
 			}
 		}
-		netcdfFileWriter.write(hkVariable, hkArray);
+		netcdfFileWriter.write("HK", hkArray);
 	}
 
-	private void writeStationData(String[] observationIds, NetcdfFileWriter netcdfFileWriter, Variable stationVariable) throws IOException, InvalidRangeException {
+	private void writeStationData(String[] observationIds, NetcdfFormatWriter netcdfFileWriter) throws IOException, InvalidRangeException {
 		ArrayChar.D2 stationArray = new ArrayChar.D2(observationIds.length, STATION_ID_CHAR_LENGTH);
 		for (int i = 0; i < observationIds.length; i++) {
 			String observationId = observationIds[i];
 			stationArray.setString(i, observationId);
 		}
-		netcdfFileWriter.write(stationVariable, stationArray);
+		netcdfFileWriter.write(STATION_ID, stationArray);
 	}
 
-	private void writeTimeStampData(NetcdfFileWriter netcdfFileWriter, Variable timeStampVariable) throws IOException, InvalidRangeException {
+	private void writeTimeStampData(NetcdfFormatWriter netcdfFileWriter) throws IOException, InvalidRangeException {
 		ArrayDouble.D1 timeStampArray = new ArrayDouble.D1(1);
 		timeStampArray.setDouble(0, timeStampAsMJD);
-		netcdfFileWriter.write(timeStampVariable, timeStampArray);
+		netcdfFileWriter.write(TIME_STAMP, timeStampArray);
 	}
 
-	private KalmanGainVariableData[] getKalmanGainVariableData(IVector[] kalmanGainColumns, NetcdfFileWriter netcdfFileWriter, Dimension stationDimension) {
+	private KalmanGainVariableData[] getKalmanGainVariableData(IVector[] kalmanGainColumns, NetcdfFormatWriter.Builder netcdfFileWriter, Dimension stationDimension) {
 		TreeVector kalmanGainColumn = (TreeVector) kalmanGainColumns[0];
 		ArrayList<String> subTreeVectorIds = kalmanGainColumn.getSubTreeVectorIds();
 		KalmanGainVariableData[] kalmanGainVariableData = new KalmanGainVariableData[subTreeVectorIds.size()];
@@ -456,14 +436,14 @@ public class KalmanGainStorage {
 		return kalmanGainVariableData;
 	}
 
-	private KalmanGainVariableData createKalmanGainVariableData(NetcdfFileWriter netcdfFileWriter, Dimension stationDimension, ArrayList<String> vectorIds, String variableId, int[] shape, ITreeVector dataVector) {
+	private KalmanGainVariableData createKalmanGainVariableData(NetcdfFormatWriter.Builder netcdfFileWriter, Dimension stationDimension, ArrayList<String> vectorIds, String variableId, int[] shape, ITreeVector dataVector) {
 		ArrayList<Dimension> dimensions = new ArrayList<>();
 		dimensions.add(stationDimension);
 		for (int i = 0; i < shape.length; i++) {
-			Dimension dim = netcdfFileWriter.addDimension(null, variableId + "_dimension_" + i, shape[i]);
+			Dimension dim = netcdfFileWriter.addDimension(variableId + "_dimension_" + i, shape[i]);
 			dimensions.add(dim);
 		}
-		Variable variable = netcdfFileWriter.addVariable(null, variableId, DataType.DOUBLE, dimensions);
+		Variable.Builder variable = netcdfFileWriter.addVariable(variableId, DataType.DOUBLE, dimensions);
 		if (vectorIds.size() > 1) {
 			String parentVectorId = vectorIds.get(0);
 			variable.addAttribute(new Attribute(PARENT_VECTOR_ID, parentVectorId));
@@ -473,44 +453,41 @@ public class KalmanGainStorage {
 		// Remove station dimension again because stations data are written one by one
 		Dimension removed = dimensions.remove(0);
 		assert removed.getShortName().equals(STATION_DIMENSION);
-		return new KalmanGainVariableData(variableId, dimensions, variable, dataVector, vectorIds);
+		return new KalmanGainVariableData(variableId, dimensions, dataVector, vectorIds);
 	}
 
-	private Variable createStationVariable(NetcdfFileWriter netcdfFileWriter) {
-		Variable stationVariable = netcdfFileWriter.addVariable(null, STATION_ID, DataType.CHAR, STATION_DIMENSION + ' ' + CHAR_LENGTH_ID);
+	private void createStationVariable(NetcdfFormatWriter.Builder netcdfFileWriter) {
+		Variable.Builder stationVariable = netcdfFileWriter.addVariable(STATION_ID, DataType.CHAR, STATION_DIMENSION + ' ' + CHAR_LENGTH_ID);
 		stationVariable.addAttribute(STATION_IDENTIFICATION_CODE_ATT);
 		stationVariable.addAttribute(TIME_SERIES_ID_ATT);
-		return stationVariable;
 	}
 
-	private Variable createObservationOffsetVariable(NetcdfFileWriter netcdfFileWriter) {
-		Variable observationOffsetVariable = netcdfFileWriter.addVariable(null, OBSERVATION_OFFSET, DataType.DOUBLE, STATION_DIMENSION);
+	private void createObservationOffsetVariable(NetcdfFormatWriter.Builder netcdfFileWriter) {
+		Variable.Builder observationOffsetVariable = netcdfFileWriter.addVariable(OBSERVATION_OFFSET, DataType.DOUBLE, STATION_DIMENSION);
 		observationOffsetVariable.addAttribute(OBSERVATION_OFFSET_LONG_NAME_ATT);
 		observationOffsetVariable.addAttribute(TIME_STAMP_UNIT_ATT);
-		return observationOffsetVariable;
 	}
 
-	private Variable createHKVariable(NetcdfFileWriter netcdfFileWriter) {
-		Variable observationOffsetVariable = netcdfFileWriter.addVariable(null, "HK", DataType.DOUBLE, STATION_DIMENSION + ' ' + STATION_DIMENSION);
+	private boolean createHKVariable(NetcdfFormatWriter.Builder netcdfFileWriter) {
+		Variable.Builder observationOffsetVariable = netcdfFileWriter.addVariable("HK", DataType.DOUBLE, STATION_DIMENSION + ' ' + STATION_DIMENSION);
 		observationOffsetVariable.addAttribute(HK_LONG_NAME_ATT);
 		observationOffsetVariable.addAttribute(FRACTIONS_UNIT_ATT);
-		return observationOffsetVariable;
+		return true;
 	}
 
-	private Variable createTimeStampVariable(NetcdfFileWriter netcdfFileWriter) {
-		Dimension timeStampDimension = netcdfFileWriter.addDimension(null, "time_stamp_dimension", 1);
+	private void createTimeStampVariable(Builder netcdfFileWriter) {
+		Dimension timeStampDimension = netcdfFileWriter.addDimension("time_stamp_dimension", 1);
 		ArrayList<Dimension> dimensionList = new ArrayList<>();
 		dimensionList.add(timeStampDimension);
-		Variable timeStampVariable = netcdfFileWriter.addVariable(null, TIME_STAMP, DataType.DOUBLE, dimensionList);
+		Variable.Builder timeStampVariable = netcdfFileWriter.addVariable(TIME_STAMP, DataType.DOUBLE, dimensionList);
 		timeStampVariable.addAttribute(TIME_STAMP_LONG_NAME_ATT);
 		timeStampVariable.addAttribute(TIME_STAMP_UNIT_ATT);
-		return timeStampVariable;
 	}
 
-	private void addGlobalAttributes(NetcdfFileWriter netcdfFileWriter) {
-		netcdfFileWriter.addGroupAttribute(null, new Attribute("title", "Kalman gain data"));
-		NetcdfUtils.addGeneralGlobalAttributes(netcdfFileWriter);
-		if (comment != null && !comment.isEmpty()) netcdfFileWriter.addGroupAttribute(null, new Attribute("Comment", comment));
+	private void addGlobalAttributes(NetcdfFormatWriter.Builder netcdfBuilder) {
+		netcdfBuilder.addAttribute(new Attribute("title", "Kalman gain data"));
+		NetcdfUtils.addGeneralGlobalAttributes(netcdfBuilder);
+		if (comment != null && !comment.isEmpty()) netcdfBuilder.addAttribute(new Attribute("Comment", comment));
 	}
 
 	private ITreeVector getDataVector(ITreeVector kalmanGainColumnForObservation, KalmanGainVariableData kalmanGainVariableDatum) {
@@ -631,10 +608,10 @@ public class KalmanGainStorage {
 	}
 
 	private void readKalmanGainFromNetcdfCF(File directoryForStorage) {
-		NetcdfFile netcdfFile;
+		NetcdfDataset netcdfFile;
 		try {
 			File file = new File(directoryForStorage, kalmanGainStorageFileName);
-			netcdfFile = NetcdfDataset.openDataset(file.getAbsolutePath());
+			netcdfFile = NetcdfDatasets.openDataset(file.getAbsolutePath());
 			List<Variable> variables = netcdfFile.getVariables();
 			Variable stationVariable = netcdfFile.findVariable(STATION_ID);
 			int stationLength = stationVariable.getShape(0);
@@ -644,6 +621,7 @@ public class KalmanGainStorage {
 			}
 			readVariables(variables, stationLength, kalmanGainColumns);
 			this.kalmanGainColumns = kalmanGainColumns;
+			netcdfFile.close();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -954,14 +932,12 @@ public class KalmanGainStorage {
 	private class KalmanGainVariableData {
 		private final String variableId;
 		private final ArrayList<Dimension> dimensions;
-		private final Variable variable;
 		private final ITreeVector dataVector;
 		private ArrayList<String> vectorIds;
 
-		public KalmanGainVariableData(String variableId, ArrayList<Dimension> dimensions, Variable variable, ITreeVector dataVector, ArrayList<String> vectorIds) {
+		public KalmanGainVariableData(String variableId, ArrayList<Dimension> dimensions, ITreeVector dataVector, ArrayList<String> vectorIds) {
 			this.variableId = variableId;
 			this.dimensions = dimensions;
-			this.variable = variable;
 			this.dataVector = dataVector;
 			this.vectorIds = vectorIds;
 		}
@@ -972,10 +948,6 @@ public class KalmanGainStorage {
 
 		public ArrayList<Dimension> getDimensions() {
 			return dimensions;
-		}
-
-		public Variable getVariable() {
-			return variable;
 		}
 
 		public ITreeVector getDataVector() {

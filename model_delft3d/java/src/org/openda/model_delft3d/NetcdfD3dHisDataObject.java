@@ -25,7 +25,7 @@ import ucar.ma2.Array;
 import ucar.ma2.DataType;
 import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFile;
-import ucar.nc2.NetcdfFileWriter;
+import ucar.nc2.write.NetcdfFormatWriter;
 import ucar.nc2.Variable;
 
 import java.io.File;
@@ -101,7 +101,7 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 	private void readNetCdfVariables() {
 
 		//in most netcdfFiles the time and spatial coordinate variables are shared between multiple data variables.
-		//Therefore cache timeInfo objects so that time coordinate variables are never read more than once.
+		//Therefore, cache timeInfo objects so that time coordinate variables are never read more than once.
 		Map<Variable, IArrayTimeInfo> timeInfoCache = new HashMap<Variable, IArrayTimeInfo>();
 
 		// Loading of variable containing stations names
@@ -503,17 +503,17 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 		}
 
 
-		NetcdfFileWriter netcdfFileWriter = null;
+		NetcdfFormatWriter NetcdfWriter = null;
 		try {
-			netcdfFileWriter = NetcdfFileWriter.openExisting(netcdfFilePath.getAbsolutePath());
+			NetcdfWriter = (NetcdfFormatWriter.openExisting(netcdfFilePath.getAbsolutePath())).build();
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 
-		NetcdfUtils.writeSelectedData(netcdfFileWriter,variable, origin, sizeArray, stationValues);
+		NetcdfUtils.writeSelectedData(NetcdfWriter,variable, origin, sizeArray, stationValues);
 
 		try {
-			netcdfFileWriter.close();
+			NetcdfWriter.close();
 			netcdfHisFile.close();
 		} catch (IOException e) {
 			e.printStackTrace();

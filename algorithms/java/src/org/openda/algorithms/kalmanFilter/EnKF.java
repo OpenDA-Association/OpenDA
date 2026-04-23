@@ -718,7 +718,7 @@ public class EnKF extends AbstractSequentialEnsembleAlgorithm {
 			// write gain into files in a temp dir
 			File kgStorage = new File(algorithmState.getDirContainingModelStateFiles(), "kgStorage_restart_tempdir");
 			double lastAnalysisTime = this.smoothedGainMatrix.previousAnalysisTime;
-			KalmanGainStorage gainStorage = new KalmanGainStorage(kgStorage, lastAnalysisTime, false); // here we should provide lastAnalysisTimeMJD
+			KalmanGainStorage gainStorage = new KalmanGainStorage(kgStorage, lastAnalysisTime); // here we should provide lastAnalysisTimeMJD
 			gainStorage.writeKalmanGain(this.smoothedGainMatrix.lastGainMatrixHashMap, this.smoothedGainMatrix.obsIds, this.smoothedGainMatrix.lastObsTimeOffsets);
 
 			FileBasedModelState gainState = new FileBasedModelState();

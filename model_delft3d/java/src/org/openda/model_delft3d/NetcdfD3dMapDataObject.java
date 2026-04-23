@@ -25,7 +25,8 @@ import org.openda.interfaces.*;
 import ucar.ma2.DataType;
 import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFile;
-import ucar.nc2.NetcdfFileWriter;
+import ucar.nc2.NetcdfFiles;
+import ucar.nc2.write.NetcdfFormatWriter;
 import ucar.nc2.Variable;
 
 import java.io.File;
@@ -79,7 +80,7 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 		this.runID = arguments[0].substring(5,arguments[0].length()-3);
 
 		try {
-			netcdfFile = NetcdfFile.open(netcdfFilePath.getAbsolutePath());
+			netcdfFile = NetcdfFiles.open(netcdfFilePath.getAbsolutePath());
 		} catch (IOException e) {
 			throw new RuntimeException("NetcdfD3dMapDataObject could not open netcdf file " + netcdfFilePath.getAbsolutePath());
 		}
@@ -402,18 +403,18 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 		//	origin[kmaxOutRestrDimensionIndex] = 0;
 		//}
 
-		NetcdfFileWriter netcdfFileWriter= null;
+		NetcdfFormatWriter NetcdfFormatWriter= null;
 
 		try {
-			netcdfFileWriter = NetcdfFileWriter.openExisting(this.netcdfFilePath.getAbsolutePath());
+			NetcdfFormatWriter = NetcdfFormatWriter.openExisting(this.netcdfFilePath.getAbsolutePath()).build();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		NetcdfUtils.writeSelectedData(netcdfFileWriter,variable, origin, sizeArray, values);
+		NetcdfUtils.writeSelectedData(NetcdfFormatWriter,variable, origin, sizeArray, values);
 
 		try {
-			netcdfFileWriter.close();
+			NetcdfFormatWriter.close();
 			//if (binRestartFile != null) {
 				//binRestartFile.close();
 			//}
@@ -484,7 +485,7 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 
 	private double[][][] from1dTo3dArray(double[] oneDArray){
 
-		double Domain3D[][][] = new double[mMax][nMax][nLay];
+		double[][][] Domain3D = new double[mMax][nMax][nLay];
 
 		int k=0;
 		for (int lay = 0; lay < nLay; lay++) {
