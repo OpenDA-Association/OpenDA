@@ -32,16 +32,15 @@ import ucar.nc2.NetcdfFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import ucar.nc2.write.NetcdfFormatWriter;
 import ucar.nc2.NetcdfFileWriter;
 
-public class NetcdfFileConcatenater {
+public class NetcdfFileConcatenator {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(NetcdfFileConcatenater.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(NetcdfFileConcatenator.class);
 
 	public static void main(String[] arguments) {
 		if (arguments.length < 2) {
-			throw new IllegalArgumentException("NetcdfFileConcatenater expects at least two arguments:\n" +
+			throw new IllegalArgumentException("NetcdfFileConcatenator expects at least two arguments:\n" +
 					"<targetNetcdfFile> and <netcdfFileToBeAdded>");
 		}
 		boolean useOldValueOnOverlap = false;
@@ -57,10 +56,10 @@ public class NetcdfFileConcatenater {
 				throw new RuntimeException("Unknown key " + key + ". Please specify only useOldValueOnOverlap as key=value pair");
 			}
 		}
-		// file must be there. If it is indeed, the path has been made absolute by BBaction
+		// file must be there. If it is indeed, the path has been made absolute by BB-action
 		File netcdfFileToBeAdded = new File(arguments[1]);
 
-		// file may be there. If so, the path has been made absolute by BBaction
+		// file may be there. If so, the path has been made absolute by BB-action
 		File targetNetcdfFile = new File(arguments[0]);
 		if (!targetNetcdfFile.isAbsolute()) {
 			// target file is not there yet; make path absolute
@@ -182,7 +181,7 @@ public class NetcdfFileConcatenater {
 			if (NetcdfUtils.isTimeVariable(variable)) continue;
 			Variable timeVariableToBeAdded = NetcdfUtils.findTimeVariableForVariable(variable, sourceNetCdfFile);
 			if (timeVariableToBeAdded == null) continue;
-			Variable targetVariable = netcdfFileWriter.findVariable(variable.getFullNameEscaped());
+			Variable targetVariable = netcdfFileWriter.findVariable(variable.getFullName());
 			if (targetVariable == null) continue;
 			Variable timeVariableTarget = NetcdfUtils.findTimeVariableForVariable(targetVariable, netcdfFileWriter.getNetcdfFile());
 			if (timeVariableTarget == null) continue;
@@ -263,8 +262,8 @@ public class NetcdfFileConcatenater {
 	private static void writeValues(NetcdfFile netcdfToAdd, NetcdfFileWriter netcdfWriter) throws IOException, InvalidRangeException {
 		List<Variable> variables = netcdfToAdd.getVariables();
 		for (Variable variable : variables) {
-			String fullNameEscaped = variable.getFullNameEscaped();
-			Variable netcdfFileVariable = netcdfWriter.findVariable(fullNameEscaped);
+			String fullName = variable.getFullName();
+			Variable netcdfFileVariable = netcdfWriter.findVariable(fullName);
 			Array read = variable.read();
 			netcdfWriter.write(netcdfFileVariable, read);
 		}
@@ -355,11 +354,11 @@ public class NetcdfFileConcatenater {
 
 	private static void redefineVariablesAndDimensions(NetcdfFile source, NetcdfFileWriter target) {
 
-		List<Dimension> dimensions = source.getDimensions();
+		List<Dimension> dimensions = source.getRootGroup().getDimensions();
 		for (Dimension dimension : dimensions) {
-			String fullNameEscaped = dimension.getName();
-			if ("time".equals(fullNameEscaped)) continue;
-			target.addDimension(null, fullNameEscaped, dimension.getLength());
+			String fullName = dimension.getName();
+			if ("time".equals(fullName)) continue;
+			target.addDimension(null, fullName, dimension.getLength());
 		}
 
 		Dimension timeDimension = target.addUnlimitedDimension("time");
@@ -372,8 +371,7 @@ public class NetcdfFileConcatenater {
 			List<Dimension> newDimensions = getDimensions(variable, timeDimension);
 			String fullName = variable.getFullName();
 			Variable newVariable = netcdf.addVariable(null, fullName, variable.getDataType(), newDimensions);
-			List<Attribute> attributes = variable.getAttributes();
-			for (Attribute attribute : attributes) {
+			for (Attribute attribute : variable.attributes()) {
 				netcdf.addVariableAttribute(newVariable, attribute);
 			}
 		}
