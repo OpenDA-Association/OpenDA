@@ -24,12 +24,16 @@ import org.openda.utils.generalJavaUtils.StringUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ucar.ma2.*;
-import ucar.nc2.*;
+import ucar.nc2.Attribute;
+import ucar.nc2.Dimension;
+import ucar.nc2.Variable;
 import ucar.nc2.units.DateUnit;
-
+import ucar.nc2.NetcdfFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import ucar.nc2.write.NetcdfFormatWriter;
+import ucar.nc2.NetcdfFileWriter;
 
 public class NetcdfFileConcatenater {
 
@@ -44,6 +48,7 @@ public class NetcdfFileConcatenater {
 		for (int i = 2; i < arguments.length; i++) {
 			String argument = arguments[i];
 			String[] keyValue = StringUtilities.getKeyValuePair(argument);
+			assert keyValue != null;
 			String key = keyValue[0];
 			String value = keyValue[1];
 			if (key.equals("useOldValueOnOverlap")) {
@@ -352,7 +357,7 @@ public class NetcdfFileConcatenater {
 
 		List<Dimension> dimensions = source.getDimensions();
 		for (Dimension dimension : dimensions) {
-			String fullNameEscaped = dimension.getFullNameEscaped();
+			String fullNameEscaped = dimension.getName();
 			if ("time".equals(fullNameEscaped)) continue;
 			target.addDimension(null, fullNameEscaped, dimension.getLength());
 		}
@@ -365,8 +370,8 @@ public class NetcdfFileConcatenater {
 	private static void rewriteVariables(NetcdfFileWriter netcdf, List<Variable> variables, Dimension timeDimension) {
 		for (Variable variable : variables) {
 			List<Dimension> newDimensions = getDimensions(variable, timeDimension);
-			String fullNameEscaped = variable.getFullNameEscaped();
-			Variable newVariable = netcdf.addVariable(null, fullNameEscaped, variable.getDataType(), newDimensions);
+			String fullName = variable.getFullName();
+			Variable newVariable = netcdf.addVariable(null, fullName, variable.getDataType(), newDimensions);
 			List<Attribute> attributes = variable.getAttributes();
 			for (Attribute attribute : attributes) {
 				netcdf.addVariableAttribute(newVariable, attribute);
@@ -375,10 +380,10 @@ public class NetcdfFileConcatenater {
 	}
 
 	private static List<Dimension> getDimensions(Variable variable, Dimension timeDimension) {
-		List<Dimension> dimensionsAll = variable.getDimensionsAll();
+		List<Dimension> dimensionsAll = variable.getDimensions();
 		List<Dimension> newDimensions = new ArrayList<>(dimensionsAll.size());
 		for (Dimension dimension : dimensionsAll) {
-			if (dimension.getFullNameEscaped().equals("time")) {
+			if (dimension.getName().equals("time")) {
 				newDimensions.add(timeDimension);
 			} else {
 				newDimensions.add(dimension);
