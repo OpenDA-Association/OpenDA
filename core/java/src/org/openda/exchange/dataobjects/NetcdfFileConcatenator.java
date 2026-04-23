@@ -27,12 +27,14 @@ import ucar.ma2.*;
 import ucar.nc2.Attribute;
 import ucar.nc2.Dimension;
 import ucar.nc2.Variable;
+import ucar.nc2.Variable.Builder;
 import ucar.nc2.units.DateUnit;
 import ucar.nc2.NetcdfFile;
+import ucar.nc2.NetcdfFiles;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import ucar.nc2.NetcdfFileWriter;
+import ucar.nc2.write.NetcdfFormatWriter;
 
 public class NetcdfFileConcatenator {
 
@@ -100,31 +102,27 @@ public class NetcdfFileConcatenator {
 	}
 
 	private static void addNetcdfFile(File targetNetcdfFile, File netcdfFileToBeAdded) throws IOException {
-		NetcdfFile netcdfToAdd = null;
-		try {
-			netcdfToAdd = NetcdfFile.open(netcdfFileToBeAdded.getAbsolutePath());
+		try (NetcdfFile netcdfToAdd = NetcdfFiles.open(netcdfFileToBeAdded.getAbsolutePath())) {
 			Dimension time = netcdfToAdd.findDimension("time");
 			if (time != null && time.isUnlimited()) {
 				BBUtils.copyFile(netcdfFileToBeAdded, targetNetcdfFile);
 			} else {
 				rewriteNetcdfFile(targetNetcdfFile, netcdfToAdd);
 			}
-		} finally {
-			if (netcdfToAdd != null) netcdfToAdd.close();
 		}
 	}
 
 	private static void concatenateNetcdfFiles(boolean useOldValueOnOverlap, List<File> netcdfFilesToBeAdded, File targetNetcdfFile) throws IOException {
 		NetcdfFile sourceNetcdfFile = null;
-		NetcdfFileWriter netcdfFileWriter = null;
+		NetcdfFormatWriter netcdfFileWriter = null;
 		try {
-			netcdfFileWriter = NetcdfFileWriter.openExisting(targetNetcdfFile.getAbsolutePath());
+			netcdfFileWriter = NetcdfFormatWriter.openExisting(targetNetcdfFile.getAbsolutePath()).build();
 
 			Map<Variable, Array> variableArraysMap = new HashMap<>();
 			Map<Variable, Array> timeVariableArraysMap = new HashMap<>();
 
 			for (File netcdfFileToBeAdded : netcdfFilesToBeAdded) {
-				sourceNetcdfFile = NetcdfFile.open(netcdfFileToBeAdded.getAbsolutePath());
+				sourceNetcdfFile = NetcdfFiles.open(netcdfFileToBeAdded.getAbsolutePath());
 				List<Variable> variablesToBeAdded = sourceNetcdfFile.getVariables();
 
 				concatenateVariables(useOldValueOnOverlap, sourceNetcdfFile, variablesToBeAdded, netcdfFileWriter, variableArraysMap, timeVariableArraysMap);
@@ -149,11 +147,11 @@ public class NetcdfFileConcatenator {
 
 	private static void concatenateNetcdfFiles(boolean useOldValueOnOverlap, File netcdfFileToBeAdded, File targetNetcdfFile) throws IOException {
 		NetcdfFile sourceNetcdfFile = null;
-		NetcdfFileWriter netcdfFileWriter = null;
+		NetcdfFormatWriter netcdfFileWriter = null;
 		try {
-			sourceNetcdfFile = NetcdfFile.open(netcdfFileToBeAdded.getAbsolutePath());
+			sourceNetcdfFile = NetcdfFiles.open(netcdfFileToBeAdded.getAbsolutePath());
 			List<Variable> variablesToBeAdded = sourceNetcdfFile.getVariables();
-			netcdfFileWriter = NetcdfFileWriter.openExisting(targetNetcdfFile.getAbsolutePath());
+			netcdfFileWriter = NetcdfFormatWriter.openExisting(targetNetcdfFile.getAbsolutePath()).build();
 
 			Map<Variable, Array> variableArraysMap = new HashMap<>();
 			Map<Variable, Array> timeVariableArraysMap = new HashMap<>();
@@ -176,14 +174,14 @@ public class NetcdfFileConcatenator {
 		}
 	}
 
-	private static void concatenateVariables(boolean useOldValueOnOverlap, NetcdfFile sourceNetCdfFile, List<Variable> variablesToBeAdded, NetcdfFileWriter netcdfFileWriter, Map<Variable, Array> variableArraysMap, Map<Variable, Array> timeVariableArraysMap) throws IOException {
+	private static void concatenateVariables(boolean useOldValueOnOverlap, NetcdfFile sourceNetCdfFile, List<Variable> variablesToBeAdded, NetcdfFormatWriter netcdfFileWriter, Map<Variable, Array> variableArraysMap, Map<Variable, Array> timeVariableArraysMap) throws IOException {
 		for (Variable variable : variablesToBeAdded) {
 			if (NetcdfUtils.isTimeVariable(variable)) continue;
 			Variable timeVariableToBeAdded = NetcdfUtils.findTimeVariableForVariable(variable, sourceNetCdfFile);
 			if (timeVariableToBeAdded == null) continue;
 			Variable targetVariable = netcdfFileWriter.findVariable(variable.getFullName());
 			if (targetVariable == null) continue;
-			Variable timeVariableTarget = NetcdfUtils.findTimeVariableForVariable(targetVariable, netcdfFileWriter.getNetcdfFile());
+			Variable timeVariableTarget = NetcdfUtils.findTimeVariableForVariable(targetVariable, netcdfFileWriter.getOutputFile());
 			if (timeVariableTarget == null) continue;
 
 			List<Dimension> addedDimensions = variable.getDimensions();
@@ -201,11 +199,16 @@ public class NetcdfFileConcatenator {
 				int targetLocationDimensionLength = targetLocationDimension.getLength();
 				if (addedLocationDimension.getLength() != targetLocationDimensionLength) throw new RuntimeException("Variables from source and target must have same location dimension size");
 			}
-			double[] targetValues = (double[]) targetVariable.read().get1DJavaArray(DataType.DOUBLE);
+			NetcdfFile reader = NetcdfFiles.open(netcdfFileWriter.getOutputFile().getLocation());
+			Variable var_to_read = reader.findVariable(targetVariable.getFullName());
+			assert var_to_read != null;
+			double[] targetValues = (double[]) var_to_read.read().get1DJavaArray(DataType.DOUBLE);
 			double[] addedValues = (double[]) variable.read().get1DJavaArray(DataType.DOUBLE);
 
-			Array read = timeVariableTarget.read();
-			double[] timesTarget = (double[]) read.get1DJavaArray(DataType.DOUBLE);
+			var_to_read = reader.findVariable(timeVariableTarget.getFullName());
+			assert var_to_read != null;
+			double[] timesTarget = (double[]) var_to_read.read().get1DJavaArray(DataType.DOUBLE);
+			reader.close();
 			String timeVariableTargetUnitsString = timeVariableTarget.getUnitsString();
 			double[] timesToBeAdded = (double[]) timeVariableToBeAdded.read().get1DJavaArray(DataType.DOUBLE);
 			String timeVariableToBeAddedUnitsString = timeVariableToBeAdded.getUnitsString();
@@ -242,14 +245,14 @@ public class NetcdfFileConcatenator {
 
 
 	private static void rewriteNetcdfFile(File targetNetcdfFile, NetcdfFile netcdfToAdd) throws IOException {
-		NetcdfFileWriter netcdfWriter = null;
+		NetcdfFormatWriter netcdfWriter = null;
 
 		try {
-			netcdfWriter = NetcdfFileWriter.createNew(NetcdfFileWriter.Version.netcdf3, targetNetcdfFile.getCanonicalPath());
+			NetcdfFormatWriter.Builder netcdfBuilder = NetcdfFormatWriter.createNewNetcdf3(targetNetcdfFile.getCanonicalPath());
 
-			redefineVariablesAndDimensions(netcdfToAdd, netcdfWriter);
+			redefineVariablesAndDimensions(netcdfToAdd, netcdfBuilder);
 
-			netcdfWriter.create();
+			netcdfWriter = netcdfBuilder.build();
 
 			writeValues(netcdfToAdd, netcdfWriter);
 		} catch (InvalidRangeException e) {
@@ -259,7 +262,7 @@ public class NetcdfFileConcatenator {
 		}
 	}
 
-	private static void writeValues(NetcdfFile netcdfToAdd, NetcdfFileWriter netcdfWriter) throws IOException, InvalidRangeException {
+	private static void writeValues(NetcdfFile netcdfToAdd, NetcdfFormatWriter netcdfWriter) throws IOException, InvalidRangeException {
 		List<Variable> variables = netcdfToAdd.getVariables();
 		for (Variable variable : variables) {
 			String fullName = variable.getFullName();
@@ -352,13 +355,13 @@ public class NetcdfFileConcatenator {
 		}
 	}
 
-	private static void redefineVariablesAndDimensions(NetcdfFile source, NetcdfFileWriter target) {
+	private static void redefineVariablesAndDimensions(NetcdfFile source, NetcdfFormatWriter.Builder target) {
 
 		List<Dimension> dimensions = source.getRootGroup().getDimensions();
 		for (Dimension dimension : dimensions) {
 			String fullName = dimension.getName();
 			if ("time".equals(fullName)) continue;
-			target.addDimension(null, fullName, dimension.getLength());
+			target.addDimension(fullName, dimension.getLength());
 		}
 
 		Dimension timeDimension = target.addUnlimitedDimension("time");
@@ -366,13 +369,13 @@ public class NetcdfFileConcatenator {
 		rewriteVariables(target, variables, timeDimension);
 	}
 
-	private static void rewriteVariables(NetcdfFileWriter netcdf, List<Variable> variables, Dimension timeDimension) {
+	private static void rewriteVariables(NetcdfFormatWriter.Builder netcdf, List<Variable> variables, Dimension timeDimension) {
 		for (Variable variable : variables) {
 			List<Dimension> newDimensions = getDimensions(variable, timeDimension);
 			String fullName = variable.getFullName();
-			Variable newVariable = netcdf.addVariable(null, fullName, variable.getDataType(), newDimensions);
+			Builder newVariable = netcdf.addVariable(fullName, variable.getDataType(), newDimensions);
 			for (Attribute attribute : variable.attributes()) {
-				netcdf.addVariableAttribute(newVariable, attribute);
+				newVariable.addAttribute(attribute);
 			}
 		}
 	}
