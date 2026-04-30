@@ -735,7 +735,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 					// get dimensions:
 					// TODO: in the future, dimensions should be available in the exchangeItem as part of meta data
 					// This will avoid having to read the netcdf file for obtaining the dimensions.
-					List<Dimension> dimensions = NetcdfFormatWriter.getOutputFile().getDimensions();
+					List<Dimension> dimensions = NetcdfFormatWriter.getOutputFile().getRootGroup().getDimensions();
 					for (Dimension dimension : dimensions) {
 						if ("my".equalsIgnoreCase(dimension.getShortName())) {
 							my = dimension.getLength();
