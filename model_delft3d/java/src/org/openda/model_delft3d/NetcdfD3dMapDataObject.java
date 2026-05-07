@@ -80,7 +80,7 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 		this.runID = arguments[0].substring(5,arguments[0].length()-3);
 
 		try {
-			netcdfFile = NetcdfDatasets.openFile(netcdfFilePath.getAbsolutePath(), new NetcdfUtils.myCancelTask());
+			netcdfFile = NetcdfDatasets.openFile(netcdfFilePath.getAbsolutePath(), new NetcdfUtils.MyCancelTask());
 		} catch (IOException e) {
 			throw new RuntimeException("NetcdfD3dMapDataObject could not open netcdf file " + netcdfFilePath.getAbsolutePath());
 		}

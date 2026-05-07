@@ -106,7 +106,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 		try{
 			File fileNameFull = getNetcdfFile(workingDir);
 			netcdffileName = fileNameFull.getAbsolutePath();
-			inputFile = NetcdfDatasets.openFile(netcdffileName, new NetcdfUtils.myCancelTask());
+			inputFile = NetcdfDatasets.openFile(netcdffileName, new NetcdfUtils.MyCancelTask());
 		} catch (Exception e) {
 			throw new RuntimeException("DFlowFMRestartFileWrapper: problem opening file "+ this.fileName + " due to " + e.getMessage(), e);
 		}

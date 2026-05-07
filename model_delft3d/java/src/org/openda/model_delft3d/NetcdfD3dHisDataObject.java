@@ -62,7 +62,7 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 
 		File netcdfFilePath = new File(workingDir, arguments[0]);
 		try {
-			netcdfFile = NetcdfDatasets.openFile(netcdfFilePath.getAbsolutePath(), new NetcdfUtils.myCancelTask());
+			netcdfFile = NetcdfDatasets.openFile(netcdfFilePath.getAbsolutePath(), new NetcdfUtils.MyCancelTask());
 		} catch (IOException e) {
 			throw new RuntimeException("NetcdfD3dHisDataObject could not open netcdf file " + netcdfFilePath.getAbsolutePath());
 		}
@@ -424,7 +424,7 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 
 		NetcdfFile netcdfHisFile;
 		try {
-			netcdfHisFile = NetcdfDatasets.openFile(netcdfFilePath.getAbsolutePath(), new NetcdfUtils.myCancelTask());
+			netcdfHisFile = NetcdfDatasets.openFile(netcdfFilePath.getAbsolutePath(), new NetcdfUtils.MyCancelTask());
 		} catch (IOException e) {
 			throw new RuntimeException("NetcdfD3dHisDataObject could not open netcdf file " + netcdfFilePath.getAbsolutePath());
 		}

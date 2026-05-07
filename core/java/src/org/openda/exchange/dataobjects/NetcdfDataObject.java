@@ -162,7 +162,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 		if (this.file.exists()) {
 			this.netcdfBuilder = NetcdfFormatWriter.openExisting(this.file.getAbsolutePath());
 			try {
-				this.netcdfReader = NetcdfDatasets.openFile(this.file.getAbsolutePath(), new NetcdfUtils.myCancelTask());
+				this.netcdfReader = NetcdfDatasets.openFile(this.file.getAbsolutePath(), new NetcdfUtils.MyCancelTask());
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
@@ -230,7 +230,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 
 		//get locationIds.
 		//TODO MVL
-		NetcdfFile netcdfFile = NetcdfDatasets.openFile(this.file.getAbsolutePath(), new NetcdfUtils.myCancelTask());
+		NetcdfFile netcdfFile = NetcdfDatasets.openFile(this.file.getAbsolutePath(), new NetcdfUtils.MyCancelTask());
 		Map<Integer, String> stationIndexIdMap = NetcdfUtils.readAndStoreStationIdsMap(netcdfFile, stationIdVarName);
 		if (!stationIndexIdMap.isEmpty()) {//if stations found.
 			Results.putMessage(this.getClass().getSimpleName() + ": station_id variable found in netcdf file " + this.file.getAbsolutePath());

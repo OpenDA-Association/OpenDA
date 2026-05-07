@@ -60,10 +60,9 @@ public class KalmanGainStorageTest extends TestCase {
 		kgStorageOut.writeKalmanGain(kgStorageIn.getObservationIds(),
 				kgStorageIn.getObservationOffsetInDays(), kgStorageIn.getKalmanGainColumns(), null);
 
-		testData.FilesAreIdentical(
-				new File(kgStorageDir, "kalmanGainStorage_out.xml"),
-				new File(kgStorageDirCopy, "kalmanGainStorage.xml"));
-
+		assert(testData.FilesAreIdentical(
+			new File(kgStorageDir, "kalmanGainStorage_out.xml"),
+			new File(kgStorageDirCopy, "kalmanGainStorage.xml")));
 	}
 
 	public void testReadWriteKalmanGainNetcdfCF() {
@@ -79,7 +78,7 @@ public class KalmanGainStorageTest extends TestCase {
 		assertEquals(8, kalmanGainColumnsIn.length);
 
 		String[] observationIds = kgStorageIn.getObservationIds();
-		checkKalmanGainContents(timeAsMJD, kgStorageIn, kalmanGainColumnsIn, observationIds);
+		assert(checkKalmanGainContents(timeAsMJD, kgStorageIn, kalmanGainColumnsIn, observationIds));
 
 		KalmanGainStorage kgStorageOut = new KalmanGainStorage(testRunDataDir, timeAsMJD);
 		kgStorageOut.setColumnFileType(KalmanGainStorage.StorageType.netcdf_cf);
@@ -87,7 +86,7 @@ public class KalmanGainStorageTest extends TestCase {
 		kgStorageOut.writeKalmanGain(observationIds, kgStorageIn.getObservationOffsetInDays(), kalmanGainColumnsIn, kgStorageIn.getHk());
 		kgStorageOut.readKalmanGain();
 
-		checkKalmanGainContents(timeAsMJD, kgStorageOut, kgStorageOut.getKalmanGainColumns(), kgStorageOut.getObservationIds());
+		assert(checkKalmanGainContents(timeAsMJD, kgStorageOut, kgStorageOut.getKalmanGainColumns(), kgStorageOut.getObservationIds()));
 	}
 
 	public void testReadWriteKalmanGainNetcdfCFHK() throws ParseException {
@@ -121,7 +120,7 @@ public class KalmanGainStorageTest extends TestCase {
 		}
 	}
 
-	private void checkKalmanGainContents(double timeAsMJD, KalmanGainStorage kgStorageIn, IVector[] kalmanGainColumns, String[] observationIds) {
+	private boolean checkKalmanGainContents(double timeAsMJD, KalmanGainStorage kgStorageIn, IVector[] kalmanGainColumns, String[] observationIds) {
 		String[] expectedObservationIds = {"WICK.waterlevel", "VLISSGN.waterlevel", "DENHDR.waterlevel", "NORTHSS.waterlevel", "DOVR.waterlevel", "SHEERNS.waterlevel", "HOEKVHLD.waterlevel", "LOWST.waterlevel"};
 		for (int i = 0; i < expectedObservationIds.length; i++) {
 			assertEquals(expectedObservationIds[i], observationIds[i]);
@@ -176,6 +175,7 @@ public class KalmanGainStorageTest extends TestCase {
 				assertEquals(i * 10 + j, hk[i][j], 0.000001);
 			}
 		}
+		return true;
 	}
 
 	public void testReadWriteKalmanGainNetcdfCFDoubleState() {
@@ -191,7 +191,7 @@ public class KalmanGainStorageTest extends TestCase {
 		assertEquals(8, kalmanGainColumnsIn.length);
 
 		String[] observationIds = kgStorageIn.getObservationIds();
-		checkKalmanGainContentsDoubleState(timeAsMJD, kgStorageIn, kalmanGainColumnsIn, observationIds);
+		assert(checkKalmanGainContentsDoubleState(timeAsMJD, kgStorageIn, kalmanGainColumnsIn, observationIds));
 
 		KalmanGainStorage kgStorageOut = new KalmanGainStorage(testRunDataDir, timeAsMJD);
 		kgStorageOut.setColumnFileType(KalmanGainStorage.StorageType.netcdf_cf);
@@ -199,10 +199,10 @@ public class KalmanGainStorageTest extends TestCase {
 		kgStorageOut.writeKalmanGain(observationIds, kgStorageIn.getObservationOffsetInDays(), kalmanGainColumnsIn, null);
 		kgStorageOut.readKalmanGain();
 
-		checkKalmanGainContentsDoubleState(timeAsMJD, kgStorageOut, kgStorageOut.getKalmanGainColumns(), kgStorageOut.getObservationIds());
+	    assert(checkKalmanGainContentsDoubleState(timeAsMJD, kgStorageOut, kgStorageOut.getKalmanGainColumns(), kgStorageOut.getObservationIds()));
 	}
 
-	private void checkKalmanGainContentsDoubleState(double timeAsMJD, KalmanGainStorage kgStorageIn, IVector[] kalmanGainColumns, String[] observationIds) {
+	private boolean checkKalmanGainContentsDoubleState(double timeAsMJD, KalmanGainStorage kgStorageIn, IVector[] kalmanGainColumns, String[] observationIds) {
 		String[] expectedObservationIds = {"WICK.waterlevel", "VLISSGN.waterlevel", "DENHDR.waterlevel", "NORTHSS.waterlevel", "DOVR.waterlevel", "SHEERNS.waterlevel", "HOEKVHLD.waterlevel", "LOWST.waterlevel"};
 		for (int i = 0; i < expectedObservationIds.length; i++) {
 			assertEquals(expectedObservationIds[i], observationIds[i]);
@@ -258,6 +258,6 @@ public class KalmanGainStorageTest extends TestCase {
 		assertEquals(-0.052612, s1Values[2], delta);
 		assertEquals(0.015112, s1Values[3], delta);
 		assertEquals(-0.038791, s1Values[4], delta);
+		return true;
 	}
-
 }

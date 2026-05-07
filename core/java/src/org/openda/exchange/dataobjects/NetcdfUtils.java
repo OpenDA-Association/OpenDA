@@ -50,7 +50,7 @@ import java.util.*;
  * This class contains utility methods for reading/writing data from/to netcdf files.
  * The methods in this class conform as much as possible to version 1.5 of the CF-conventions
  * (NetCDF Climate and Forecast (CF) Metadata Conventions Version 1.5 from 25 October, 2010),
- * for details see http://cf-pcmdi.llnl.gov/documents/cf-conventions/1.5/cf-conventions.html
+ * for details see <a href="http://cf-pcmdi.llnl.gov/documents/cf-conventions/1.5/cf-conventions.html">...</a>
  *
  * @author Arno Kockx
  */
@@ -88,14 +88,10 @@ public class NetcdfUtils {
 
 	//variable names.
 	public static final String TIME_VARIABLE_NAME = "time";
-	public static final String LATITUDE_VARIABLE_NAME = "lat";
 	public static final String LATITUDE_STANDARD_NAME = "latitude";
 	public static final String LATITUDE_STANDARD_NAME_2 = "projection_y_coordinate";
-	public static final String LATITUDE_LONG_NAME = "latitude";
-	public static final String LONGITUDE_VARIABLE_NAME = "lon";
 	public static final String LONGITUDE_STANDARD_NAME = "longitude";
 	public static final String LONGITUDE_STANDARD_NAME_2 = "projection_x_coordinate";
-	public static final String LONGITUDE_LONG_NAME = "longitude";
 	public static final String Z_VARIABLE_NAME = "z";
 	public static final String Y_VARIABLE_NAME = "y";
 	public static final String X_VARIABLE_NAME = "x";
@@ -122,7 +118,6 @@ public class NetcdfUtils {
 	 * @param variableNames semicolon delimited list of variables of which the data should be printed.
 	 *                      If this is null or empty, then all variables are printed.
 	 * @return String with cdl representation of the data.
-	 * @throws IOException
 	 */
 	public static String netcdfFileToString(File netcdfFile, String variableNames) throws IOException {
 		String options;
@@ -134,7 +129,7 @@ public class NetcdfUtils {
 
 
 		Writer writer = new StringWriter();
-		try (NetcdfFile nc = NetcdfDatasets.openFile(netcdfFile.getAbsolutePath(), new myCancelTask())) {
+		try (NetcdfFile nc = NetcdfDatasets.openFile(netcdfFile.getAbsolutePath(), new MyCancelTask())) {
 			Ncdump.ncdump(nc, options, writer, null);
 			return writer.toString();
 		}
@@ -209,9 +204,8 @@ public class NetcdfUtils {
 		IArray latitudeArray = (IArray) readData(latitudeVariable);
 		IArray longitudeArray = (IArray) readData(longitudeVariable);
         //the latitude and longitude coordinates are stored in the same order as in the netcdf file.
-		ArrayGeometryInfo geometryInfo = new ArrayGeometryInfo(latitudeArray, latitudeValueIndices,
+		return new ArrayGeometryInfo(latitudeArray, latitudeValueIndices,
 				latitudeQuantityInfo, longitudeArray, longitudeValueIndices, longitudeQuantityInfo,null,null,null, true);
-		return geometryInfo;
 	}
 
 	public static PointGeometryInfo[] createPointGeometryInfos(Variable variable, NetcdfFile netcdfFile) {
@@ -427,8 +421,7 @@ public class NetcdfUtils {
 	private static DateUnit getDateUnitFromDimension(Variable var) {
 		try {
 			String unitString = var.getUnitsString();
-			DateUnit unit = new DateUnit(unitString);
-			return unit;
+			return new DateUnit(unitString);
 		} catch (Exception e) {
 			//if the given variable does not have a valid unit of time.
 			return null;
@@ -568,7 +561,6 @@ public class NetcdfUtils {
 	 *
 	 * @param timeVariable
 	 * @return times array.
-	 * @throws IOException
 	 */
 	private static double[] readTimes(Variable timeVariable) throws IOException {
 		double[] convertedTimes = new double[0];
@@ -581,6 +573,7 @@ public class NetcdfUtils {
 			//convert times.
 			convertedTimes = new double[times.length];
 			DateUnit dateUnit = getDateUnitFromDimension(timeVariable);
+			assert dateUnit != null;
 			boolean roundToWholeSeconds = dateUnit.getTimeUnit().getValueInSeconds() == 1;
 			for (int n = 0; n < times.length; n++) {
 				double roundedTime = roundToWholeSeconds ? Math.round(times[n]) : times[n];
@@ -633,10 +626,7 @@ public class NetcdfUtils {
 		ucar.ma2.Array array;
 		try {
 			array = variable.read(origin, sizeArray);
-		} catch (IOException e) {
-			throw new RuntimeException("Error while reading data from netcdf variable '" + variable.getShortName()
-					+ "'. Message was: " + e.getMessage(), e);
-		} catch (InvalidRangeException e) {
+		} catch (IOException | InvalidRangeException e) {
 			throw new RuntimeException("Error while reading data from netcdf variable '" + variable.getShortName()
 					+ "'. Message was: " + e.getMessage(), e);
 		}
@@ -776,8 +766,6 @@ public class NetcdfUtils {
 				}
 			}
 			values = newValues;
-		} else {//if missingValue is Double.NaN, then NaN values in values array are already equal to missingValue.
-			//do nothing.
 		}
 
 		//prepare array for writing.
@@ -843,12 +831,11 @@ public class NetcdfUtils {
 	 *
 	 * Code copied and adapted from class nl.wldelft.fews.system.plugin.dataImport.NetcdfTimeSeriesTSParser
 	 *
-	 * @throws IOException
 	 */
 	public static Map<Integer, String> readAndStoreStationIdsMap(NetcdfFile netcdfDataset, String stationNameVarName) throws IOException {
 
 		// if no stations found, return empty hash map
-		Map<Integer, String> stationIdsMap = new LinkedHashMap<Integer, String>();
+		Map<Integer, String> stationIdsMap = new LinkedHashMap<>();
 
 		Variable stationIdsVar = netcdfDataset.findVariable(stationNameVarName);
 		if (stationIdsVar != null) {
@@ -875,7 +862,6 @@ public class NetcdfUtils {
 	 * Code copied and adapted from class nl.wldelft.fews.system.plugin.dataImport.NetcdfTimeSeriesTSParser
 	 *
 	 * @param variable
-	 * @throws IOException
 	 */
 	private static Map<Integer, String>  readAndStoreStationIdVariable(Variable variable) throws IOException {
 		Map<Integer, String> stationIdsMap = new LinkedHashMap<Integer, String>();
@@ -892,7 +878,6 @@ public class NetcdfUtils {
 	 *
 	 * Code copied and adapted from class nl.wldelft.fews.system.plugin.dataImport.NetcdfTimeSeriesTSParser
 	 *
-	 * @throws IOException
 	 */
 	private static Map<Integer, String> readAndStoreOneDimensionalStationIdsVariable(NetcdfFile netcdfDataset,
 																	 String stationNameVarName) throws IOException {
@@ -900,9 +885,7 @@ public class NetcdfUtils {
 		float[] stationIdFloats;
 		try {
 			stationIdFloats = (float[]) netcdfDataset.readSection(stationNameVarName).copyTo1DJavaArray();
-		} catch (IOException e) {
-			throw new IOException("Error while reading data for variable " + stationNameVarName + " from netcdf file: " + e.getMessage());
-		} catch (InvalidRangeException e) {
+		} catch (IOException | InvalidRangeException e) {
 			throw new IOException("Error while reading data for variable " + stationNameVarName + " from netcdf file: " + e.getMessage());
 		}
 		if (stationIdFloats == null || stationIdFloats.length < 1) {
@@ -923,18 +906,15 @@ public class NetcdfUtils {
 	 * Code copied and adapted from class nl.wldelft.fews.system.plugin.dataImport.NetcdfTimeSeriesTSParser
 	 *
 	 * @param stationIdsVar
-	 * @throws IOException
 	 */
 	private static Map<Integer, String> readAndStoreTwoDimensionalStationIdsVariable(Variable stationIdsVar,
 																					 NetcdfFile netcdfDataset,
 																					 String stationNameVarName) throws IOException {
-		Map<Integer, String> stationIdsMap = new LinkedHashMap<Integer, String>();
+		Map<Integer, String> stationIdsMap = new LinkedHashMap<>();
 		char[] stationIdsCh;
 		try {
 			stationIdsCh = (char[]) netcdfDataset.readSection(stationNameVarName).copyTo1DJavaArray();
-		} catch (IOException e) {
-			throw new IOException("Error while reading data for variable" + stationNameVarName + " from netcdf file:" + e.getMessage());
-		} catch (InvalidRangeException e) {
+		} catch (IOException | InvalidRangeException e) {
 			throw new IOException("Error while reading data for variable" + stationNameVarName + " from netcdf file:" + e.getMessage());
 		}
 		int stations = stationIdsVar.getDimension(0).getLength();
@@ -1167,8 +1147,8 @@ public class NetcdfUtils {
 				IQuantityInfo xQuantityInfo = ((ArrayGeometryInfo) geometryInfo).getLongitudeQuantityInfo();
 				if (yQuantityInfo != null && xQuantityInfo != null) {
 					//create x and y variables.
-					createYX1DVariables(NetcdfWriterBuilder, yDimension, xDimension, PROJECTION_Y_COORDINATE, PROJECTION_X_COORDINATE,
-							yQuantityInfo.getQuantity(), xQuantityInfo.getQuantity(), yQuantityInfo.getUnit(), xQuantityInfo.getUnit(), gridVariableProperties);
+					createYX1DVariables(NetcdfWriterBuilder, yDimension, xDimension,
+						yQuantityInfo.getQuantity(), xQuantityInfo.getQuantity(), yQuantityInfo.getUnit(), xQuantityInfo.getUnit(), gridVariableProperties);
 
 					//TODO add grid mapping variable. This requires information about the coordinate system used for the grid. AK
 //						//create grid mapping variable.
@@ -1214,12 +1194,6 @@ public class NetcdfUtils {
 			Map<ITimeInfo, Dimension> timeInfoTimeDimensionMap, Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap, int[] uniqueTimeVariableCount) {
 
 		for (IExchangeItem item : exchangeItems) {
-			String variableName = getVariableName(item);
-			//if (NetcdfWriter.findVariable(variableName) != null) {//if variable already exists.
-				//if the variable already exists, we do not need to add it again. This can happen for scalar time series.
-			//	continue;
-			//}
-
 			//if variable does not exist yet.
 			//create time coordinate variable, if not present yet.
 			//assume that all exchangeItems for a given parameter have identical time records. TODO validate this. AK
@@ -1236,20 +1210,13 @@ public class NetcdfUtils {
 			Dimension timeDimension, Dimension realizationDimension, Dimension stationDimension, Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap) {
 
 		for (IExchangeItem item : exchangeItems) {
-			String variableName = getVariableName(item);
-			//if (NetcdfWriter.findVariable(variableName) != null) {//if variable already exists.
-				//if the variable already exists, we do not need to add it again. This can happen for scalar time series.
-			//	continue;
-			//}
-
-			//if variable does not exist yet.
 			NetcdfUtils.createDataVariable(NetcdfWriterBuilder, item, timeDimension, realizationDimension, stationDimension, geometryInfoGridVariablePropertiesMap);
 		}
 	}
 
 	private static void createDataVariable(NetcdfFormatWriter.Builder NetcdfWriterBuilder, IExchangeItem exchangeItem, Dimension timeDimension, Dimension realizationDimension, Dimension stationDimension,
 			Map<IGeometryInfo, GridVariableProperties> geometryInfoGridVariablePropertiesMap) {
-		List<Dimension> dimensions = new ArrayList<Dimension>();
+		List<Dimension> dimensions = new ArrayList<>();
 		if (timeDimension != null) {
 			dimensions.add(timeDimension);
 		}
@@ -1289,8 +1256,6 @@ public class NetcdfUtils {
 	 * @param NetcdfWriterBuilder
 	 * @param yDimension
 	 * @param xDimension
-	 * @param yStandardName
-	 * @param xStandardName
 	 * @param yLongName
 	 * @param xLongName
 	 * @param yUnits
@@ -1298,15 +1263,15 @@ public class NetcdfUtils {
 	 * @param gridVariableProperties
 	 */
 	private static void createYX1DVariables(NetcdfFormatWriter.Builder NetcdfWriterBuilder,
-			Dimension yDimension, Dimension xDimension, String yStandardName, String xStandardName,
-			String yLongName, String xLongName, String yUnits, String xUnits, GridVariableProperties gridVariableProperties) {
+											Dimension yDimension, Dimension xDimension,
+											String yLongName, String xLongName, String yUnits, String xUnits, GridVariableProperties gridVariableProperties) {
 
 		String yVariableName = yDimension.getShortName();
 		String xVariableName = xDimension.getShortName();
-		createCoordinateVariable(NetcdfWriterBuilder, yVariableName, yDimension, yStandardName, yLongName, yUnits, Y_AXIS,
-				DEFAULT_FILL_VALUE_DOUBLE);
-		createCoordinateVariable(NetcdfWriterBuilder, xVariableName, xDimension, xStandardName, xLongName, xUnits, X_AXIS,
-				DEFAULT_FILL_VALUE_DOUBLE);
+		createCoordinateVariable(NetcdfWriterBuilder, yVariableName, yDimension, NetcdfUtils.PROJECTION_Y_COORDINATE, yLongName, yUnits, Y_AXIS
+		);
+		createCoordinateVariable(NetcdfWriterBuilder, xVariableName, xDimension, NetcdfUtils.PROJECTION_X_COORDINATE, xLongName, xUnits, X_AXIS
+		);
 		gridVariableProperties.setY1DVariableName(yVariableName);
 		gridVariableProperties.setX1DVariableName(xVariableName);
 	}
@@ -1335,7 +1300,7 @@ public class NetcdfUtils {
 	 */
 	private static void createCoordinateVariable(NetcdfFormatWriter.Builder dataFile,
 			String variableName, Dimension dimension, String standardName,
-			String longName, String units, String axis, double fillValue) {
+			String longName, String units, String axis) {
 
 		ArrayList<Dimension> dimensions = new ArrayList<Dimension>();
 		dimensions.add(dimension);
@@ -1344,7 +1309,7 @@ public class NetcdfUtils {
 		myVar.addAttribute(new Attribute(LONG_NAME_ATTRIBUTE_NAME, longName));
 		myVar.addAttribute(new Attribute(UNITS_ATTRIBUTE_NAME, units));
 		myVar.addAttribute(new Attribute(AXIS_ATTRIBUTE_NAME, axis));
-		myVar.addAttribute(new Attribute( FILL_VALUE_ATTRIBUTE_NAME, fillValue));
+		myVar.addAttribute(new Attribute( FILL_VALUE_ATTRIBUTE_NAME, NetcdfUtils.DEFAULT_FILL_VALUE_DOUBLE));
 	}
 
 	/**
@@ -1441,7 +1406,6 @@ public class NetcdfUtils {
 	 *
 	 * @param NetcdfFormatWriter
 	 * @param geometryGridVariablePropertiesMap
-	 * @throws Exception
 	 */
 	public static void writeGridVariablesValues(NetcdfFormatWriter NetcdfFormatWriter,
 			Map<IGeometryInfo, GridVariableProperties> geometryGridVariablePropertiesMap) throws Exception {
@@ -1475,7 +1439,6 @@ public class NetcdfUtils {
 	 * @param geometryInfo
 	 * @param yVariableName
 	 * @param xVariableName
-	 * @throws Exception
 	 */
 	private static void writeYX1DVariableValues(NetcdfFormatWriter NetcdfFormatWriter,
 			ArrayGeometryInfo geometryInfo, String yVariableName, String xVariableName) throws Exception {
@@ -1585,8 +1548,6 @@ public class NetcdfUtils {
 						netcdfData[i] = Double.NaN;
 					}
 				}
-			} else {//if missingValue is Double.NaN, then missing values in netcdfData array are already equal to Double.NaN.
-				//do nothing.
 			}
 		} else {
 			for (int i = 0; i < netcdfData.length; i++) {
@@ -1618,7 +1579,7 @@ public class NetcdfUtils {
 	}
 
 	public static double[] addMissingValuesForNonActiveGridCells(IGeometryInfo geometryInfo, double[] values) {
-		if (geometryInfo == null || !(geometryInfo instanceof ArrayGeometryInfo)) {
+		if (!(geometryInfo instanceof ArrayGeometryInfo)) {
 			return values;
 		}
 
@@ -1642,7 +1603,7 @@ public class NetcdfUtils {
 	public static String getStationId(IExchangeItem item) {
 		String id = item.getId();
 		String locationId = id.contains(".") ? BBUtils.getLocationFromId(id) : id;
-		if (locationId == null || locationId.isEmpty()) {
+		if (locationId.isEmpty()) {
 			throw new IllegalArgumentException("Exchange item '" + item.getId() + "' of type " + item.getClass().getSimpleName() + " has no station id.");
 		}
 		return locationId;
@@ -1724,7 +1685,7 @@ public class NetcdfUtils {
 		NetcdfWriterBuilder.addAttribute(new Attribute("Conventions", "CF-1.6"));
 	}
 
-	public static class myCancelTask implements CancelTask {
+	public static class MyCancelTask implements CancelTask {
 
 		@Override
 		public boolean isCancel(){
