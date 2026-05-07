@@ -1635,7 +1635,7 @@ public class NetcdfUtils {
 	public static Dimension createStationsVariable(NetcdfFormatWriter.Builder NetcdfWriterBuilder, String stationNameVarName, String stationDimensionVarName, int stationCount) {
 		Dimension stationDimension = NetcdfWriterBuilder.addDimension(stationDimensionVarName, stationCount);
 		Dimension charDimension = NetcdfWriterBuilder.addDimension(CHAR_LEN_ID, CHARLENGTH_ID);
-		ArrayList<Dimension> dimensions = new ArrayList<Dimension>();
+		ArrayList<Dimension> dimensions = new ArrayList<>();
 		dimensions.add(stationDimension);
 		dimensions.add(charDimension);
 
@@ -1681,7 +1681,7 @@ public class NetcdfUtils {
 		NetcdfWriterBuilder.addAttribute(new Attribute("institution", "OpenDA Association"));
 		NetcdfWriterBuilder.addAttribute(new Attribute("source", "Written by OpenDA"));
 		NetcdfWriterBuilder.addAttribute(new Attribute("history", "Created at " + new Date(System.currentTimeMillis())));
-		NetcdfWriterBuilder.addAttribute(new Attribute("references", "http://www.openda.org"));
+		NetcdfWriterBuilder.addAttribute(new Attribute("references", "https://www.openda.org"));
 		NetcdfWriterBuilder.addAttribute(new Attribute("Conventions", "CF-1.6"));
 	}
 
@@ -1697,6 +1697,7 @@ public class NetcdfUtils {
 			return false;
 		}
 
+		// empty method
 		@Override
 		public void setDone(boolean b) {
 		}
@@ -1706,10 +1707,12 @@ public class NetcdfUtils {
 			CancelTask.super.setSuccess();
 		}
 
+		// empty method
 		@Override
 		public void setError(String s) {
 		}
 
+		// empty method
 		@Override
 		public void setProgress(String s, int i) {
 		}
