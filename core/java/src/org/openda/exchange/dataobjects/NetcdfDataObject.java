@@ -621,7 +621,15 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 	 */
 	public void makeSureFileHasBeenCreated() {
 		if (this.netcdfWriter == null) {
-			createFile();
+			if (this.netcdfBuilder != null) {
+				try {
+					this.netcdfWriter = this.netcdfBuilder.build();
+				} catch (IOException e) {
+					throw new RuntimeException("Error finishing header information for file '" + this.file.getAbsolutePath() + "'. Message was: " + e.getMessage(), e);
+				}
+			} else {
+				createFile();
+			}
 		}
 	}
 
