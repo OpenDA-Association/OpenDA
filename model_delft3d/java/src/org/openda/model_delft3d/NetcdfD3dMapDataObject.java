@@ -25,7 +25,7 @@ import org.openda.interfaces.*;
 import ucar.ma2.DataType;
 import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFile;
-import ucar.nc2.NetcdfFiles;
+import ucar.nc2.dataset.NetcdfDatasets;
 import ucar.nc2.write.NetcdfFormatWriter;
 import ucar.nc2.Variable;
 
@@ -80,7 +80,7 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 		this.runID = arguments[0].substring(5,arguments[0].length()-3);
 
 		try {
-			netcdfFile = NetcdfFiles.open(netcdfFilePath.getAbsolutePath());
+			netcdfFile = NetcdfDatasets.openFile(netcdfFilePath.getAbsolutePath(), new NetcdfUtils.myCancelTask());
 		} catch (IOException e) {
 			throw new RuntimeException("NetcdfD3dMapDataObject could not open netcdf file " + netcdfFilePath.getAbsolutePath());
 		}
@@ -270,12 +270,14 @@ public class NetcdfD3dMapDataObject implements IDataObject {
 
 		// find variable
 		Variable variable = this.netcdfFile.findVariable(varName);
+		assert variable != null;
 
 		int[] origin = createOrigin(variable);
 		int[] sizeArray = variable.getShape();
 
 		//select whole 2D or 3D for last time step. Due to huge sizes if we read all time steps I decided for now to keep only the necessary
 		ITimeInfo timeInfo = NetcdfUtils.createTimeInfo(variable, this.netcdfFile, timeInfoCache);
+		assert timeInfo != null;
 		int LastTimeIndex = timeInfo.getTimes().length;
 		origin[timeDimensionIndex] = LastTimeIndex-1;
 		sizeArray[timeDimensionIndex] = 1;

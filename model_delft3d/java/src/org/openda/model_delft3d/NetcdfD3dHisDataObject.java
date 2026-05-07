@@ -25,6 +25,7 @@ import ucar.ma2.Array;
 import ucar.ma2.DataType;
 import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFile;
+import ucar.nc2.dataset.NetcdfDatasets;
 import ucar.nc2.write.NetcdfFormatWriter;
 import ucar.nc2.Variable;
 
@@ -61,7 +62,7 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 
 		File netcdfFilePath = new File(workingDir, arguments[0]);
 		try {
-			netcdfFile = NetcdfFile.open(netcdfFilePath.getAbsolutePath());
+			netcdfFile = NetcdfDatasets.openFile(netcdfFilePath.getAbsolutePath(), new NetcdfUtils.myCancelTask());
 		} catch (IOException e) {
 			throw new RuntimeException("NetcdfD3dHisDataObject could not open netcdf file " + netcdfFilePath.getAbsolutePath());
 		}
@@ -423,7 +424,7 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 
 		NetcdfFile netcdfHisFile;
 		try {
-			netcdfHisFile = NetcdfFile.open(netcdfFilePath.getAbsolutePath());
+			netcdfHisFile = NetcdfDatasets.openFile(netcdfFilePath.getAbsolutePath(), new NetcdfUtils.myCancelTask());
 		} catch (IOException e) {
 			throw new RuntimeException("NetcdfD3dHisDataObject could not open netcdf file " + netcdfFilePath.getAbsolutePath());
 		}

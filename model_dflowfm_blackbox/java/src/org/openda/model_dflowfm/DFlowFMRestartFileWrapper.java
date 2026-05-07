@@ -33,6 +33,7 @@ import ucar.ma2.InvalidRangeException;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Attribute;
 import ucar.nc2.Variable;
+import ucar.nc2.dataset.NetcdfDatasets;
 import ucar.nc2.write.NetcdfFormatWriter;
 
 import java.io.File;
@@ -105,7 +106,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 		try{
 			File fileNameFull = getNetcdfFile(workingDir);
 			netcdffileName = fileNameFull.getAbsolutePath();
-			inputFile = NetcdfFile.open(netcdffileName, null);
+			inputFile = NetcdfDatasets.openFile(netcdffileName, new NetcdfUtils.myCancelTask());
 		} catch (Exception e) {
 			throw new RuntimeException("DFlowFMRestartFileWrapper: problem opening file "+ this.fileName + " due to " + e.getMessage(), e);
 		}
