@@ -233,7 +233,7 @@ public class NetcdfFileConcatenator {
 		}
 	}
 
-	private static @NonNull List<Dimension> getTargetDimensions(Variable variable, Variable targetVariable, List<Dimension> addedDimensions) {
+	private static List<Dimension> getTargetDimensions(Variable variable, Variable targetVariable, List<Dimension> addedDimensions) {
 		List<Dimension> targetDimensions = targetVariable.getDimensions();
 		if (targetDimensions.size() != addedDimensions.size())
 			throw new RuntimeException(String.format("Dimensions mismatch for variable '%s' when concatenating files.", variable.getShortName()));
