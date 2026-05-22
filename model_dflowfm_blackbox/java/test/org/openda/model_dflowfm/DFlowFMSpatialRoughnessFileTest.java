@@ -32,6 +32,11 @@ public class DFlowFMSpatialRoughnessFileTest extends TestCase {
 		checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-Channel_1D_1_A-x0-q0", new double[]{0.03, 0.029, 0.029});
 		checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-Channel_1D_1_A-x0-q1", new double[]{0.03, 0.025, 0.026});
 		checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-Channel_1D_1_A-x0-q2", new double[]{0.025, 0.025, 0.023});
+
+		dFlowFMSpatialRoughnessFile.finish();
+
+		File file = new File(testRunDataDir, "roughness-Main.ini");
+		assertTrue(file.exists());
 	}
 
 	private void checkEI(DFlowFMSpatialRoughnessFile dFlowFMSpatialRoughnessFile, String exchangeItemID, double[] expectedValues) {

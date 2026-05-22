@@ -105,41 +105,40 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 			appendGeneral(builder);
 			appendContent(builder);
 
-			Set<String> writtenBranchProperties = new HashSet<>();
+			String currentBranchId = null;
+			List<Double> levels = new ArrayList<>();
+
 			for (IExchangeItem item : exchangeItems.values()) {
 				DFlowFMSpatialRoughnessExchangeItem exchangeItem = (DFlowFMSpatialRoughnessExchangeItem) item;
-				DFlowFMSpatialRoughnessExchangeItem.InitialBranchDefinitions initialBranchDefinitions = exchangeItem.getInitialBranchDefinitions();
-				if (initialBranchDefinitions == null) continue;
-				String branchId = initialBranchDefinitions.getBranchId();
-				if (!writtenBranchProperties.add(branchId)) continue;
-				appendBranchProperties(builder, initialBranchDefinitions, branchId);
+				String branchId = exchangeItem.getBranchId();
+				if (branchId != null && !branchId.equals(currentBranchId)) {
+					String functionType = exchangeItem.getFunctionType();
+					if (functionType == null) continue;
+					builder.append(BRANCH + '\n');
+					builder.append(BRANCH_ID + '=').append(branchId).append('\n');
+					builder.append(ROUGHNESS_TYPE + '=').append(exchangeItem.getRoughnessType()).append('\n');
+					builder.append(FUNCTION_TYPE + '=').append(functionType).append('\n');
+					if (functionType.equals("constant")) {
+						builder.append('\n');
+						continue;
+					}
+					builder.append(NUM_LEVELS + '=').append(levels.size()).append('\n');
+					builder.append(LEVELS + '=');
+					for (double level : levels) {
+						builder.append(" ").append(level);
+					}
+					builder.append('\n');
+					builder.append('\n');
+					currentBranchId = branchId;
+				} else {
+					levels.add(exchangeItem.getLevel());
+				}
 			}
 
 			lineWriter.write(builder.toString());
 		} catch (IOException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
-	}
-
-	private void appendBranchProperties(StringBuilder builder, DFlowFMSpatialRoughnessExchangeItem.InitialBranchDefinitions initialBranchDefinitions, String branchId) {
-		builder.append(BRANCH + '\n');
-		builder.append(BRANCH_ID + '=').append(branchId).append('\n');
-		builder.append(ROUGHNESS_TYPE + '=').append(initialBranchDefinitions.getRoughnessType()).append('\n');
-		String functionType = initialBranchDefinitions.getFunctionType();
-		builder.append(FUNCTION_TYPE + '=').append(functionType).append('\n');
-		if (functionType.equals("constant")) {
-			builder.append('\n');
-			return;
-		}
-		double[] levels = initialBranchDefinitions.getLevels();
-		assert levels != null && levels.length > 0;
-		builder.append(NUM_LEVELS + '=').append(levels.length).append('\n');
-		builder.append(LEVELS + '=');
-		for (double level : levels) {
-			builder.append(" ").append(level);
-		}
-		builder.append('\n');
-		builder.append('\n');
 	}
 
 	private void appendContent(StringBuilder builder) {
@@ -352,7 +351,7 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 			}
 
 			String id = getIdWithoutLevel(chainages[0], branchId, frictionType);
-			exchangeItems.put(id, new DFlowFMSpatialRoughnessExchangeItem(id, frictionType, frictionValues, 0, numLocations - 1, null));
+			exchangeItems.put(id, new DFlowFMSpatialRoughnessExchangeItem(id, frictionType, branchId, functionType, frictionValues, 0, numLocations - 1, Double.NaN));
 			return;
 		}
 
@@ -399,7 +398,7 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 
 		for (int i = 0; i < numLevels; i++) {
 			String id = getIdWithLevel(chainages[0], i, branchId, functionType, frictionType);
-			exchangeItems.put(id, new DFlowFMSpatialRoughnessExchangeItem(id, frictionType, frictionValues[i], 0, numLocations - 1, levels));
+			exchangeItems.put(id, new DFlowFMSpatialRoughnessExchangeItem(id, branchId, frictionType, functionType, frictionValues[i], 0, numLocations - 1, levels[i]));
 		}
 	}
 
@@ -454,7 +453,7 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 			line = lineReader.readLine();
 		}
 
-		return new DFlowFMSpatialRoughnessExchangeItem(mainExchangeItemId, globalFrictionType, new double[]{globalFrictionValue}, 0, 0, null);
+		return new DFlowFMSpatialRoughnessExchangeItem(mainExchangeItemId, globalFrictionType, frictionId, null, new double[]{globalFrictionValue}, 0, 0, Double.NaN);
 	}
 
 	private String[] readKeyValueLine(String line) throws IOException {
