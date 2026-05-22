@@ -25,10 +25,11 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 	private static final String ROUGHNESS_TYPE = "roughnessType";
 	private static final String FUNCTION_TYPE = "functionType";
 	private static final String NUM_LEVELS = "numLevels";
+	private static final String NUM_LOCATIONS = "numLocations";
 	private static final String LEVELS = "levels";
 	private static final String CHAINAGE = "chainage";
-	private static final String VALUES = "values";
-	private static final String VALUE = "value";
+	private static final String CONSTANT = "Constant";
+	private static final String FRICTION_VALUES = "frictionValues";
 
 	private static final String ID = "id";
 	private static final String NAME = "name";
@@ -38,7 +39,7 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 	public static final String REVERSED_POSTFIX = " (Reversed)";
 
 	@SuppressWarnings("WeakerAccess")
-	LinkedHashMap<String, IExchangeItem> exchangeItems = new LinkedHashMap<>();
+	LinkedHashMap<String, DFlowFMSpatialRoughnessExchangeItem> exchangeItems = new LinkedHashMap<>();
 	private String fileVersion;
 	private String fileType;
 	private String globalFrictionType;
@@ -105,40 +106,69 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 			appendGeneral(builder);
 			appendContent(builder);
 
-			String currentBranchId = null;
 			List<Double> levels = new ArrayList<>();
+			List<Double> frictionValues = new ArrayList<>();
 
-			for (IExchangeItem item : exchangeItems.values()) {
-				DFlowFMSpatialRoughnessExchangeItem exchangeItem = (DFlowFMSpatialRoughnessExchangeItem) item;
+			List<DFlowFMSpatialRoughnessExchangeItem> loopExchangeItems = new ArrayList<>(exchangeItems.values());
+			DFlowFMSpatialRoughnessExchangeItem previousExchangeItem = loopExchangeItems.get(1);
+			String currentBranchId = previousExchangeItem.getBranchId();
+
+			for (int j = 1; j < loopExchangeItems.size(); j++) {
+				DFlowFMSpatialRoughnessExchangeItem exchangeItem = loopExchangeItems.get(j);
 				String branchId = exchangeItem.getBranchId();
-				if (branchId != null && !branchId.equals(currentBranchId)) {
-					String functionType = exchangeItem.getFunctionType();
-					if (functionType == null) continue;
-					builder.append(BRANCH + '\n');
-					builder.append(BRANCH_ID + '=').append(branchId).append('\n');
-					builder.append(ROUGHNESS_TYPE + '=').append(exchangeItem.getRoughnessType()).append('\n');
-					builder.append(FUNCTION_TYPE + '=').append(functionType).append('\n');
-					if (functionType.equals("constant")) {
-						builder.append('\n');
-						continue;
-					}
-					builder.append(NUM_LEVELS + '=').append(levels.size()).append('\n');
-					builder.append(LEVELS + '=');
-					for (double level : levels) {
-						builder.append(" ").append(level);
-					}
-					builder.append('\n');
-					builder.append('\n');
+				if (!branchId.equals(currentBranchId)) {
+					appendText(previousExchangeItem, builder, currentBranchId, levels, frictionValues);
 					currentBranchId = branchId;
-				} else {
-					levels.add(exchangeItem.getLevel());
+					levels = new ArrayList<>();
+					frictionValues = new ArrayList<>();
+					previousExchangeItem = exchangeItem;
+				}
+				levels.add(exchangeItem.getLevel());
+				double[] valuesAsDoubles = exchangeItem.getValuesAsDoubles();
+				for (int i = 0; i < valuesAsDoubles.length; i++) {
+					frictionValues.add(valuesAsDoubles[i]);
 				}
 			}
+			appendText(previousExchangeItem, builder, currentBranchId, levels, frictionValues);
 
 			lineWriter.write(builder.toString());
 		} catch (IOException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
+	}
+
+	private void appendText(DFlowFMSpatialRoughnessExchangeItem exchangeItem, StringBuilder builder, String branchId, List<Double> levels, List<Double> frictionValues) {
+		String functionType = exchangeItem.getFunctionType();
+		if (functionType == null) {
+			return;
+		}
+		builder.append(BRANCH + '\n');
+		builder.append(BRANCH_ID + '=').append(branchId).append('\n');
+		builder.append(ROUGHNESS_TYPE + '=').append(exchangeItem.getRoughnessType()).append('\n');
+		builder.append(FUNCTION_TYPE + '=').append(functionType).append('\n');
+		if (!functionType.equalsIgnoreCase(CONSTANT)) {
+			builder.append(NUM_LEVELS + '=').append(levels.size()).append('\n');
+			builder.append(LEVELS + '=');
+			for (double level : levels) {
+				builder.append(" ").append(level);
+			}
+			builder.append('\n');
+		}
+		double[] chainages = exchangeItem.getChainages();
+		builder.append(NUM_LOCATIONS + '=').append(chainages.length).append('\n');
+		builder.append(CHAINAGE + '=');
+		for (double chainage : chainages) {
+			builder.append(" ").append(chainage);
+		}
+		builder.append('\n');
+		builder.append(FRICTION_VALUES + '=');
+		for (int i = 0; i < levels.size(); i++) {
+			for (int j = 0; j < chainages.length; j++) {
+				builder.append(" ").append(frictionValues.get(i * chainages.length + j));
+			}
+			builder.append('\n');
+		}
+		builder.append('\n');
 	}
 
 	private void appendContent(StringBuilder builder) {
@@ -351,7 +381,7 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 			}
 
 			String id = getIdWithoutLevel(chainages[0], branchId, frictionType);
-			exchangeItems.put(id, new DFlowFMSpatialRoughnessExchangeItem(id, frictionType, branchId, functionType, frictionValues, 0, numLocations - 1, Double.NaN));
+			exchangeItems.put(id, new DFlowFMSpatialRoughnessExchangeItem(id, branchId, frictionType, functionType, frictionValues, 0, numLocations - 1, Double.NaN, chainages));
 			return;
 		}
 
@@ -398,7 +428,7 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 
 		for (int i = 0; i < numLevels; i++) {
 			String id = getIdWithLevel(chainages[0], i, branchId, functionType, frictionType);
-			exchangeItems.put(id, new DFlowFMSpatialRoughnessExchangeItem(id, branchId, frictionType, functionType, frictionValues[i], 0, numLocations - 1, levels[i]));
+			exchangeItems.put(id, new DFlowFMSpatialRoughnessExchangeItem(id, branchId, frictionType, functionType, frictionValues[i], 0, numLocations - 1, levels[i], chainages));
 		}
 	}
 
@@ -453,7 +483,7 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 			line = lineReader.readLine();
 		}
 
-		return new DFlowFMSpatialRoughnessExchangeItem(mainExchangeItemId, globalFrictionType, frictionId, null, new double[]{globalFrictionValue}, 0, 0, Double.NaN);
+		return new DFlowFMSpatialRoughnessExchangeItem(mainExchangeItemId, frictionId, globalFrictionType, null, new double[]{globalFrictionValue}, -1, -1, Double.NaN, null);
 	}
 
 	private String[] readKeyValueLine(String line) throws IOException {
