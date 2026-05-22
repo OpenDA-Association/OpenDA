@@ -398,7 +398,7 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 		}
 
 		for (int i = 0; i < numLevels; i++) {
-			String id = getIdWithLevel(chainages[0], 0, branchId, functionType, frictionType);
+			String id = getIdWithLevel(chainages[0], i, branchId, functionType, frictionType);
 			exchangeItems.put(id, new DFlowFMSpatialRoughnessExchangeItem(id, frictionType, frictionValues[i], 0, numLocations - 1, levels));
 		}
 	}
