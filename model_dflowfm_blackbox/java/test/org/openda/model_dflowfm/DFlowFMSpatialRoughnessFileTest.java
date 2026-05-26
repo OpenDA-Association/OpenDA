@@ -33,10 +33,14 @@ public class DFlowFMSpatialRoughnessFileTest extends TestCase {
 		for (int i = 0; i < 6; i++) {
 			assertEquals(expectedIds[i], exchangeItemIDs[i]);
 		}
-		checkEI(dFlowFMSpatialRoughnessFile, "Main-model_wide-Chezy", new double[]{45.0});
-		checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-Channel_1D_1_B-x0", new double[]{0.03});
-		checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-Channel_1D_1_B-x200", new double[]{0.032});
-		checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-Channel_1D_1-x0", new double[]{0.028});
+		IExchangeItem chezy = checkEI(dFlowFMSpatialRoughnessFile, "Main-model_wide-Chezy", new double[]{45.0});
+		chezy.setValuesAsDoubles(new double[]{50.0});
+		IExchangeItem b0 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-Channel_1D_1_B-x0", new double[]{0.03});
+		b0.setValuesAsDoubles(new double[]{0.033});
+		IExchangeItem b200 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-Channel_1D_1_B-x200", new double[]{0.032});
+		b200.setValuesAsDoubles(new double[]{0.035});
+		IExchangeItem x0 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-Channel_1D_1-x0", new double[]{0.028});
+		x0.setValuesAsDoubles(new double[]{0.031});
 		checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-Channel_1D_1_A-x0-q0", new double[]{0.03, 0.029, 0.029});
 		checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-Channel_1D_1_A-x0-q1", new double[]{0.03, 0.025, 0.026});
 		checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-Channel_1D_1_A-x0-q2", new double[]{0.025, 0.025, 0.023});
@@ -48,12 +52,13 @@ public class DFlowFMSpatialRoughnessFileTest extends TestCase {
 		assertEquals(AsciiFileUtils.readText(new File(testRunDataDir, "expected_roughness-Main.ini")), AsciiFileUtils.readText(resultFile));
 	}
 
-	private void checkEI(DFlowFMSpatialRoughnessFile dFlowFMSpatialRoughnessFile, String exchangeItemID, double[] expectedValues) {
-		IExchangeItem modelWideEI = dFlowFMSpatialRoughnessFile.getDataObjectExchangeItem(exchangeItemID);
-		double[] modelWideValues = modelWideEI.getValuesAsDoubles();
+	private IExchangeItem checkEI(DFlowFMSpatialRoughnessFile dFlowFMSpatialRoughnessFile, String exchangeItemID, double[] expectedValues) {
+		IExchangeItem exchangeItem = dFlowFMSpatialRoughnessFile.getDataObjectExchangeItem(exchangeItemID);
+		double[] modelWideValues = exchangeItem.getValuesAsDoubles();
 		assertEquals(expectedValues.length, modelWideValues.length);
 		for (int i = 0; i < expectedValues.length; i++) {
 			assertEquals(expectedValues[i], modelWideValues[i], 1e-6);
 		}
+		return exchangeItem;
 	}
 }
