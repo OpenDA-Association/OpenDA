@@ -3,6 +3,7 @@ package org.openda.model_dflowfm;
 import junit.framework.TestCase;
 import org.openda.interfaces.IExchangeItem;
 import org.openda.utils.OpenDaTestSupport;
+import org.openda.utils.io.AsciiFileUtils;
 
 import java.io.File;
 
@@ -35,8 +36,9 @@ public class DFlowFMSpatialRoughnessFileTest extends TestCase {
 
 		dFlowFMSpatialRoughnessFile.finish();
 
-		File file = new File(testRunDataDir, "roughness-Main.ini");
-		assertTrue(file.exists());
+		File resultFile = new File(testRunDataDir, "roughness-Main.ini");
+		assertTrue(resultFile.exists());
+		assertEquals(AsciiFileUtils.readText(new File(testRunDataDir, "expected_roughness-Main.ini")), AsciiFileUtils.readText(resultFile));
 	}
 
 	private void checkEI(DFlowFMSpatialRoughnessFile dFlowFMSpatialRoughnessFile, String exchangeItemID, double[] expectedValues) {

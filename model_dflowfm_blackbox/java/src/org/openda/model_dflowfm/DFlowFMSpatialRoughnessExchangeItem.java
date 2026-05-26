@@ -9,7 +9,7 @@ import org.openda.interfaces.ITimeInfo;
 public class DFlowFMSpatialRoughnessExchangeItem implements IExchangeItem {
 
 	private final String id;
-	private final String type;
+	private final String frictionType;
 	private final String branchId;
 	private final String functionType;
 	private double[] values;
@@ -20,7 +20,7 @@ public class DFlowFMSpatialRoughnessExchangeItem implements IExchangeItem {
 
 	public DFlowFMSpatialRoughnessExchangeItem(String id, String branchId, String frictionType, String functionType, double[] values, int chainageStartIndex, int chainageEndIndex, double level, double[] chainages) {
 		this.id = id;
-		this.type = frictionType;
+		this.frictionType = frictionType;
 		this.branchId = branchId;
 		this.functionType = functionType;
 		this.values = values;
@@ -52,7 +52,7 @@ public class DFlowFMSpatialRoughnessExchangeItem implements IExchangeItem {
 
 	@Override
 	public IQuantityInfo getQuantityInfo() {
-		return new QuantityInfo("Roughness-" + type, "");
+		return new QuantityInfo("Roughness-" + frictionType, "");
 	}
 
 	@Override
@@ -133,8 +133,8 @@ public class DFlowFMSpatialRoughnessExchangeItem implements IExchangeItem {
 		return branchId;
 	}
 
-	public String getRoughnessType() {
-		return type;
+	public String getFrictionType() {
+		return frictionType;
 	}
 
 	public double getLevel() {

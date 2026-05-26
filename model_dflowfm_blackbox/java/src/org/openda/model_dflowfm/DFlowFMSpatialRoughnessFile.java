@@ -22,7 +22,6 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 	private static final String FRICTION_VALUE = "frictionValue";
 
 	private static final String BRANCH_ID = "branchId";
-	private static final String ROUGHNESS_TYPE = "roughnessType";
 	private static final String FUNCTION_TYPE = "functionType";
 	private static final String NUM_LEVELS = "numLevels";
 	private static final String NUM_LOCATIONS = "numLocations";
@@ -144,7 +143,7 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 		}
 		builder.append(BRANCH + '\n');
 		builder.append(BRANCH_ID + '=').append(branchId).append('\n');
-		builder.append(ROUGHNESS_TYPE + '=').append(exchangeItem.getRoughnessType()).append('\n');
+		builder.append(FRICTION_TYPE + '=').append(exchangeItem.getFrictionType()).append('\n');
 		builder.append(FUNCTION_TYPE + '=').append(functionType).append('\n');
 		if (!functionType.equalsIgnoreCase(CONSTANT)) {
 			builder.append(NUM_LEVELS + '=').append(levels.size()).append('\n');
