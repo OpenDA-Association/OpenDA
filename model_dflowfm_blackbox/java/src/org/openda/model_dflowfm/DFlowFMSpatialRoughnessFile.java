@@ -342,7 +342,7 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 		}
 	}
 
-	private void readBranch(BufferedReader lineReader, Map<String, List<ObservationPoint>> observationPoints) throws IOException {
+	private void readBranch(BufferedReader lineReader, Map<String, List<ObservationPoint>> observationPointsMap) throws IOException {
 		String line = lineReader.readLine();
 		String[] keyValue = readKeyValueLine(line);
 		String branchId = keyValue[1].trim();
@@ -356,31 +356,7 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 		String functionType = keyValue[1].trim();
 
 		if (functionType.equalsIgnoreCase("constant")) {
-			line = lineReader.readLine();
-			keyValue = readKeyValueLine(line);
-			int numLocations = Integer.parseInt(keyValue[1]);
-
-			line = lineReader.readLine();
-			keyValue = readKeyValueLine(line);
-			String[] splitChainage = keyValue[1].trim().split(" ");
-			assert splitChainage.length == numLocations;
-			double[] chainages = new double[numLocations];
-			for (int i = 0; i < numLocations; i++) {
-				chainages[i] = Double.parseDouble(splitChainage[i]);
-			}
-
-			line = lineReader.readLine();
-			keyValue = readKeyValueLine(line);
-
-			double[] frictionValues = new double[numLocations];
-			String[] splitFrictionValues = keyValue[1].trim().split(" ");
-			for (int i = 0; i < splitFrictionValues.length; i++) {
-				String splitFrictionValue = splitFrictionValues[i];
-				frictionValues[i] = Double.parseDouble(splitFrictionValue);
-			}
-
-			String id = getIdWithoutLevel(chainages[0], branchId, frictionType);
-			exchangeItems.put(id, new DFlowFMSpatialRoughnessExchangeItem(id, branchId, frictionType, functionType, frictionValues, 0, numLocations - 1, Double.NaN, chainages));
+			createConstantExchangeItems(lineReader, observationPointsMap, branchId, frictionType, functionType);
 			return;
 		}
 
@@ -429,6 +405,69 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 			String id = getIdWithLevel(chainages[0], i, branchId, functionType, frictionType);
 			exchangeItems.put(id, new DFlowFMSpatialRoughnessExchangeItem(id, branchId, frictionType, functionType, frictionValues[i], 0, numLocations - 1, levels[i], chainages));
 		}
+	}
+
+	private void createConstantExchangeItems(BufferedReader lineReader, Map<String, List<ObservationPoint>> observationPointsMap, String branchId, String frictionType, String functionType) throws IOException {
+		String[] keyValue;
+		String line;
+		line = lineReader.readLine();
+		keyValue = readKeyValueLine(line);
+		int numLocations = Integer.parseInt(keyValue[1]);
+
+		line = lineReader.readLine();
+		keyValue = readKeyValueLine(line);
+		String[] splitChainage = keyValue[1].trim().split(" ");
+		assert splitChainage.length == numLocations;
+		double[] branchChainages = new double[numLocations];
+		for (int i = 0; i < numLocations; i++) {
+			branchChainages[i] = Double.parseDouble(splitChainage[i]);
+		}
+
+		line = lineReader.readLine();
+		keyValue = readKeyValueLine(line);
+
+		double[] frictionValues = new double[numLocations];
+		String[] splitFrictionValues = keyValue[1].trim().split(" ");
+		for (int i = 0; i < splitFrictionValues.length; i++) {
+			String splitFrictionValue = splitFrictionValues[i];
+			frictionValues[i] = Double.parseDouble(splitFrictionValue);
+		}
+
+		List<ObservationPoint> observationPointsList = observationPointsMap == null ? null : observationPointsMap.get(branchId);
+
+		if (observationPointsList == null) {
+			String id = getIdWithoutLevel(branchChainages[0], branchId, frictionType);
+			exchangeItems.put(id, new DFlowFMSpatialRoughnessExchangeItem(id, branchId, frictionType, functionType, frictionValues, 0, numLocations - 1, Double.NaN, branchChainages));
+			return;
+		}
+		ArrayList<Integer> chainageSplitIndices = new ArrayList<>();
+		for (int i = 0; i < observationPointsList.size(); i++) {
+			ObservationPoint observationPoint = observationPointsList.get(i);
+			int chainageSplit = findChainageSplit(branchChainages, observationPoint.getChainage());
+			chainageSplitIndices.add(chainageSplit);
+		}
+		int previousSplit = 0;
+		for (int i = 0; i < chainageSplitIndices.size(); i++) {
+			int chainageSplitIndex = chainageSplitIndices.get(i);
+			String id = getIdWithoutLevel(branchChainages[previousSplit], branchId, frictionType);
+			double[] segmentFrictionValues = Arrays.copyOfRange(frictionValues, previousSplit, chainageSplitIndex);
+
+			exchangeItems.put(id, new DFlowFMSpatialRoughnessExchangeItem(id, branchId, frictionType, functionType, segmentFrictionValues, previousSplit, chainageSplitIndex, Double.NaN, branchChainages));
+			previousSplit = chainageSplitIndex;
+		}
+		String id = getIdWithoutLevel(branchChainages[previousSplit], branchId, frictionType);
+		double[] segmentFrictionValues = Arrays.copyOfRange(frictionValues, previousSplit, branchChainages.length);
+		exchangeItems.put(id, new DFlowFMSpatialRoughnessExchangeItem(id, branchId, frictionType, functionType, segmentFrictionValues, previousSplit, branchChainages.length - 1, Double.NaN, branchChainages));
+	}
+
+	private int findChainageSplit(double[] branchChainages, double observationChainage) {
+		int size = branchChainages.length;
+		for (int i = 0; i < size; i++) {
+			double chainage = branchChainages[i];
+			if (chainage == observationChainage) return i + 1;
+			if (chainage > observationChainage) return i;
+		}
+		return size - 1;
 	}
 
 	private String getLevelString(String functionType, int levelIndex) {
