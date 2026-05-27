@@ -60,9 +60,10 @@ public class KalmanGainStorageTest extends TestCase {
 		kgStorageOut.writeKalmanGain(kgStorageIn.getObservationIds(),
 				kgStorageIn.getObservationOffsetInDays(), kgStorageIn.getKalmanGainColumns(), null);
 
-		assert(testData.FilesAreIdentical(
-			new File(kgStorageDir, "kalmanGainStorage_out.xml"),
-			new File(kgStorageDirCopy, "kalmanGainStorage.xml")));
+        File outFile = new File(kgStorageDir, "kalmanGainStorage_out.xml");
+		File refFile = new File(kgStorageDirCopy, "kalmanGainStorage.xml");
+		assert(outFile.exists());
+		assert(testData.FilesAreIdentical(outFile, refFile));
 	}
 
 	public void testReadWriteKalmanGainNetcdfCF() {

@@ -1697,9 +1697,9 @@ public class NetcdfUtils {
 			return false;
 		}
 
-		// empty method
 		@Override
 		public void setDone(boolean b) {
+			// empty method
 		}
 
 		@Override
@@ -1707,14 +1707,14 @@ public class NetcdfUtils {
 			CancelTask.super.setSuccess();
 		}
 
-		// empty method
 		@Override
 		public void setError(String s) {
+			// empty method
 		}
 
-		// empty method
 		@Override
 		public void setProgress(String s, int i) {
+			// empty method
 		}
 	}
 }
