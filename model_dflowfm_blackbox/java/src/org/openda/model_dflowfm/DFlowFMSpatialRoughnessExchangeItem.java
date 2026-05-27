@@ -12,13 +12,14 @@ public class DFlowFMSpatialRoughnessExchangeItem implements IExchangeItem {
 	private final String frictionType;
 	private final String branchId;
 	private final String functionType;
-	private double[] values;
+	private final double[] chainages;
+	private final int levelIndex;
 	private final int chainageStartIndex;
 	private final int chainageEndIndex;
-	private final double level;
-	private final double[] chainages;
+	private final double[] levels;
+	private double[] values;
 
-	public DFlowFMSpatialRoughnessExchangeItem(String id, String branchId, String frictionType, String functionType, double[] values, int chainageStartIndex, int chainageEndIndex, double level, double[] chainages) {
+	public DFlowFMSpatialRoughnessExchangeItem(String id, String branchId, String frictionType, String functionType, double[] values, int chainageStartIndex, int chainageEndIndex, double[] levels, double[] chainages, int levelIndex) {
 		this.id = id;
 		this.frictionType = frictionType;
 		this.branchId = branchId;
@@ -26,8 +27,9 @@ public class DFlowFMSpatialRoughnessExchangeItem implements IExchangeItem {
 		this.values = values;
 		this.chainageStartIndex = chainageStartIndex;
 		this.chainageEndIndex = chainageEndIndex;
-		this.level = level;
+		this.levels = levels;
 		this.chainages = chainages;
+		this.levelIndex = levelIndex;
 	}
 
 	@Override
@@ -137,11 +139,15 @@ public class DFlowFMSpatialRoughnessExchangeItem implements IExchangeItem {
 		return frictionType;
 	}
 
-	public double getLevel() {
-		return level;
+	public double[] getLevels() {
+		return levels;
 	}
 
 	public double[] getChainages() {
 		return chainages;
+	}
+
+	public int getLevelIndex() {
+		return levelIndex;
 	}
 }
