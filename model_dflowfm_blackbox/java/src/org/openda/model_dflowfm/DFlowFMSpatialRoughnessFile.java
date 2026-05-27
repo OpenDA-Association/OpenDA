@@ -474,8 +474,8 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 		int size = branchChainages.length;
 		for (int i = 0; i < size; i++) {
 			double chainage = branchChainages[i];
-			if (chainage == observationChainage) return i + 1;
-			if (chainage > observationChainage) return i;
+			if (chainage == observationChainage) return i;
+			if (chainage > observationChainage) return i - 1;
 		}
 		return size - 1;
 	}
