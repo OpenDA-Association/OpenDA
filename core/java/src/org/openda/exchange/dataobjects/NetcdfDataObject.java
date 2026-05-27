@@ -32,6 +32,7 @@ import ucar.ma2.InvalidRangeException;
 import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.dataset.NetcdfDatasets;
+import ucar.nc2.write.NetcdfFileFormat;
 import ucar.nc2.write.NetcdfFormatWriter;
 import ucar.nc2.Variable;
 
@@ -80,6 +81,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 	// - after setting netcdfWriter=netcdfWriterBuilder.build() the header cannot be changed anymore, data can be written to file now.
 	// - after closing the file, both should be reset to null.
 	private NetcdfFormatWriter.Builder netcdfBuilder = null;
+	private NetcdfFileFormat netcdfFormat = NetcdfFileFormat.NETCDF3;
 	private NetcdfFormatWriter netcdfWriter = null;
 	private NetcdfFile netcdfReader = null;
 	protected List<IExchangeItem> exchangeItems = new ArrayList<IExchangeItem>();
@@ -134,7 +136,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 		Set<String> requiredExchangeItemIds = new HashSet<>();
 		for (int i = 1; i < arguments.length; i++) {
 			String argument = arguments[i];
-			if (checkLazyReadingOrLazyWritingArguments(i, argument)) continue;
+			if (checkOptionalArguments(i, argument)) continue;
 			String[] keyValue = StringUtilities.getKeyValuePair(argument);
 			String key = keyValue[0];
 			String value = keyValue[1];
@@ -160,7 +162,7 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 		}
 
 		if (this.file.exists()) {
-			this.netcdfBuilder = NetcdfFormatWriter.openExisting(this.file.getAbsolutePath());
+			this.netcdfBuilder = NetcdfFormatWriter.openExisting(this.file.getAbsolutePath()).setFormat(this.netcdfFormat);
 			try {
 				this.netcdfReader = NetcdfDatasets.openFile(this.file.getAbsolutePath(), new NetcdfUtils.MyCancelTask());
 			} catch (IOException e) {
@@ -189,14 +191,15 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 		} else {//if file does not exist.
 			//no data to read, but this dataObject can still be used for writing data to file.
 			//create file here, exchange items need to be added using method addExchangeItem.
-			this.netcdfBuilder = NetcdfFormatWriter.createNewNetcdf3(this.file.getAbsolutePath());
+			this.netcdfBuilder = NetcdfFormatWriter.createNewNetcdf4(this.netcdfFormat, file.getAbsolutePath(), null);
 			//set fill to true, otherwise missing values will not be written for scalar time series variables that do not have data for all stations.
 			this.netcdfBuilder.setFill(true);
+			this.netcdfBuilder.setFormat(this.netcdfFormat);
 			NetcdfUtils.addGlobalAttributes(this.netcdfBuilder);
 		}
 	}
 
-	private boolean checkLazyReadingOrLazyWritingArguments(int i, String argument) {
+	private boolean checkOptionalArguments(int i, String argument) {
 		int index = argument.indexOf('=');
 		if (index == -1) {
 			if (i == 1) {
@@ -206,6 +209,19 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 			if (i == 2) {
 				this.lazyWriting = Boolean.valueOf(argument);
 				return true;
+			}
+			if (i == 3) {
+				String nc_format = String.valueOf(argument);
+				switch (nc_format) {
+					case "netcdf3":
+						this.netcdfFormat = NetcdfFileFormat.NETCDF3;
+						return true;
+					case "netcdf4":
+						this.netcdfFormat = NetcdfFileFormat.NETCDF4;
+						return true;
+					default:
+						throw new IllegalArgumentException("Unknown option: " + argument);
+				}
 			}
 			throw new IllegalArgumentException("Not a key value pair: " + argument);
 		}
