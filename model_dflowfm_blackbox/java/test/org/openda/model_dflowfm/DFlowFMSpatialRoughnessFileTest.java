@@ -44,12 +44,18 @@ public class DFlowFMSpatialRoughnessFileTest extends TestCase {
 		b200.setValuesAsDoubles(new double[]{0.035});
 		IExchangeItem x0 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-Channel_1D_1-x0", new double[]{0.028});
 		x0.setValuesAsDoubles(new double[]{0.031});
-		checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-Channel_1D_1_A-x0-q0", new double[]{0.03});
-		checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-Channel_1D_1_A-x0-q1", new double[]{0.03});
-		checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-Channel_1D_1_A-x0-q2", new double[]{0.025});
-		checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-Channel_1D_1_A-x500-q0", new double[]{0.029, 0.029});
-		checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-Channel_1D_1_A-x500-q1", new double[]{0.025, 0.026});
-		checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-Channel_1D_1_A-x500-q2", new double[]{0.025, 0.023});
+		IExchangeItem x0q0 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-Channel_1D_1_A-x0-q0", new double[]{0.03});
+		x0q0.setValuesAsDoubles(new double[]{0.0314});
+		IExchangeItem x0q1 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-Channel_1D_1_A-x0-q1", new double[]{0.03});
+		x0q1.setValuesAsDoubles(new double[]{0.0345});
+		IExchangeItem x0q2 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-Channel_1D_1_A-x0-q2", new double[]{0.025});
+		x0q2.setValuesAsDoubles(new double[]{0.0579});
+		IExchangeItem x500q0 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-Channel_1D_1_A-x500-q0", new double[]{0.029, 0.029});
+		x500q0.setValuesAsDoubles(new double[]{0.02978, 0.02963});
+		IExchangeItem x500q1 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-Channel_1D_1_A-x500-q1", new double[]{0.025, 0.026});
+		x500q1.setValuesAsDoubles(new double[]{0.02576, 0.02634});
+		IExchangeItem x500q2 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-Channel_1D_1_A-x500-q2", new double[]{0.025, 0.023});
+		x500q2.setValuesAsDoubles(new double[]{0.02513, 0.02346});
 
 		dFlowFMSpatialRoughnessFile.finish();
 
