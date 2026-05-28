@@ -401,7 +401,7 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 			chainages[i] = Double.parseDouble(splitChainage[i]);
 		}
 
-		double[][] frictionValues = new double[numLevels][numLocations];
+		double[][] frictionValues = new double[numLocations][numLevels];
 		int index = 0;
 		line = lineReader.readLine();
 		keyValue = readKeyValueLine(line);
@@ -518,8 +518,9 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 
 	private String getLevelString(String functionType, int levelIndex) {
 		if (functionType.equals("absDischarge")) return "q" + levelIndex;
+		if (functionType.equals("waterLevel")) return "h" + levelIndex;
 		if (functionType.equals("Constant")) return "";
-		throw new RuntimeException("Unknown function type, should be absDischarge, or Constant");
+		throw new RuntimeException(String.format("Unknown function type %s, should be absDischarge, or Constant", functionType));
 	}
 
 	private String getIdWithLevel(double firstChainage, int levelIndex, String branchId, String functionType, String frictionType) {

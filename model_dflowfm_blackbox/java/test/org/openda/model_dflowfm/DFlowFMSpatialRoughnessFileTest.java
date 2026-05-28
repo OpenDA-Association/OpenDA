@@ -73,4 +73,11 @@ public class DFlowFMSpatialRoughnessFileTest extends TestCase {
 		}
 		return exchangeItem;
 	}
+
+	public void testReadAndWriteOlof() {
+		DFlowFMSpatialRoughnessFile dFlowFMSpatialRoughnessFile = new DFlowFMSpatialRoughnessFile();
+		dFlowFMSpatialRoughnessFile.initialize(testRunDataDir, new String[]{"roughness-Main-Olof.ini", "observationFile=ObservationPoints-Olof.ini"});
+		String[] exchangeItemIDs = dFlowFMSpatialRoughnessFile.getExchangeItemIDs();
+		assertEquals(10, exchangeItemIDs.length);
+	}
 }
