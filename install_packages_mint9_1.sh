@@ -1,3 +1,4 @@
+#!/bin/bash
 # All packages needed in order to compile OpenDA
 # version in Linux mint 9.1
 #

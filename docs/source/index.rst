@@ -26,19 +26,20 @@ Index
    :caption: Wrappers
    :maxdepth: 2
 
+   wrappers
    DFlowFMWrapper
 
 .. toctree::
    :caption: Additional information
    :maxdepth: 2
 
-   data_objects.rst
-   localization.rst
-   continuing.rst
-   estimate_missing_observations.rst
-   DFlowFM_info.rst
-   calibration_twin.rst
-   Quadratic_cost_function.rst
+   data_objects
+   localization
+   continuing
+   estimate_missing_observations
+   DFlowFM_info
+   calibration_twin
+   Quadratic_cost_function
 
 .. toctree::
    :caption: Contributing to the source

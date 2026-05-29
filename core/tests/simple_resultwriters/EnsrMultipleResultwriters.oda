@@ -24,9 +24,5 @@
 				<resultItem id="x_f_central" outputLevel="Verbose" />
 			</selection>
 		</resultWriter>
-		<resultWriter className="org.openda.resultwriters.NetcdfResultWriterNative">
-			<workingDirectory>.</workingDirectory>
-			<configFile>results_ensr_.nc</configFile>
-		</resultWriter>
 	</resultWriters>
 </openDaApplication>

@@ -106,9 +106,9 @@ call :run_single_test Steadystate_async     steadystate_async_results.m
 
 set CURDIR=simple_resultwriters
 mkdir test_results\%CURDIR%
-call :run_single_test DudMultipleResultwriters  results_dud.m results_dud.csv results_dud_.nc
+call :run_single_test DudMultipleResultwriters  results_dud.m results_dud.csv
 call :run_single_test DudWritersWithSelections  results_dud_algorithm.m results_dud_model.m results_dud_observer.m results_dud_other.m results_dud_costTotal_only.m
-call :run_single_test EnsrMultipleResultwriters results_ensr.m results_ensr_.nc
+call :run_single_test EnsrMultipleResultwriters results_ensr.m
 
 set CURDIR=simple_two_oscillators
 mkdir test_results\%CURDIR%

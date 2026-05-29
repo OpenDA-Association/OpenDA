@@ -17,8 +17,11 @@
 * You should have received a copy of the GNU Lesser General Public License
 * along with OpenDA.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 package org.openda.algorithms;
 
+import java.util.ArrayList;
+import java.util.List;
 
 import org.openda.interfaces.IMatrix;
 import org.openda.interfaces.IObservationDescriptions;
@@ -28,46 +31,43 @@ import org.openda.utils.Matrix;
 import org.openda.utils.Results;
 import org.openda.utils.Vector;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class SimplexCoreOptimizer{
 
 	// fields of this class
-	private IVector pCurrent[] = null; //values under consideration
-	private double fCurrent[] = null;
-	private IVector predCurrent[] = null; //predictions for each estimate (in case of LeastSquaresCostFunction)
+	private IVector[] pCurrent = null; //values under consideration
+	private double[] fCurrent = null;
+	private IVector[] predCurrent = null; //predictions for each estimate (in case of LeastSquaresCostFunction)
 	private int nparam=0;
-	private ICostFunction f = null;
+	private final ICostFunction f;
 	protected int maxitSimplex = 100;
 	protected double absTolSimplex=0.01;
 	protected double relTolSimplex=0.01;
 
-    // required for the additional stopping criteria:
-    public List<IStopCriterion> stopCriteria = new ArrayList<IStopCriterion>();
-    public List<Double> stopCriteriaThreshold = new ArrayList<Double>();
-    public double stopCritThresDefault = 0.01;
-    public IObservationDescriptions obsDescr=null;
-	
-    // constants
-	private double rconst = -1;       // constant for reflection
-	private double econst =  2.0;     // constant for exspansion
-	private double cconst = .5;       // constant for contractions
-	private double sconst = .5;       // constant for scaling
+	// required for the additional stopping criteria:
+	public List<IStopCriterion> stopCriteria = new ArrayList<>();
+	public List<Double> stopCriteriaThreshold = new ArrayList<>();
+	public double stopCritThresDefault = 0.01;
+	public IObservationDescriptions obsDescr;
+
+	// constants
+	private final double rConst = -1;       // constant for reflection
+	private final double eConst = 2.0;      // constant for expansion
+	private final double cConst = .5;       // constant for contractions
+	private final double sConst = .5;       // constant for scaling
 	
 	//stopping
-	private boolean moreToDo = true;         // is this optimization finished
-	private int imain=0;                     // main iterations done
+	private boolean moreToDo = true;        // is this optimization finished
+	private int iMain = 0;                  // main iterations done
 	private double[] stdValues;
 
 
 	/**
-     * Constructor for Simplex minimization
-     * @param f : cost function to be minimized
-     */
-    public SimplexCoreOptimizer(ICostFunction f){
-        this.f = f;
-    }
+	 * Constructor for Simplex minimization
+	 * @param f : cost function to be minimized
+	 */
+	public SimplexCoreOptimizer(ICostFunction f){
+		this.f = f;
+	}
 
 	/**
 	 * Constructor for Simplex minimization
@@ -103,47 +103,46 @@ public class SimplexCoreOptimizer{
 	 * Initializer for setting the current simplex, e.g. from a restart file
 	 * @param pCurrent : Parameters to be restored, for each point of the simplex
 	 */
-	public void initialize(IVector pCurrent[]){
-        this.pCurrent = new IVector[pCurrent.length];
-        this.fCurrent = new double[pCurrent.length];
+	public void initialize(IVector[] pCurrent){
+		this.pCurrent = new IVector[pCurrent.length];
+		this.fCurrent = new double[pCurrent.length];
 		this.predCurrent = new IVector[pCurrent.length];
-        for(int i=0;i<pCurrent.length;i++){
-        	this.pCurrent[i] = pCurrent[i].clone();
-        	this.fCurrent[i] = this.f.evaluate(this.pCurrent[i],"initialization");
+		for(int i=0;i<pCurrent.length;i++){
+			this.pCurrent[i] = pCurrent[i].clone();
+			this.fCurrent[i] = this.f.evaluate(this.pCurrent[i],"initialization");
 			if(this.f instanceof LeastSquaresCostFunction){
 				this.predCurrent[i]=((LeastSquaresCostFunction)this.f).getLastPredictions();
 			}
-
-        }
+		}
 		sortSimplexByCost();
 	}
 
-    /**
-     * Initializer for setting costs corresponding to each node of the current simplex.
-     * These costValues are likely to be read from an earlier experiment
-     * @param pars : parameters as Vector at each node of simplex
-     * @param costValues : correspondig cost costValues
-     */
-    public void initialize(IVector pars[], double costValues[]){
-        this.pCurrent = new IVector[pars.length];
-        this.fCurrent = new double[pars.length];
-        this.predCurrent = new IVector[pCurrent.length];
-        for(int i=0;i<pars.length;i++){
-            this.pCurrent[i] = pars[i].clone();
-            this.fCurrent[i] = costValues[i];
-            this.predCurrent[i] = null; //impossible to reconstruct predictions here
-        }
-        sortSimplexByCost();
-    }
+	/**
+	 * Initializer for setting costs corresponding to each node of the current simplex.
+	 * These costValues are likely to be read from an earlier experiment
+	 * @param pars : parameters as Vector at each node of simplex
+	 * @param costValues : correspondig cost costValues
+	 */
+	public void initialize(IVector[] pars, double[] costValues){
+		this.pCurrent = new IVector[pars.length];
+		this.fCurrent = new double[pars.length];
+		this.predCurrent = new IVector[pCurrent.length];
+		for(int i=0;i<pars.length;i++){
+			this.pCurrent[i] = pars[i].clone();
+			this.fCurrent[i] = costValues[i];
+			this.predCurrent[i] = null; //impossible to reConstruct predictions here
+		}
+		sortSimplexByCost();
+	}
 
 	private void sortSimplexByCost(){
-        // Sort simplex by cost
+		// Sort simplex by cost
 		this.nparam = this.pCurrent[0].getSize(); //number of parameters to optimize
 		double[] costs=this.fCurrent;
 		int[] iSort=this.sortedIndex(costs);
-        costs = this.applyIndexToDoubles(costs, iSort);
+		costs = this.applyIndexToDoubles(costs, iSort);
 		double diff=costs[nparam]-costs[0];
-	    this.moreToDo = (imain<this.maxitSimplex) & (diff>this.absTolSimplex) & ((diff)>this.relTolSimplex*Math.abs(costs[0]));
+		this.moreToDo = (iMain<this.maxitSimplex) & (diff>this.absTolSimplex) & ((diff)>this.relTolSimplex*Math.abs(costs[0]));
 	}
 
 	/**
@@ -151,7 +150,7 @@ public class SimplexCoreOptimizer{
 	 * @return parameters as Vector
 	 */
 	public IVector getOptimalValue(){
-        return this.f.getOptimalParameters();
+		return this.f.getOptimalParameters();
 	}
 
 	/**
@@ -159,7 +158,7 @@ public class SimplexCoreOptimizer{
 	 * @return cost
 	 */
 	public double getOptimalCost(){
-        return this.f.getOptimalCost();
+		return this.f.getOptimalCost();
 	}
 
 	/**
@@ -168,7 +167,7 @@ public class SimplexCoreOptimizer{
 	 * @return Vector for parameters at each nod of the simplex (m+1) vectors, where m=length(p)
 	 */
 	public IVector[] getCurrentValues(){
-		IVector result[] = new IVector[this.pCurrent.length];
+		IVector[] result = new IVector[this.pCurrent.length];
 		for(int i=0;i<this.pCurrent.length;i++){
 			result[i] = this.pCurrent[i].clone();
 		}
@@ -180,7 +179,7 @@ public class SimplexCoreOptimizer{
 	 * @return Cost at each node as array of doubles
 	 */
 	public double[] getCurrentCosts(){
-        return this.fCurrent.clone();
+		return this.fCurrent.clone();
 	}
 
 	/**
@@ -190,14 +189,14 @@ public class SimplexCoreOptimizer{
 		while(this.hasNext()){
 			this.next();
 		}
- 	}
+	}
 	
 	/**
 	 * Are there any more steps for this algorithm
 	 * @return has next step
 	 */
 	boolean hasNext(){
-        return this.moreToDo;
+		return this.moreToDo;
 	}
 	
 	/**
@@ -221,148 +220,148 @@ public class SimplexCoreOptimizer{
 		IVector predShrink=null;      // predictions for shrinking (in case of a LeastSquaresCostFunction)
 
 		int[] iSort;        // index after sorting
-  		double[] cost_sort; //costs after sorting
-  		IVector[] sparam_sort; //parameters after sorting
-  		IVector[] pred_sort; //predictions after sorting
+		double[] cost_sort; //costs after sorting
+		IVector[] sparam_sort; //parameters after sorting
+		IVector[] pred_sort; //predictions after sorting
 
 		// abbreviations for often used variables
 		IVector[] sparam = this.pCurrent;     //nparam+1 parametervectors in simplex
 		double[] costs = this.fCurrent;       //cost for each vector in simplex
 		IVector[] preds = this.predCurrent;    // predictions (in case of a LeastSquaresCostFunction)
 
-        // Main loopIter
-//		int imain=0;
-        int flagstep;
-        Results.putValue("costs", new Vector(costs), costs.length, "any", IResultWriter.OutputLevel.Essential , IResultWriter.MessageType.OuterIteration);
+		// Main loopIter
+//		int iMain=0;
+		int flagstep;
+		Results.putValue("costs", new Vector(costs), costs.length, "any", IResultWriter.OutputLevel.Essential , IResultWriter.MessageType.OuterIteration);
 		if(this.moreToDo){
-		      flagstep=0;           //flag if an action step (reflect,expand,contract,or shrink) has been performed
-		                            // = 0 : no step has been performed
-		                            // = 1 : a step has been performed
-		      imain=imain+1;
-		      Results.putMessage("Iteration step no."+ imain);
-		      // find centriod of better vertices:
-		      scentroid = vectorSum(sparam);
-		      scentroid.scale(1.0/nparam);
+			  flagstep=0;           //flag if an action step (reflect,expand,contract,or shrink) has been performed
+									// = 0 : no step has been performed
+									// = 1 : a step has been performed
+			  iMain=iMain+1;
+			  Results.putMessage("Iteration step no."+ iMain);
+			  // find centriod of better vertices:
+			  scentroid = vectorSum(sparam);
+			  scentroid.scale(1.0/nparam);
 
-		      //---   REFLECT:
-		      //MVL sreflect   = (1-rconst)*scentroid+rconst*sparam(:,nparam);
-		      //sreflect   = (1-rconst)*scentroid-((1-rconst)/nparam-rconst)*sparam[nparam];
-		      sreflect   = scentroid.clone();
-		      sreflect.scale(1-rconst);
-		      sreflect.axpy(-((1-rconst)/nparam-rconst), sparam[nparam]);
-		      cost_r     = this.f.evaluate(sreflect,"reflect");
+			  //---   REFLECT:
+			  //MVL sreflect   = (1-rConst)*scentroid+rConst*sparam(:,nparam);
+			  //sreflect   = (1-rConst)*scentroid-((1-rConst)/nparam-rConst)*sparam[nparam];
+			  sreflect   = scentroid.clone();
+			  sreflect.scale(1-rConst);
+			  sreflect.axpy(-((1-rConst)/nparam-rConst), sparam[nparam]);
+			  cost_r     = this.f.evaluate(sreflect,"reflect");
 				if(this.f instanceof LeastSquaresCostFunction){
 					predReflect=((LeastSquaresCostFunction)this.f).getLastPredictions();
 				}
 
 
-		      //% check if cost_r is between the best and 2nd-worst vertices:
-		      if ((cost_r>=costs[0]) & (cost_r<costs[nparam-1])){
-		        flagstep           = 1;
-		        sparam[nparam]     = sreflect;
-		        costs[nparam]      = cost_r;
-		        preds[nparam]      = predReflect;
-		        Results.putMessage("REFLECT!");
-		      }
+			  //% check if cost_r is between the best and 2nd-worst vertices:
+			  if ((cost_r>=costs[0]) & (cost_r<costs[nparam-1])){
+				flagstep           = 1;
+				sparam[nparam]     = sreflect;
+				costs[nparam]      = cost_r;
+				preds[nparam]      = predReflect;
+				Results.putMessage("REFLECT!");
+			  }
 
-		      //---   EXPAND:
-		      if ((flagstep==0) & (cost_r<costs[0])){
-		         //MVL sexpand          = (1-rconst*econst)*scentroid-rconst*econst*sparam(:,nparam+1);
- 		         //sexpand   = (1-rconst*econst)*scentroid-((1-rconst*econst)/nparam-rconst*econst)*sparam[nparam+1];
-			     sexpand   = scentroid.clone();
-			     sexpand.scale(1-rconst*econst);
-			     sexpand.axpy(-((1-rconst*econst)/nparam-rconst*econst), sparam[nparam]);
-		         cost_e    = this.f.evaluate(sexpand,"expand");
-		         if(this.f instanceof LeastSquaresCostFunction){
-		        	 predExpand=((LeastSquaresCostFunction)this.f).getLastPredictions();
-		         }
+			  //---   EXPAND:
+			  if ((flagstep==0) & (cost_r<costs[0])){
+				 //MVL sexpand          = (1-rConst*eConst)*scentroid-rConst*eConst*sparam(:,nparam+1);
+				 //sexpand   = (1-rConst*eConst)*scentroid-((1-rConst*eConst)/nparam-rConst*eConst)*sparam[nparam+1];
+				 sexpand   = scentroid.clone();
+				 sexpand.scale(1-rConst*eConst);
+				 sexpand.axpy(-((1-rConst*eConst)/nparam-rConst*eConst), sparam[nparam]);
+				 cost_e    = this.f.evaluate(sexpand,"expand");
+				 if(this.f instanceof LeastSquaresCostFunction){
+					 predExpand=((LeastSquaresCostFunction)this.f).getLastPredictions();
+				 }
 
-		         if (cost_e<cost_r){
-		            flagstep           = 1;
-		            sparam[nparam]     = sexpand;
-		            costs[nparam]      = cost_e;
-		            preds[nparam]      = predExpand;
-                    Results.putMessage("EXPAND!");
-		         }
-		         if (cost_e>=cost_r){
-		            flagstep           = 1;
-		            sparam[nparam]     = sreflect;
-		            costs[nparam]      = cost_r;
-		            preds[nparam]      = predReflect;
-                    Results.putMessage("REFLECT ALSO!");
-		         }
-		      }
+				 if (cost_e<cost_r){
+					flagstep           = 1;
+					sparam[nparam]     = sexpand;
+					costs[nparam]      = cost_e;
+					preds[nparam]      = predExpand;
+					Results.putMessage("EXPAND!");
+				 }
+				 if (cost_e>=cost_r){
+					flagstep           = 1;
+					sparam[nparam]     = sreflect;
+					costs[nparam]      = cost_r;
+					preds[nparam]      = predReflect;
+					Results.putMessage("REFLECT ALSO!");
+				 }
+			  }
 
-		      //---   CONTRACT:
-		      if ((flagstep==0) & (cost_r>=costs[nparam-1]) & (cost_r<costs[nparam])){
-		        // outside contraction
-		        //MVL scontract        = (1+rconst*cconst)*scentroid-rconst*cconst*sparam(:,nparam+1);
-		        //scontract   = (1-rconst*cconst)*scentroid-((1-rconst*cconst)/nparam-rconst*cconst)*sparam[nparam+1];
-			    scontract   = scentroid.clone();
-			    scontract.scale(1-rconst*cconst);
-			    scontract.axpy(-((1-rconst*cconst)/nparam-rconst*cconst), sparam[nparam]);
-		        cost_c      = this.f.evaluate(scontract,"contract outside");
+			  //---   CONTRACT:
+			  if ((flagstep==0) & (cost_r>=costs[nparam-1]) & (cost_r<costs[nparam])){
+				// outside contraction
+				//MVL scontract        = (1+rConst*cConst)*scentroid-rConst*cConst*sparam(:,nparam+1);
+				//scontract   = (1-rConst*cConst)*scentroid-((1-rConst*cConst)/nparam-rConst*cConst)*sparam[nparam+1];
+				scontract   = scentroid.clone();
+				scontract.scale(1-rConst*cConst);
+				scontract.axpy(-((1-rConst*cConst)/nparam-rConst*cConst), sparam[nparam]);
+				cost_c      = this.f.evaluate(scontract,"contract outside");
 				if(this.f instanceof LeastSquaresCostFunction){
 					predContract=((LeastSquaresCostFunction)this.f).getLastPredictions();
 				}
 
-		        if (cost_c<=cost_r){
-		           flagstep           = 1;
-		           sparam[nparam]     = scontract;
-		           costs[nparam]      = cost_c;
-		           preds[nparam]      = predContract;
-                   Results.putMessage("CONTRACT OUTSIDE!");
-		        }
-		      }
-		      if ((flagstep==0) & (cost_r>=costs[nparam])){
-		        // inside contraction
-		        //MVL scontract        = (1-cconst)*scentroid+cconst*sparam(:,nparam+1);
-		        //scontract   = (1-cconst)*scentroid-((1-cconst)/nparam-cconst)*sparam[nparam+1];
-			    scontract   = scentroid.clone();
-			    scontract.scale(1-cconst);
-			    scontract.axpy(-((1-cconst)/nparam-cconst), sparam[nparam]);
-		        cost_c           = this.f.evaluate(scontract,"contract inside");
+				if (cost_c<=cost_r){
+				   flagstep           = 1;
+				   sparam[nparam]     = scontract;
+				   costs[nparam]      = cost_c;
+				   preds[nparam]      = predContract;
+				   Results.putMessage("CONTRACT OUTSIDE!");
+				}
+			  }
+			  if ((flagstep==0) & (cost_r>=costs[nparam])){
+				// inside contraction
+				//MVL scontract        = (1-cConst)*scentroid+cConst*sparam(:,nparam+1);
+				//scontract   = (1-cConst)*scentroid-((1-cConst)/nparam-cConst)*sparam[nparam+1];
+				scontract   = scentroid.clone();
+				scontract.scale(1-cConst);
+				scontract.axpy(-((1-cConst)/nparam-cConst), sparam[nparam]);
+				cost_c           = this.f.evaluate(scontract,"contract inside");
 				if(this.f instanceof LeastSquaresCostFunction){
 					predContract=((LeastSquaresCostFunction)this.f).getLastPredictions();
 				}
-		        if (cost_c<costs[nparam]){
-		           flagstep         = 1;
-		           sparam[nparam]   = scontract;
-		           costs[nparam]    = cost_c;
-		           preds[nparam]    = predContract;
-                   Results.putMessage("CONTRACT INSIDE!");
-		        }
-		      }
+				if (cost_c<costs[nparam]){
+				   flagstep         = 1;
+				   sparam[nparam]   = scontract;
+				   costs[nparam]    = cost_c;
+				   preds[nparam]    = predContract;
+				   Results.putMessage("CONTRACT INSIDE!");
+				}
+			  }
 
-		      //--- Check acceptance:
-		      if (flagstep==1){
-		          // Sort simplex by cost
-		  		  iSort=this.sortedIndex(costs);
-		  		  cost_sort = this.applyIndexToDoubles(costs, iSort);
-		  		  sparam_sort=this.applyIndexToVectors(sparam, iSort);
-		  		  pred_sort=this.applyIndexToVectors(preds, iSort);
-		  		  sparam = sparam_sort;
-		  		  costs  = cost_sort;
-		  		  preds  = pred_sort;
-		      }
+			  //--- Check acceptance:
+			  if (flagstep==1){
+				  // Sort simplex by cost
+				  iSort=this.sortedIndex(costs);
+				  cost_sort = this.applyIndexToDoubles(costs, iSort);
+				  sparam_sort=this.applyIndexToVectors(sparam, iSort);
+				  pred_sort=this.applyIndexToVectors(preds, iSort);
+				  sparam = sparam_sort;
+				  costs  = cost_sort;
+				  preds  = pred_sort;
+			  }
 
-		      //---   SHRINK:
-		      if (flagstep==0){
-		        costmax=costs[nparam];
-		        for(int ivertex=1;ivertex<nparam+1;ivertex++){
-		          //sshrink            = (1-sconst)*sparam[0]+sconst*sparam[ivertex];
-			      sshrink   = sparam[0].clone();
-			      sshrink.scale(1-sconst);
-			      sshrink.axpy(sconst, sparam[ivertex]);
-		          cost_s             = this.f.evaluate(sshrink,"shrink");
-		          if(this.f instanceof LeastSquaresCostFunction){
-		        	  predShrink=((LeastSquaresCostFunction)this.f).getLastPredictions();
-		          }
-		          sparam[ivertex]    = sshrink;
-		          costs[ivertex]     = cost_s;
-		          preds[ivertex]     = predShrink;
-		        }
-		        // Sort simplex by cost
+			  //---   SHRINK:
+			  if (flagstep==0){
+				costmax=costs[nparam];
+				for(int ivertex=1;ivertex<nparam+1;ivertex++){
+				  //sshrink            = (1-sConst)*sparam[0]+sConst*sparam[ivertex];
+				  sshrink   = sparam[0].clone();
+				  sshrink.scale(1-sConst);
+				  sshrink.axpy(sConst, sparam[ivertex]);
+				  cost_s             = this.f.evaluate(sshrink,"shrink");
+				  if(this.f instanceof LeastSquaresCostFunction){
+					  predShrink=((LeastSquaresCostFunction)this.f).getLastPredictions();
+				  }
+				  sparam[ivertex]    = sshrink;
+				  costs[ivertex]     = cost_s;
+				  preds[ivertex]     = predShrink;
+				}
+				// Sort simplex by cost
 				iSort=this.sortedIndex(costs);
 				cost_sort = this.applyIndexToDoubles(costs, iSort);
 				sparam_sort=this.applyIndexToVectors(sparam, iSort);
@@ -370,47 +369,47 @@ public class SimplexCoreOptimizer{
 				sparam = sparam_sort;
 				costs  = cost_sort;
 				preds  = pred_sort;
-                Results.putMessage("SHRINK");
-		        // Check if "SHRINK" produces better sets of parameter
-		        if (costmax<costs[nparam]){
-                   Results.putValue("maximumCost", costs[nparam], 1, "any", IResultWriter.OutputLevel.Essential , IResultWriter.MessageType.OuterIteration);
-		           Results.putMessage("WARNING: SHRINK produces worse parameter set");
-                }
-		      }
-		      // Compute new best-worst difference:
-		      double diff=(costs[nparam]-costs[0]);
-              double relDiff = diff/Math.abs(costs[0]);
-              Results.putMessage("costs"+ new Vector(costs)+ "costs in simplex");
-              this.moreToDo = (imain<this.maxitSimplex) & (diff>this.absTolSimplex) & ((diff)>this.relTolSimplex*Math.abs(costs[0]));
-            Results.putMessage("stop criterion 1, imain > maxit:\t "+imain+" < "+Math.round(this.maxitSimplex));
-            Results.putMessage("stop criterion 2, diff < abstol:\t "+diff+" > "+this.absTolSimplex);
-            Results.putMessage("stop criterion 3, relDiff < reltol:\t "+relDiff+" > "+this.relTolSimplex);
+				Results.putMessage("SHRINK");
+				// Check if "SHRINK" produces better sets of parameter
+				if (costmax<costs[nparam]){
+				   Results.putValue("maximumCost", costs[nparam], 1, "any", IResultWriter.OutputLevel.Essential , IResultWriter.MessageType.OuterIteration);
+				   Results.putMessage("WARNING: SHRINK produces worse parameter set");
+				}
+			  }
+			  // Compute new best-worst difference:
+			  double diff=(costs[nparam]-costs[0]);
+			  double relDiff = diff/Math.abs(costs[0]);
+			  Results.putMessage("costs"+ new Vector(costs)+ "costs in simplex");
+			  this.moreToDo = (iMain<this.maxitSimplex) & (diff>this.absTolSimplex) & ((diff)>this.relTolSimplex*Math.abs(costs[0]));
+			Results.putMessage("stop criterion 1, iMain > maxit:\t "+iMain+" < "+Math.round(this.maxitSimplex));
+			Results.putMessage("stop criterion 2, diff < abstol:\t "+diff+" > "+this.absTolSimplex);
+			Results.putMessage("stop criterion 3, relDiff < reltol:\t "+relDiff+" > "+this.relTolSimplex);
 
 		} // iteration loop
 
-        // additional stop criteria:
-        if (stopCriteria.size()>0) {
-            // To do: generalize for non leastsquarecostfunction too!
-            IVector residual = null;
-            if(this.f instanceof LeastSquaresCostFunction){
-                residual = ((LeastSquaresCostFunction)f).getObservationUncertainty().getExpectations();
-            } else {
-                throw new RuntimeException("Additional stop criterion is only implemented for LeastSquaresCostFunction..");
-            }
-            residual.axpy(-1.0,preds[0]);
-            boolean isStop = false;
-            for (int i=0; i<stopCriteria.size(); i++){
-                IStopCriterion object = stopCriteria.get(i);
-                double threshold = stopCriteriaThreshold.get(i);
-                if (obsDescr!=null) {
-                    isStop = object.checkForStop(sparam[0],residual,obsDescr,costs[0],threshold);
-                } else {
-                    isStop = object.checkForStop(sparam[0],residual,costs[0],threshold);
-                }
-                Results.putMessage(object.toString());
-                this.moreToDo = this.moreToDo & !isStop;
-            }
-        }
+		// additional stop criteria:
+		if (stopCriteria.size()>0) {
+			// To do: generalize for non leastsquarecostfunction too!
+			IVector residual;
+			if(this.f instanceof LeastSquaresCostFunction){
+				residual = ((LeastSquaresCostFunction)f).getObservationUncertainty().getExpectations();
+			} else {
+				throw new RuntimeException("Additional stop criterion is only implemented for LeastSquaresCostFunction..");
+			}
+			residual.axpy(-1.0,preds[0]);
+			boolean isStop;
+			for (int i=0; i<stopCriteria.size(); i++){
+				IStopCriterion object = stopCriteria.get(i);
+				double threshold = stopCriteriaThreshold.get(i);
+				if (obsDescr!=null) {
+					isStop = object.checkForStop(sparam[0],residual,obsDescr,costs[0],threshold);
+				} else {
+					isStop = object.checkForStop(sparam[0],residual,costs[0],threshold);
+				}
+				Results.putMessage(object.toString());
+				this.moreToDo = this.moreToDo & !isStop;
+			}
+		}
 
 		if(!this.moreToDo){
 			//Display final results:
@@ -432,43 +431,45 @@ public class SimplexCoreOptimizer{
 				// compute error estimate
 				// compute analysis error covariance from approximate Hessian
 				// Pest = Xi*inv(A' * A)*Xi'
-				if(1==1){ //TODO replace with check for computation fo error estimate
+				if (1 == 1) { //TODO replace with check for computation for error estimate
+
 					// build least squares problem
 					// solve a linear least-squares problem for next estimate
-					IVector sigmaObs = ((LeastSquaresCostFunction)f).getObservationUncertainty().getStandardDeviations();
+					IVector sigmaObs = ((LeastSquaresCostFunction) f).getObservationUncertainty().getStandardDeviations();
 					IVector[] predsNorm = new IVector[nparam];
-					IVector[] parsRel  = new IVector[nparam];
-					for(int i=0;i<nparam;i++){ //compute normalized predictions (relative to best so far and scaled with obs errors)
+					IVector[] parsRel = new IVector[nparam];
+					for (int i = 0; i < nparam; i++) { //compute normalized predictions (relative to best so far and scaled with obs errors)
 						// Y = [y_1-y_0, ... ,y_n-y_0]
-						predsNorm[i] = preds[i+1].clone();
-						predsNorm[i].axpy(-1.0,preds[0]);predsNorm[i].pointwiseDivide(sigmaObs);
-						parsRel[i] = sparam[i+1].clone();
-						parsRel[i].axpy(-1.0,sparam[0]);  // ([pars[i+1] -pars[0]); sorted w.r.t. cost!
+						predsNorm[i] = preds[i + 1].clone();
+						predsNorm[i].axpy(-1.0, preds[0]);
+						predsNorm[i].pointwiseDivide(sigmaObs);
+						parsRel[i] = sparam[i + 1].clone();
+						parsRel[i].axpy(-1.0, sparam[0]);  // ([pars[i+1] -pars[0]); sorted w.r.t. cost!
 					}
 					Matrix A_obs = new Matrix(predsNorm);
 					// additional term for background errors
 					Matrix A;
-                    IMatrix LPar = ((LeastSquaresCostFunction)this.f).getParameterUncertainty().getSqrtCovariance().asMatrix();
-					if(((LeastSquaresCostFunction)this.f).doAddBackgroundTerm()){
-						IVector[] parsNorm  = new IVector[nparam];
-						for(int i=0;i<nparam;i++){ //compute normalized predictions (relative to best so far and scaled with obs errors)
+					IMatrix LPar = ((LeastSquaresCostFunction) this.f).getParameterUncertainty().getSqrtCovariance().asMatrix();
+					if (((LeastSquaresCostFunction) this.f).doAddBackgroundTerm()) {
+						IVector[] parsNorm = new IVector[nparam];
+						for (int i = 0; i < nparam; i++) { //compute normalized predictions (relative to best so far and scaled with obs errors)
 							parsNorm[i] = parsRel[i].clone();
-							LPar.rightSolve(parsRel[i],parsNorm[i]);
+							LPar.rightSolve(parsRel[i], parsNorm[i]);
 						}
 						Matrix A_b = new Matrix(parsNorm);
-						A = Matrix.concatVertical(A_obs,A_b);
-					}else{
+						A = Matrix.concatVertical(A_obs, A_b);
+					} else {
 						A = A_obs;
 					}
-					int np            = A.getNumberOfColumns();
-					Matrix Pinv = new Matrix(np,np);
+					int np = A.getNumberOfColumns();
+					Matrix Pinv = new Matrix(np, np);
 					// Pinv = A' * A
 					Pinv.multiply(1.0, A, A, 0.0, true, false);
 					// P = inv(Pinv)
 					Matrix P = Pinv.inverse();
 					// Tranform to parameter space Xi*P*Xi'
 					Matrix Xi = new Matrix(parsRel);
-					Matrix Pest = new Matrix(np,np);
+					Matrix Pest = new Matrix(np, np);
 					Pest.multiply(1.0, P, Xi, 0.0, false, true);
 					Pest = Matrix.mult(Xi, Pest);
 					// standard deviations
@@ -479,19 +480,19 @@ public class SimplexCoreOptimizer{
 					stdValues = std.getValues();
 					stdWithStructure.setValues(stdValues);
 					Results.putMessage("Error estimate for this outer iteration");
-                    Results.putValue(	"parameterErrorEstimateStd", stdWithStructure, stdWithStructure.getSize(),
-                                        "outer iteration "+imain, IResultWriter.OutputLevel.Verbose,
-                                        IResultWriter.MessageType.OuterIteration);
+					Results.putValue("parameterErrorEstimateStd", stdWithStructure, stdWithStructure.getSize(),
+						"outer iteration " + iMain, IResultWriter.OutputLevel.Verbose,
+						IResultWriter.MessageType.OuterIteration);
 					/*
 					 *  compute correlations
 					 */
 					Vector stdInverse = std.clone();
 					stdInverse.invert();
 					IMatrix stdOnDiag = Matrix.diag(stdInverse);
-					IMatrix correlations = Matrix.mult(stdOnDiag, Matrix.mult(Pest,stdOnDiag));
-                    int correlationsSize = correlations.getNumberOfColumns() * correlations.getNumberOfRows();
-                    Results.putValue("parameterErrorCorrelations", correlations, correlationsSize,
-                            "outer iteration "+imain, IResultWriter.OutputLevel.Verbose, IResultWriter.MessageType.OuterIteration);
+					IMatrix correlations = Matrix.mult(stdOnDiag, Matrix.mult(Pest, stdOnDiag));
+					int correlationsSize = correlations.getNumberOfColumns() * correlations.getNumberOfRows();
+					Results.putValue("parameterErrorCorrelations", correlations, correlationsSize,
+						"outer iteration " + iMain, IResultWriter.OutputLevel.Verbose, IResultWriter.MessageType.OuterIteration);
 				}
 
 			}else{
@@ -516,33 +517,32 @@ public class SimplexCoreOptimizer{
 
 		class indexValuePair
 		{
-		  int index;
-		  double value;
-		  public indexValuePair(int index, double value)
-		  {
-		    this.index = index;
-		    this.value = value;
-		  }
+			final int index;
+			final double value;
+			public indexValuePair(int index, double value)
+			{
+				this.index = index;
+				this.value = value;
+			}
 		}
-		class ValueComparator implements java.util.Comparator
+		class ValueComparator implements java.util.Comparator<Object>
 		{
 		  public int compare(Object o1, Object o2)
 		  {
-		    return new Double(((indexValuePair)o1).value).compareTo(((indexValuePair) o2).value);
+			return Double.compare(((indexValuePair) o1).value, ((indexValuePair) o2).value);
 		  }
 		}
 
 		int[] result = new int[values.length];
-		java.util.ArrayList<indexValuePair> sortedValues = new java.util.ArrayList<indexValuePair>();
+		java.util.ArrayList<indexValuePair> sortedValues = new java.util.ArrayList<>();
 		for(int i=0;i<values.length;i++){
 		   sortedValues.add(new indexValuePair(i,values[i]));
 		}
 		ValueComparator vc = new ValueComparator();
 		java.util.Collections.sort(sortedValues, vc);
 		int j=0;
-		for(java.util.Iterator it=sortedValues.iterator();it.hasNext();){
-			indexValuePair ivp = (indexValuePair) it.next();
-			result[j]=ivp.index;
+		for (indexValuePair ivp : sortedValues) {
+			result[j] = ivp.index;
 			j++;
 		}
 		return result;
