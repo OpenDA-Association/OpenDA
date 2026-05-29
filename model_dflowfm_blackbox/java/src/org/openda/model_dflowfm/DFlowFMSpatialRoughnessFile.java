@@ -370,6 +370,8 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 
 		List<ObservationPoint> observationPointsList = observationPointsMap == null ? null : observationPointsMap.get(branchId);
 
+		if (observationPointsList != null) Collections.sort(observationPointsList);
+
 		if (functionType.equalsIgnoreCase("constant")) {
 			createConstantExchangeItems(lineReader, branchId, frictionType, functionType, observationPointsList);
 			return;
@@ -501,6 +503,7 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 		for (int i = 0; i < observationPointsList.size(); i++) {
 			ObservationPoint observationPoint = observationPointsList.get(i);
 			int chainageSplit = findChainageSplit(branchChainages, observationPoint.getChainage());
+			if (chainageSplit == -1) continue;
 			chainageSplitIndices.add(chainageSplit);
 		}
 		return chainageSplitIndices;
