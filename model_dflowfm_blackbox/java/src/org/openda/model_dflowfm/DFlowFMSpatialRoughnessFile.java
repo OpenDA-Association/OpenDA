@@ -406,7 +406,7 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 		line = lineReader.readLine();
 		keyValue = readKeyValueLine(line);
 		String value = keyValue[1];
-		while (!value.isEmpty()) {
+		while (value != null && !value.isEmpty()) {
 			String[] splitFrictionValues = value.trim().split(" ");
 			for (int i = 0; i < splitFrictionValues.length; i++) {
 				String splitFrictionValue = splitFrictionValues[i];
@@ -420,7 +420,7 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 		if (observationPointsList == null) {
 			for (int i = 0; i < numLevels; i++) {
 				String id = getIdWithLevel(chainages[0], i, branchId, functionType, frictionType);
-				exchangeItems.put(id, new DFlowFMSpatialRoughnessExchangeItem(id, branchId, frictionType, functionType, frictionValues[i], 0, numLocations - 1, levels, chainages, i));
+				exchangeItems.put(id, new DFlowFMSpatialRoughnessExchangeItem(id, branchId, frictionType, functionType, frictionValues[i], 0, numLocations, levels, chainages, i));
 			}
 			return;
 		}
