@@ -35,9 +35,9 @@ import java.io.IOException;
 import java.util.*;
 import ucar.nc2.write.NetcdfFormatWriter;
 
-public class NetcdfFileConcatenator {
+public class NetcdfFileConcatenater {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(NetcdfFileConcatenator.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(NetcdfFileConcatenater.class);
 
 	public static void main(String[] arguments) {
 		if (arguments.length < 2) {
