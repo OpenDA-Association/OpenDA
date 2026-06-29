@@ -27,7 +27,7 @@
         <!-- for each model instance, the template directory will be cloned to create the instance directory -->
         <initializeActionsUsingDirClone instanceDir="%instanceDir%%instanceNumber%/" templateDir="%templateDir%" />
         <computeActions>
-            <action workingDirectory="%instanceDir%" linuxExe="%exeDir%/start_dimr.sh" windowsExe="%exeDir%/start_dimr.bat">
+            <action workingDirectory="%instanceDir%" linuxExe="%exeDir%/run_dimr.sh" windowsExe="%exeDir%/run_dimr.bat">
                 <arg>%dimrconfigfile%</arg>
                 <checkOutput file="%outputDir%/%hisfile%"/>
                 <checkOutput file="%outputDir%/%mapfile%"/>
