@@ -34,6 +34,7 @@ import ucar.nc2.NetcdfFile;
 import ucar.nc2.Attribute;
 import ucar.nc2.Variable;
 import ucar.nc2.dataset.NetcdfDatasets;
+import ucar.nc2.write.NetcdfFileFormat;
 import ucar.nc2.write.NetcdfFormatWriter;
 
 import java.io.File;
@@ -46,6 +47,7 @@ import java.util.*;
 public class DFlowFMRestartFileWrapper implements IDataObject {
 
 	public static final String EXCHANGE_ITEM_ID_POST_FIX = "exchangeItemIdPostFix";
+	public static final String NETCDF_FORMAT = "ncformat";
 	private String exchangeItemIdPostFix;
 
 	// create a MetaExchangeItem
@@ -71,7 +73,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 	int time_index = 0;
 	String netcdffileName = null;
 	HashMap<String,DFlowFMMetaExchangeItem> ExchangeItems = new LinkedHashMap<String,DFlowFMMetaExchangeItem>();
-
+	NetcdfFileFormat netcdfFormat = NetcdfFileFormat.NETCDF3;
 
 	/**
 	 * Initialize.
@@ -96,6 +98,17 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 					case EXCHANGE_ITEM_ID_POST_FIX:
 						exchangeItemIdPostFix = value;
 						continue;
+					case NETCDF_FORMAT:
+						switch (value) {
+							case "netcdf3":
+								this.netcdfFormat = NetcdfFileFormat.NETCDF3;
+								continue;
+							case "netcdf4":
+								this.netcdfFormat = NetcdfFileFormat.NETCDF4;
+								continue;
+							default:
+								throw new IllegalArgumentException("Unknown option: " + argument);
+						}
 					default:
 						throw new RuntimeException("Unknown key " + key + ". Please specify only " + EXCHANGE_ITEM_ID_POST_FIX + " as key=value pair");
 				}
@@ -330,6 +343,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 	public void finish() {
 		try {
 			NetcdfFormatWriter.Builder NetcdfBuilder= NetcdfFormatWriter.openExisting(netcdffileName);
+			NetcdfBuilder.setFormat(this.netcdfFormat);
 			NetcdfBuilder.setFill(true);
 			NetcdfFormatWriter NetcdfWriter = NetcdfBuilder.build();
 
