@@ -156,6 +156,9 @@ public class NetcdfDataObject implements IComposableDataObject, IComposableEnsem
 				case STATION_DIMENSION_VAR_NAME_KEY:
 					this.stationDimensionVarName = value;
 					continue;
+				case NetcdfUtils.NETCDF_FORMAT:
+					this.netcdfFormat = NetcdfFileFormat.valueOf(value);
+					continue;
 				default:
 					throw new RuntimeException("Unknown key " + key + ". Please specify only [" + ALLOW_TIME_INDEPENDENT_ITEMS + ", " + REQUIRED_EXCHANGE_ITEM_ID + ", " + LAYER_DIMENSION_NAME + ", " + STATION_ID_VAR_NAME_KEY + ", " + STATION_DIMENSION_VAR_NAME_KEY  + "] as key=value pair");
 			}

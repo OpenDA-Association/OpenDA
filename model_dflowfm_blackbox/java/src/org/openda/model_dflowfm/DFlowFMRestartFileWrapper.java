@@ -47,7 +47,6 @@ import java.util.*;
 public class DFlowFMRestartFileWrapper implements IDataObject {
 
 	public static final String EXCHANGE_ITEM_ID_POST_FIX = "exchangeItemIdPostFix";
-	public static final String NETCDF_FORMAT = "ncformat";
 	private String exchangeItemIdPostFix;
 
 	// create a MetaExchangeItem
@@ -98,17 +97,9 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 					case EXCHANGE_ITEM_ID_POST_FIX:
 						exchangeItemIdPostFix = value;
 						continue;
-					case NETCDF_FORMAT:
-						switch (value) {
-							case "netcdf3":
-								this.netcdfFormat = NetcdfFileFormat.NETCDF3;
-								continue;
-							case "netcdf4":
-								this.netcdfFormat = NetcdfFileFormat.NETCDF4;
-								continue;
-							default:
-								throw new IllegalArgumentException("Unknown option: " + argument);
-						}
+					case NetcdfUtils.NETCDF_FORMAT:
+						this.netcdfFormat = NetcdfFileFormat.valueOf(value);
+						continue;
 					default:
 						throw new RuntimeException("Unknown key " + key + ". Please specify only " + EXCHANGE_ITEM_ID_POST_FIX + " as key=value pair");
 				}

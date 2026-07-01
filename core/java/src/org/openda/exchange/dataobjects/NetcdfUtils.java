@@ -70,6 +70,7 @@ public class NetcdfUtils {
 	public static final String FEATURE_TYPE_ATTRIBUTE_NAME = "featureType";
 	public static final String CF_ROLE_ATTRIBUTE_NAME = "cf_role";
 	public static final String POSITIVE_ATTRIBUTE_NAME = "positive";
+	public static final String NETCDF_FORMAT = "ncformat";
 
 	//attribute values.
 	//see http://www.unidata.ucar.edu/software/netcdf/docs/netcdf.html#NetCDF-Classic-Format for default _FillValues for each dataType.
