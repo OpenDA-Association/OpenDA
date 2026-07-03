@@ -85,6 +85,9 @@ OpenDA will overwrite the original ``.bc`` file. As an example, we provide::
 
 NetCDF concatenater
 -------------------
+
+.. _NetCDF concatenater:
+
 OpenDA splits longer runs into smaller parts (as we already explained in the
 section on :ref:`restarts of a model<restart>`).  Therefore, lots of smaller
 NetCDF output files are written instead of one single NetCDF output file that
@@ -93,7 +96,8 @@ in order to merge them together, OpenDA has a NetcdfFileConcatenater. This is
 general functionality available in OpenDA and can be used for many different
 models that create NetCDF output files.  This concatenater (formally spelled as
 concatenator) should be configured as compute action after the compute action
-of the model run. [#action]_  It takes two arguments: the first argument is the name of
+of the model run (see the section on :ref:`compute actions<compute actions>` for more information).
+It takes two arguments: the first argument is the name of
 the file with all concatenated data and the second argument is the file that
 should be concatenated to it. Since the concatenator will run after each small
 model run, only 1 NetCDF file has to be concatenated to the main file
@@ -293,12 +297,3 @@ exception because files for the higher partitioning do not exist. When the
 number of partitions is set too small, then only part of the grid will be taken
 into account, leading to inconsistent changes which makes model runs
 unpredictable.
-
-.. rubric:: Footnotes
-
-.. [#action]
-   Actions are configurations that specify which (external) executables
-   OpenDA should run. Typically, this would be the model itself. Other actions can
-   include pre- or post-processing steps. For example, the NetCDF concatenator is
-   a post-processing step that merges smaller NetCDF result files from multiple
-   runs into a single NetCDF file.

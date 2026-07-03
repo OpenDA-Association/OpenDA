@@ -55,6 +55,19 @@ public class NetcdfDataObjectTest extends TestCase {
 		assertEquals(3, itemValues.length);
 	}
 
+	public void testReadTimeSeriesEnsembleFromNetcdf4() {
+		NetcdfDataObject dataObject = new NetcdfDataObject();
+		dataObject.initialize(this.testRunDataDir, new String[]{"netcdf4_timeseries_ensemble.nc", "true", "false", "netcdf4"});
+		int[] ensembleIndices = dataObject.getEnsembleMemberIndices();
+		assertEquals(3, ensembleIndices.length);
+		String[] ensembleIds = dataObject.getEnsembleExchangeItemIds();
+		assertEquals(4, ensembleIds.length);
+		IExchangeItem item = dataObject.getDataObjectExchangeItem("27.waterlevel", 1);
+		assertFalse(item == null);
+		double[] itemValues = item.getValuesAsDoubles();
+		assertEquals(3, itemValues.length);
+	}
+
 	public void testReadGridEnsemble() {
 		NetcdfDataObject dataObject = new NetcdfDataObject();
 		dataObject.initialize(this.testRunDataDir, new String[]{"netcdf_grid_with_ensemble.nc", "true", "false"});

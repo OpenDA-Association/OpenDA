@@ -33,7 +33,7 @@ public class NetcdfD3dMapDataObjectTest extends TestCase {
 		System.out.println(Arrays.toString(exchangeItemIDs));
 		assertEquals("#exchange items", 4, exchangeItemIDs.length);
 		IExchangeItem exchangeItem = netcdfFile.getDataObjectExchangeItem(exchangeItemIDs[exchangeItemID]);
-		assertFalse(exchangeItem == null);
+		assertNotNull(exchangeItem);
 
 
 		double[] exchangeItemValues = exchangeItem.getValuesAsDoubles();
