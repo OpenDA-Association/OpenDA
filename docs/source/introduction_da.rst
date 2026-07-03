@@ -41,7 +41,8 @@ assimilation includes the distinction between offline and online
 methods, the statistical framework used, the notions of deterministic
 and stochastic models, noise models, the combination of values (weights
 are needed), data assimilation on top of an existing model, and the
-general structure of filtering methods.
+general structure of filtering methods. For two-dimensional noise models, some
+extra information has been given in the section on :ref:`Maps Noise Model<Maps Noise Model>`.
 
 In this documentation, we give a bit of information about the statistical
 framework. We do not aim for completeness but only give a bit of context

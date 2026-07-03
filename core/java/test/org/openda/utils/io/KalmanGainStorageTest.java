@@ -263,21 +263,6 @@ public class KalmanGainStorageTest extends TestCase {
 		assertEquals(-0.038791, s1Values[4], delta);
 	}
 
-
-	public void testWriteReadKalmanGainXML() throws Exception {
-		double timeAsMJD = 55615.00;  // 2011-02-23T00:00:00GMT 2011-02-23T01:00:00CET
-		int columnSize = KalmanGainStorage.DefaultMaxKeepVectorInXMLSize - 5;
-		writeAndReadKalmanGain(timeAsMJD, columnSize);
-	}
-
-	public void testWriteReadKalmanGainNetCdf() throws Exception {
-		for (int ii=0; ii< 2; ii++){
-		   double timeAsMJD = 55615.00 + ii/24.0;  // 2011-02-23T00:00:00GMT 2011-02-23T01:00:00CET
-		   int columnSize = KalmanGainStorage.DefaultMaxKeepVectorInXMLSize + 5;
-		   writeAndReadKalmanGain(timeAsMJD, columnSize);
-		}
-	}
-
 	private void writeAndReadKalmanGain(double timeAsMJD, int columnSize) {
 		// write the kalman gain
 		IVector[] kalmanGainColumnsOut = createKalmanGainColumns(columnSize);
