@@ -1,11 +1,13 @@
 package org.openda.model_dflowfm;
 
 import org.openda.exchange.AbstractDataObject;
+import org.openda.exchange.dataobjects.NetcdfUtils;
 import org.openda.utils.generalJavaUtils.StringUtilities;
 import ucar.ma2.ArrayFloat;
 import ucar.nc2.NetcdfFile;
-import ucar.nc2.NetcdfFileWriter;
 import ucar.nc2.Variable;
+import ucar.nc2.write.NetcdfFileFormat;
+import ucar.nc2.write.NetcdfFormatWriter;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +35,7 @@ public class DFlowFMNetcdfSampleFile extends AbstractDataObject {
 	private String idPrefix;
 	private File file = null;
 	private NetcdfFile netcdfFile = null;
+	NetcdfFileFormat netcdfFormat = NetcdfFileFormat.NETCDF3;
 
 	@Override
 	public void initialize(File workingDir, String[] arguments) {
@@ -55,6 +58,9 @@ public class DFlowFMNetcdfSampleFile extends AbstractDataObject {
 					continue;
 				case DATA_FORMAT:
 					dataFormat = DataFormat.valueOf(value);
+					continue;
+				case NetcdfUtils.NETCDF_FORMAT:
+					this.netcdfFormat = NetcdfFileFormat.valueOf(value);
 					continue;
 				default:
 					throw new RuntimeException(String.format("Unknown key %s. Please only specify [%s, %s, %s] as key=value pairs", key, ID_PREFIX, NETCDF_VARIABLE, DATA_FORMAT));
@@ -104,7 +110,6 @@ public class DFlowFMNetcdfSampleFile extends AbstractDataObject {
 
 	@Override
 	public void finish() {
-		NetcdfFileWriter netcdfFileWriter = null;
 		try {
 			Map<String, double[]> variableValuesMap = new HashMap<>();
 			exchangeItems.values().forEach(exchangeItem -> {
@@ -119,29 +124,44 @@ public class DFlowFMNetcdfSampleFile extends AbstractDataObject {
 				}
 			});
 
-			netcdfFileWriter = NetcdfFileWriter.openExisting(this.file.getAbsolutePath());
-			NetcdfFileWriter finalNetcdfFileWriter = netcdfFileWriter;
-			variableValuesMap.forEach((varName, values) -> {
-				try {
-					Variable variable = finalNetcdfFileWriter.findVariable(varName);
-					if (variable == null) throw new RuntimeException(String.format("Variable %s not found in netCDF file", varName));
-					ArrayFloat.D1 array = new ArrayFloat.D1(values.length);
-					for (int i = 0; i < values.length; i++) {
-						array.set(i, (float) values[i]);
+			NetcdfFormatWriter.Builder builder = NetcdfFormatWriter.openExisting(this.file.getAbsolutePath());
+			builder.setFormat(this.netcdfFormat);
+			builder.setFill(true);
+			try (NetcdfFormatWriter finalNetcdfFileWriter = builder.build()) {
+				variableValuesMap.forEach((varName, values) -> {
+					try {
+						Variable variable = finalNetcdfFileWriter.findVariable(varName);
+						if (variable == null) throw new RuntimeException(String.format("Variable %s not found in netCDF file", varName));
+						int[] shape = variable.getShape();
+						ArrayFloat array = getArray(values, shape);
+						finalNetcdfFileWriter.write(variable, new int[shape.length], array);
+					} catch (Exception e) {
+						throw new RuntimeException(e);
 					}
-					finalNetcdfFileWriter.write(variable, variable.getShape(), array);
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
-			});
+				});
+			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
-		} finally {
-			try {
-				if (netcdfFileWriter != null) netcdfFileWriter.close();
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
 		}
+	}
+
+	private ArrayFloat getArray(double[] values, int[] shape) {
+		if (shape.length == 1) {
+			ArrayFloat.D1 array = new ArrayFloat.D1(values.length);
+			for (int i = 0; i < values.length; i++) {
+				array.set(i, (float) values[i]);
+			}
+			return array;
+		}
+		if (shape.length == 2) {
+			ArrayFloat.D2 array = new ArrayFloat.D2(shape[0], shape[1]);
+			for (int i = 0; i < shape[0]; i++) {
+				for (int j = 0; j < shape[1]; j++) {
+					array.set(i, j, (float) values[j + shape[1] * i]);
+				}
+			}
+			return array;
+		}
+		throw new RuntimeException(String.format("Array dimensions %s not not supported", shape.length));
 	}
 }

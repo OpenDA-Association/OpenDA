@@ -20,7 +20,7 @@ public class DFlowFMNetcdfSampleFileTest extends TestCase {
 
 	public void testTimeIndependent() throws IOException {
 		DFlowFMNetcdfSampleFile dataObject = new DFlowFMNetcdfSampleFile();
-		dataObject.initialize(testRunDataRestartFileDir, new String[]{"ExampleTimeIndependent.nc", "idPrefix=prefix", "netcdfVariable=phase", "netcdfVariable=amplitude", "dataFormat=TimeIndependent"});
+		dataObject.initialize(testRunDataRestartFileDir, new String[]{"ExampleTimeIndependent.nc", "ncformat=NETCDF4", "idPrefix=prefix", "netcdfVariable=phase", "netcdfVariable=amplitude", "dataFormat=TimeIndependent"});
 		String[] exchangeItemIDs = dataObject.getExchangeItemIDs();
 		assertEquals(134, exchangeItemIDs.length);
 		for (int i = 0; i < exchangeItemIDs.length; i++) {
@@ -32,7 +32,7 @@ public class DFlowFMNetcdfSampleFileTest extends TestCase {
 		dataObject.finish();
 
 		DFlowFMNetcdfSampleFile dataObjectReloaded = new DFlowFMNetcdfSampleFile();
-		dataObjectReloaded.initialize(testRunDataRestartFileDir, new String[]{"ExampleTimeIndependent.nc", "idPrefix=prefix", "netcdfVariable=phase", "netcdfVariable=amplitude", "dataFormat=TimeIndependent"});
+		dataObjectReloaded.initialize(testRunDataRestartFileDir, new String[]{"ExampleTimeIndependent.nc", "ncformat=NETCDF4", "idPrefix=prefix", "netcdfVariable=phase", "netcdfVariable=amplitude", "dataFormat=TimeIndependent"});
 		String[] exchangeItemIdsReloaded = dataObjectReloaded.getExchangeItemIDs();
 		assertEquals(134, exchangeItemIdsReloaded.length);
 		for (int i = 0; i < exchangeItemIdsReloaded.length; i++) {
@@ -47,7 +47,7 @@ public class DFlowFMNetcdfSampleFileTest extends TestCase {
 
 	public void testTimeConstant() throws IOException {
 		DFlowFMNetcdfSampleFile dataObject = new DFlowFMNetcdfSampleFile();
-		dataObject.initialize(testRunDataRestartFileDir, new String[]{"ExampleTimeConstant.nc", "idPrefix=prefix", "netcdfVariable=friction_coefficient", "dataFormat=TimeConstant"});
+		dataObject.initialize(testRunDataRestartFileDir, new String[]{"ExampleTimeConstant.nc", "ncformat=NETCDF4", "idPrefix=prefix", "netcdfVariable=friction_coefficient", "dataFormat=TimeConstant"});
 		String[] exchangeItemIDs = dataObject.getExchangeItemIDs();
 		assertEquals(67, exchangeItemIDs.length);
 		for (int i = 0; i < exchangeItemIDs.length; i++) {
@@ -59,7 +59,7 @@ public class DFlowFMNetcdfSampleFileTest extends TestCase {
 		dataObject.finish();
 
 		DFlowFMNetcdfSampleFile dataObjectReloaded = new DFlowFMNetcdfSampleFile();
-		dataObjectReloaded.initialize(testRunDataRestartFileDir, new String[]{"ExampleTimeConstant.nc", "idPrefix=prefix", "netcdfVariable=friction_coefficient", "dataFormat=TimeConstant"});
+		dataObjectReloaded.initialize(testRunDataRestartFileDir, new String[]{"ExampleTimeConstant.nc", "ncformat=NETCDF4", "idPrefix=prefix", "netcdfVariable=friction_coefficient", "dataFormat=TimeConstant"});
 		String[] exchangeItemIdsReloaded = dataObjectReloaded.getExchangeItemIDs();
 		assertEquals(67, exchangeItemIdsReloaded.length);
 		for (int i = 0; i < exchangeItemIdsReloaded.length; i++) {
