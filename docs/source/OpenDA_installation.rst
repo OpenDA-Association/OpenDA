@@ -20,7 +20,8 @@ a Windows machine:
    computer. Note: OpenDA does not work when it is installed on a
    location with a space in the path (like “``My Documents``”).
 -  Open the OpenDA GUI by clicking the file ``oda_run_gui.bat`` in the
-   folder ``<path_to_openda_release>/bin``.
+   folder ``<path_to_openda_release>/bin``. The ``.bat`` file contains the
+   commands that launch OpenDA.
 -  Try to run an :ref:`example <Example configurations>`. 
 
 
