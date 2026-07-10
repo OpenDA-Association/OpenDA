@@ -3,14 +3,10 @@
 
 # OpenDA
 
-OpenDA is an open interface standard for (and free implementation of) a set of tools to quickly implement data-assimilation and calibration for arbitrary numerical models. OpenDA wants to stimulate the use of data-assimilation and calibration by lowering the implementation costs and enhancing the exchange of software among researchers and end-users.
+OpenDA is an open interface standard for (and free implementation of) a set of tools to quickly apply data-assimilation and calibration to arbitrary numerical models. It aims to lower implementation costs and promote the sharing of software among researchers and practitioners. 
+Models compatible with the OpenDA standard can access all OpenDA tools, enabling experimentation with data-assimilation and calibration methods without extensive programming. Similarly, developers who make their methods OpenDA-compatible can share them with all users, either freely or commercially. OpenDA has been designed for high performance, making it suitable for large-scale models. It allows users to optimize the interaction between their models and the data-assimilation or calibration methods, achieving efficiency comparable to custom implementations.
 
-A model that conforms to the OpenDA standard can use all the tools that are available in OpenDA. This allows experimentation with data-assimilation/calibration methods without the need for extensive programming. Reversely, developers of data-assimilation/calibration software that make their implementations compatible with the OpenDA interface will make their new methods usable for all OpenDA users (either for free or on a commercial basis).
-
-OpenDA has been designed for high performance. Hence, even large-scale models can use it. Also, OpenDA allows users to optimize the interaction between their model and the data-assimilation/calibration methods. Hence, data-assimilation with OpenDA can be as efficient as with custom-made implementations of data-assimilation methods.
-
-OpenDA is an Open Source project. Contributions are welcome from anyone wishing to participate in the further development of the OpenDA toolset.
-More information about the development process is found [here](./INSTALL.md)
+OpenDA is an open-source project. The OpenDA documentation is available at https://docs.openda.org. Contributions are welcome from anyone interesting in enhancing the toolset. More information about the development process can be found [here](./INSTALL.md).
 
 ## Features of OpenDA
 
@@ -26,17 +22,14 @@ Data-assimilation methods
 
 Parameter estimation (calibration) methods:
 
-- Dud
-- Sparse Dud
-- Simplex
-- Powell
+- Dud and Sparse Dud
+- Simplex, Powell
 - Gridded full search
-- Shuffled Comples Evolution (SCE)
+- Shuffled Complex Evolution (SCE)
 - Generalized Likelihood Uncertainty Estimation (GLUE)
 - (L)BFGS
 - Conjugate Gradient: Fleetjer-Reeves, Polak-Ribiere, Steepest Descent
-- Uncertainty Analaysis methods
-- GLUE
+- Uncertainty Analysis methods
 - DELSA
 
 Language interfaces
@@ -45,6 +38,4 @@ Language interfaces
 - Java
 - Fortran77/90
 
-These files are part of the OpenDA software. For more information see our website at
-http://www.openda.org
-
+For more information, visit the OpenDA website: https://openda.org.
