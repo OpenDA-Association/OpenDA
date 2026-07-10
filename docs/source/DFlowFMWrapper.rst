@@ -297,3 +297,86 @@ exception because files for the higher partitioning do not exist. When the
 number of partitions is set too small, then only part of the grid will be taken
 into account, leading to inconsistent changes which makes model runs
 unpredictable.
+
+Trachytopes
+-----------
+
+Trachytopes are roughness classes used in hydraulic models to describe the flow
+resistance of different surface types, such as river beds, floodplains, and
+vegetation.
+OpenDA offers the possibility to calibrate roughness of river models via the
+trachytope file.  In the OpenDA configuration only the classname, the file to
+calibrate and an id is needed::
+
+   <dataObject className="org.openda.model_dflowfm.DFlowFMTrachytopeFile">
+      <file>trachytope.ttd</file>
+      <id>ttdFile</id>
+   </dataObject>
+		
+For roughness files that do not depend on discharge and have four columns, it
+will create exchange items for each value in columns 3 and 4.  It will create
+ids using: 
+
+- the value from the first column as roughness number;
+- the value from the second column as formula number;
+- the suffix A for the third-column value and B for the fourth-column value.
+
+For example a ``trachytope.ttd`` file with contents::
+
+  411   101  0.1000   2.5
+  412   101  0.1000   2.5
+  413   101  0.1000   2.5
+  414   101  0.1000   2.5
+  415   101  0.1000   2.5
+
+will result in the following exchange item ids with values::
+
+  "RoughNr_411_FormulaNr101_A" 0.1
+  "RoughNr_411_FormulaNr101_B" 2.5
+  "RoughNr_412_FormulaNr101_A" 0.1
+  "RoughNr_412_FormulaNr101_B" 2.5
+  "RoughNr_413_FormulaNr101_A" 0.1
+  "RoughNr_413_FormulaNr101_B" 2.5
+  "RoughNr_414_FormulaNr101_A" 0.1
+  "RoughNr_414_FormulaNr101_B" 2.5
+  "RoughNr_415_FormulaNr101_A" 0.1
+  "RoughNr_415_FormulaNr101_B" 2.5
+
+
+For roughness files that are dependent on discharge and have five columns, it
+will create exchange items for each value in columns 4 and 5.  The discharge
+value from column 2 is also used in the id of the exchange item, for example::
+
+  611 DISCHARGE Q-LobithPannkop
+  611  2700 101 0.0229 2.5
+  611  4450 101 0.0262 2.5                                                
+  611 11800 101 0.0786 2.5
+  
+  612 DISCHARGE Q-LobithPannkop
+  612  2700 101 0.0229 2.5
+  612  4450 101 0.0262 2.5                                                
+  612 11800 101 0.0786 2.5    
+
+will result in the following exchange items with values::
+
+  "RoughNr_611_DISCHARGE2700_FormulaNr101_A" 0.0229
+  "RoughNr_611_DISCHARGE2700_FormulaNr101_B" 2.5
+  "RoughNr_611_DISCHARGE4450_FormulaNr101_A" 0.0262
+  "RoughNr_611_DISCHARGE4450_FormulaNr101_B" 2.5
+  "RoughNr_611_DISCHARGE11800_FormulaNr101_A" 0.0786
+  "RoughNr_611_DISCHARGE11800_FormulaNr101_B" 2.5
+  "RoughNr_612_DISCHARGE2700_FormulaNr101_A" 0.0229
+  "RoughNr_612_DISCHARGE2700_FormulaNr101_B" 2.5
+  "RoughNr_612_DISCHARGE4450_FormulaNr101_A" 0.0262
+  "RoughNr_612_DISCHARGE4450_FormulaNr101_B" 2.5
+  "RoughNr_612_DISCHARGE11800_FormulaNr101_A" 0.0786
+  "RoughNr_612_DISCHARGE11800_FormulaNr101_B" 2.5
+
+There can also be roughness files which are waterlevel dependent, the exchange
+items are then created according to the same logic as for the
+discharge-dependent files, but then with ``WATERLEVEL`` in the id.  Depending
+on the formula number different amounts of value columns can be available, so
+there are ids possible ending with ``A``, ``B``, ``C``, ``D`` or ``E``.
+
+Since all exchange items will only contain one value, all values in each
+formula can be calibrated separately.
