@@ -76,8 +76,13 @@ public class DudWithObservationFilterTest extends TestCase {
         
         NoosTimeSeriesStochObserver obsGenerated = new NoosTimeSeriesStochObserver();
         obsGenerated.initialize(testRunDataDir, new String[]{"noosOscillatorWithFilter.xml"});
-        		
-        IVector pTrue = new Vector("[8.5,1.7]"); //default [8.0,1.5707963267948966]
+		List<IExchangeItem> exchangeItems = obsGenerated.getExchangeItems();
+		assertNotNull(exchangeItems);
+		assertEquals(2, exchangeItems.size());
+		assertEquals("global.position", exchangeItems.get(0).getId());
+		assertEquals("global.filter", exchangeItems.get(1).getId());
+
+		IVector pTrue = new Vector("[8.5,1.7]"); //default [8.0,1.5707963267948966]
   	    // Now start calibration through proper algorithm-class
 	    String dudConfig = "dudOscillator.xml";
         Dud algorithm = new Dud();

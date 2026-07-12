@@ -32,6 +32,7 @@ import java.util.Arrays;
 
 public class NoosDataObject extends AbstractDataObject implements IComposableDataObject {
 	private static final String PROPERTY_PATHNAME = "pathName";
+	private static final String PROPERTY_STATUS = "status";
 	private File workingDir = new File(".");
 
 	/**
@@ -108,6 +109,8 @@ public class NoosDataObject extends AbstractDataObject implements IComposableDat
 		}
 		NoosTimeSeriesFormatter noosFormatter = new NoosTimeSeriesFormatter();
 		TimeSeries series = noosFormatter.read(noosFileInputStream);
+		String status = series.getStringProperty(PROPERTY_STATUS, "use");
+		if (status.equals("ignore")) return;
 		series.setProperty(PROPERTY_PATHNAME, noosFile.getAbsolutePath());
 		this.exchangeItems.put(series.getId(),series);
 	}
