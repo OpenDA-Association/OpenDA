@@ -288,8 +288,7 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 
 			line = lineReader.readLine();
 			while (line != null) {
-				if (line.startsWith(BRANCH)) readBranch(lineReader, observationPoints);
-				line = lineReader.readLine();
+				line = line.startsWith(BRANCH) ? readBranch(lineReader, observationPoints) : lineReader.readLine();
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e.getMessage(), e);
@@ -311,7 +310,7 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 		}
 	}
 
-	private void readBranch(BufferedReader lineReader, Map<String, List<ObservationPoint>> observationPointsMap) throws IOException {
+	private String readBranch(BufferedReader lineReader, Map<String, List<ObservationPoint>> observationPointsMap) throws IOException {
 		String branchId = readKeyValueLine(lineReader.readLine())[1].trim();
 
 		String frictionType = readKeyValueLine(lineReader.readLine())[1].trim();
@@ -323,15 +322,15 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 		if (observationPointsList != null) Collections.sort(observationPointsList);
 
 		if (functionType.equalsIgnoreCase("constant")) {
-			createConstantExchangeItems(lineReader, branchId, frictionType, functionType, observationPointsList);
-			return;
+			return createConstantExchangeItems(lineReader, branchId, frictionType, functionType, observationPointsList);
 		}
 
 		double[] levels = getLevels(lineReader);
 
 		double[] chainages = getChainages(lineReader);
 
-		double[][] frictionValues = getFrictionValues(lineReader, levels.length, chainages.length);
+		double[][] frictionValues = new double[chainages.length][levels.length];
+		String line = fillFrictionValues(lineReader, frictionValues);
 
 		if (observationPointsList == null) {
 			for (int levelIndex = 0; levelIndex < levels.length; levelIndex++) {
@@ -346,9 +345,10 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 					id, branchId, frictionType, functionType, levelFrictionValues,
 					0, chainages.length, levels, chainages, levelIndex));
 			}
-			return;
+			return line;
 		}
 		createExchangeItemsBasedOnSplit(branchId, frictionType, functionType, observationPointsList, chainages, levels, frictionValues);
+		return line;
 	}
 
 	private double[] getLevels(BufferedReader lineReader) throws IOException {
@@ -375,11 +375,10 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 		return chainages;
 	}
 
-	private double[][] getFrictionValues(BufferedReader lineReader, int numLevels, int numLocations) throws IOException {
-		double[][] frictionValues = new double[numLocations][numLevels];
+	private String fillFrictionValues(BufferedReader lineReader, double[][] frictionValues) throws IOException {
 		int index = 0;
 		String value = readKeyValueLine(lineReader.readLine())[1];
-		while (value != null && !value.isEmpty()) {
+		while (value != null && !value.isEmpty() && !value.trim().equalsIgnoreCase("[Branch]")) {
 			String[] splitFrictionValues = value.trim().split(" ");
 			for (int i = 0; i < splitFrictionValues.length; i++) {
 				String splitFrictionValue = splitFrictionValues[i];
@@ -388,7 +387,7 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 			index++;
 			value = lineReader.readLine();
 		}
-		return frictionValues;
+		return value;
 	}
 
 	private void createExchangeItemsBasedOnSplit(String branchId, String frictionType, String functionType, List<ObservationPoint> observationPointsList, double[] branchChainages, double[] levels, double[][] frictionValues) {
@@ -416,7 +415,7 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 		}
 	}
 
-	private void createConstantExchangeItems(BufferedReader lineReader, String branchId, String frictionType, String functionType, List<ObservationPoint> observationPointsList) throws IOException {
+	private String createConstantExchangeItems(BufferedReader lineReader, String branchId, String frictionType, String functionType, List<ObservationPoint> observationPointsList) throws IOException {
 		String[] keyValue;
 		String line;
 		line = lineReader.readLine();
@@ -445,9 +444,10 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 		if (observationPointsList == null) {
 			String id = getIdWithoutLevel(branchChainages[0], branchId, frictionType);
 			exchangeItems.put(id, new DFlowFMSpatialRoughnessExchangeItem(id, branchId, frictionType, functionType, frictionValues, 0, numLocations, null, branchChainages, 0));
-			return;
+			return line;
 		}
 		createConstantExchangeItemsBasedOnSplit(branchId, frictionType, functionType, observationPointsList, branchChainages, frictionValues);
+		return line;
 	}
 
 	private void createConstantExchangeItemsBasedOnSplit(String branchId, String frictionType, String functionType, List<ObservationPoint> observationPointsList, double[] branchChainages, double[] frictionValues) {
@@ -486,12 +486,12 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 	}
 
 	private String getLevelString(String functionType, int levelIndex) {
-		switch (functionType) {
-			case "absDischarge":
+		switch (functionType.toLowerCase()) {
+			case "absdischarge":
 				return "q" + levelIndex;
-			case "waterLevel":
+			case "waterlevel":
 				return "h" + levelIndex;
-			case "Constant":
+			case "constant":
 				return "";
 		}
 		throw new RuntimeException(String.format("Unknown function type %s, should be absDischarge, or Constant", functionType));
