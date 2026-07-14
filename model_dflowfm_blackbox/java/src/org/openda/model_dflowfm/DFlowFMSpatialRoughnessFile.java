@@ -171,23 +171,27 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 			if (keyValue == null) throw new RuntimeException("Invalid key = value pair " + argument + ". Please specify only observationFile=<filePath> and observationSelectionFile=<filePath> as key=value pair");
 			String key = keyValue[0];
 			String value = keyValue[1];
-			switch (key) {
-				case OBSERVATION_FILE:
-					observationFile = new File(workingDir, value);
-					continue;
-				case OBSERVATION_SELECTION_FILE:
-					observationSelectionFile = new File(workingDir, value);
-					continue;
-				default:
-					throw new RuntimeException("Unknown key " + key + ". Please specify only targetFile as key=value pair");
-			}
+			readOptionalArguments(workingDir, key, value);
 		}
 
 		Set<String> observationPointIdsSelection = getObservationSelection();
 		//noinspection unchecked
-		Map<String, List<ObservationPoint>> observationPoints = observationFile != null ? readObservationFile(observationPointIdsSelection) : Collections.EMPTY_MAP;
+		Map<String, List<ObservationPoint>> observationPoints = observationFile != null ? readObservationFile(observationPointIdsSelection) : Collections.emptyMap();
 
 		readSpatialDefinitionFile(observationPoints);
+	}
+
+	private void readOptionalArguments(File workingDir, String key, String value) {
+		switch (key) {
+			case OBSERVATION_FILE:
+				observationFile = new File(workingDir, value);
+				return;
+			case OBSERVATION_SELECTION_FILE:
+				observationSelectionFile = new File(workingDir, value);
+				return;
+			default:
+				throw new RuntimeException("Unknown key " + key + ". Please specify only targetFile as key=value pair");
+		}
 	}
 
 	private Set<String> getObservationSelection() {
@@ -233,9 +237,7 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 
 				double chainage = Double.parseDouble(readKeyValueLine(lineReader.readLine())[1]);
 
-				lineReader.readLine();
-
-				if (observationPointIdsSelection == null || observationPointIdsSelection.contains(name)) addObservationPoint(observationPointsMap, name, branchId, chainage, name);
+				if (observationPointIdsSelection == null || observationPointIdsSelection.contains(name)) addObservationPoint(observationPointsMap, branchId, chainage);
 
 				do {
 					line = lineReader.readLine();
@@ -249,8 +251,8 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 		return observationPointsMap;
 	}
 
-	private void addObservationPoint(Map<String, List<ObservationPoint>> observationPointsMap, String id, String branchId, double chainage, String name) {
-		ObservationPoint observationPoint = new ObservationPoint(id, branchId, chainage, name);
+	private void addObservationPoint(Map<String, List<ObservationPoint>> observationPointsMap, String branchId, double chainage) {
+		ObservationPoint observationPoint = new ObservationPoint(branchId, chainage);
 		List<ObservationPoint> observationPointList = observationPointsMap.get(branchId);
 		if (observationPointList != null) {
 			observationPointList.add(observationPoint);
@@ -378,7 +380,7 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 	private String fillFrictionValues(BufferedReader lineReader, double[][] frictionValues) throws IOException {
 		int index = 0;
 		String value = readKeyValueLine(lineReader.readLine())[1];
-		while (value != null && !value.isEmpty() && !value.trim().equalsIgnoreCase("[Branch]")) {
+		while (value != null && !value.isEmpty() && !value.trim().equalsIgnoreCase(BRANCH)) {
 			String[] splitFrictionValues = value.trim().split(" ");
 			for (int i = 0; i < splitFrictionValues.length; i++) {
 				String splitFrictionValue = splitFrictionValues[i];
@@ -493,8 +495,9 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 				return "h" + levelIndex;
 			case "constant":
 				return "";
+			default:
+				throw new RuntimeException(String.format("Unknown function type %s, should be absDischarge, waterLevel, or Constant", functionType));
 		}
-		throw new RuntimeException(String.format("Unknown function type %s, should be absDischarge, or Constant", functionType));
 	}
 
 	private String getIdWithLevel(double firstChainage, int levelIndex, String branchId, String functionType, String frictionType) {
@@ -545,7 +548,7 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 		return new DFlowFMSpatialRoughnessExchangeItem(mainExchangeItemId, frictionId, globalFrictionType, null, new double[]{globalFrictionValue}, -1, -1, null, null, 0);
 	}
 
-	private String[] readKeyValueLine(String line) throws IOException {
+	private String[] readKeyValueLine(String line) {
 		String[] split = line.split("=");
 		assert split.length == 2;
 		split[0] = split[0].trim();
@@ -554,20 +557,12 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 	}
 
 	static class ObservationPoint implements Comparable<ObservationPoint> {
-		private final String id;
 		private final String branchId;
 		private final double chainage;
-		private final String name;
 
-		public ObservationPoint(String id, String branchId, double chainage, String name) {
-			this.id = id;
+		public ObservationPoint(String branchId, double chainage) {
 			this.branchId = branchId;
 			this.chainage = chainage;
-			this.name = name;
-		}
-
-		public String getId() {
-			return id;
 		}
 
 		public String getBranchId() {
@@ -576,10 +571,6 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 
 		public double getChainage() {
 			return chainage;
-		}
-
-		public String getName() {
-			return name;
 		}
 
 		@Override
