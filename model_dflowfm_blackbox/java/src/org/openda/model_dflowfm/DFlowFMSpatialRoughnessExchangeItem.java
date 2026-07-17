@@ -19,11 +19,11 @@ public class DFlowFMSpatialRoughnessExchangeItem implements IExchangeItem {
 	private final double[] levels;
 	private double[] values;
 
-	public DFlowFMSpatialRoughnessExchangeItem(String id, String branchId, String frictionType, String functionType, double[] values, int chainageStartIndex, int chainageEndIndex, double[] levels, double[] chainages, int levelIndex) {
+	public DFlowFMSpatialRoughnessExchangeItem(String id, DFlowFMSpatialRoughnessFile.BranchDefinition branchDefinition, double[] values, int chainageStartIndex, int chainageEndIndex, double[] levels, double[] chainages, int levelIndex) {
 		this.id = id;
-		this.frictionType = frictionType;
-		this.branchId = branchId;
-		this.functionType = functionType;
+		this.frictionType = branchDefinition.getFrictionType();
+		this.branchId = branchDefinition.getBranchId();
+		this.functionType = branchDefinition.getFunctionType();
 		this.values = values;
 		this.chainageStartIndex = chainageStartIndex;
 		this.chainageEndIndex = chainageEndIndex;
