@@ -247,12 +247,12 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 		try (FileInputStream fileInputStream = new FileInputStream(observationFile);
 			 InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
 			 BufferedReader lineReader = new BufferedReader(inputStreamReader)) {
+
 			String line = lineReader.readLine();
-			if (!line.contains(GENERAL)) throw new RuntimeException("File should start with " + GENERAL);
 
-			line = skipGeneral(lineReader);
-
-			if (!line.contains(OBSERVATION_POINT)) throw new RuntimeException("File should have " + OBSERVATION_POINT + " after " + GENERAL);
+			while (!line.startsWith(OBSERVATION_POINT)) {
+				line = lineReader.readLine();
+			}
 
 			while (line.startsWith(OBSERVATION_POINT)) {
 
@@ -286,18 +286,6 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 		observationPointList = new ArrayList<>();
 		observationPointList.add(observationPoint);
 		observationPointsMap.put(branchId, observationPointList);
-	}
-
-	private String skipGeneral(BufferedReader lineReader) throws IOException {
-		lineReader.readLine();
-		lineReader.readLine();
-		lineReader.readLine();
-		String line = lineReader.readLine();
-		while (line.isEmpty()) {
-			line = lineReader.readLine();
-		}
-
-		return line;
 	}
 
 	private void readSpatialDefinitionFile(Map<String, List<ObservationPoint>> observationPoints) {
@@ -602,6 +590,19 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 			int compareTo = branchId.compareTo(other.branchId);
 			if (compareTo != 0) return compareTo;
 			return Double.compare(chainage, other.chainage);
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (!(o instanceof ObservationPoint)) return false;
+			ObservationPoint other = (ObservationPoint) o;
+			return Double.compare(chainage, other.chainage) == 0 && branchId.equals(other.branchId);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(branchId, chainage);
 		}
 	}
 }
