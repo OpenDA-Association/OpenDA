@@ -94,16 +94,17 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 
 			List<DFlowFMSpatialRoughnessExchangeItem> loopExchangeItems = new ArrayList<>(exchangeItems.values());
 			DFlowFMSpatialRoughnessExchangeItem previousExchangeItem = loopExchangeItems.get(0);
-			BranchDefinition currentBranchDefinition = new BranchDefinition(previousExchangeItem.getBranchId(), previousExchangeItem.getFrictionType(), previousExchangeItem.getFunctionType());
+			BranchDefinition currentBranchDefinition = previousExchangeItem.getBranchDefinition();
 			double[][] frictionValues = new double[1][1];
 
 			for (int j = 0; j < loopExchangeItems.size(); j++) {
 				DFlowFMSpatialRoughnessExchangeItem exchangeItem = loopExchangeItems.get(j);
-				String branchId = exchangeItem.getBranchId();
+				BranchDefinition exchangeItemBranchDefinition = exchangeItem.getBranchDefinition();
+				String branchId = exchangeItemBranchDefinition.getBranchId();
 				double[] exchangeItemLevels = exchangeItem.getLevels();
 				if (!branchId.equals(currentBranchDefinition.getBranchId())) {
 					if (j != 0) appendText(previousExchangeItem, builder, currentBranchDefinition, frictionValues);
-					currentBranchDefinition = new BranchDefinition(branchId, exchangeItem.getFrictionType(), exchangeItem.getFunctionType());
+					currentBranchDefinition = exchangeItemBranchDefinition;
 					frictionValues = new double[exchangeItemLevels == null ? 1 : exchangeItemLevels.length][exchangeItem.getChainages().length];
 					previousExchangeItem = exchangeItem;
 				}
