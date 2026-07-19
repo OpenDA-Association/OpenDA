@@ -22,6 +22,7 @@ package org.openda.model_hec_hms;
 import junit.framework.TestCase;
 import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
+import org.openda.utils.OpenDaTestSupport;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,12 +31,19 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 public class StateFileTest extends TestCase {
-	private static final File TEST_RESOURCES_DIRECTORY = new File("java/testResources");
+	OpenDaTestSupport testData = null;
+	private File testRunDataDir;
+
+
+	protected void setUp() {
+		testData = new OpenDaTestSupport(DssFileTest.class, "model_hec_hms");
+		testRunDataDir = testData.getTestRunDataDir();
+	}
 
 	public void testStateFileWithNoExchangeItems() throws IOException {
 		// Given input file
 		File temporaryInputFile = File.createTempFile("temp-no-exchange-items", ".state");
-		File sourceInputFile = new File(TEST_RESOURCES_DIRECTORY, "no-exchange-items.state");
+		File sourceInputFile = new File(testRunDataDir, "no-exchange-items.state");
 		try {
 			Files.copy(sourceInputFile.toPath(), temporaryInputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
@@ -54,7 +62,7 @@ public class StateFileTest extends TestCase {
 			dataObject.finish();
 
 			// Then output file matches input file
-			List<String> expectedLines = Files.readAllLines(new File(TEST_RESOURCES_DIRECTORY, "expected-no-exchange-items.state").toPath());
+			List<String> expectedLines = Files.readAllLines(new File(testRunDataDir, "expected-no-exchange-items.state").toPath());
 			List<String> actualLines = Files.readAllLines(temporaryInputFile.toPath());
 			assertEquals(expectedLines, actualLines);
 		} finally {
@@ -65,7 +73,7 @@ public class StateFileTest extends TestCase {
 	public void testStateFile() throws IOException {
 		// Given input file
 		File temporaryInputFile = File.createTempFile("temp-exchange-items", ".state");
-		File sourceInputFile = new File(TEST_RESOURCES_DIRECTORY, "exchange-items.state");
+		File sourceInputFile = new File(testRunDataDir, "exchange-items.state");
 		try {
 			Files.copy(sourceInputFile.toPath(), temporaryInputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
@@ -100,7 +108,7 @@ public class StateFileTest extends TestCase {
 			dataObject.finish();
 
 			// Then the values are updated
-			List<String> expectedLines = Files.readAllLines(new File(TEST_RESOURCES_DIRECTORY, "expected-exchange-items.state").toPath());
+			List<String> expectedLines = Files.readAllLines(new File(testRunDataDir, "expected-exchange-items.state").toPath());
 			List<String> actualLines = Files.readAllLines(temporaryInputFile.toPath());
 			assertEquals(expectedLines, actualLines);
 		} finally {
