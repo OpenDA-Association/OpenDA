@@ -1,0 +1,74 @@
+package org.openda.model_dflowfm;
+
+import junit.framework.TestCase;
+import org.openda.interfaces.IExchangeItem;
+import org.openda.utils.OpenDaTestSupport;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+
+public class DFlowFMNetcdfSampleFileTest extends TestCase {
+	OpenDaTestSupport testData = null;
+	private File testRunDataRestartFileDir;
+
+
+	protected void setUp() throws IOException {
+		testData = new OpenDaTestSupport(DFlowFMRestartTest.class, "model_dflowfm_blackbox");
+		testRunDataRestartFileDir = new File(testData.getTestRunDataDir(), "DFlowFMNetCDFSample");
+	}
+
+	public void testTimeIndependent() throws IOException {
+		DFlowFMNetcdfSampleFile dataObject = new DFlowFMNetcdfSampleFile();
+		dataObject.initialize(testRunDataRestartFileDir, new String[]{"ExampleTimeIndependent.nc", "idPrefix=prefix", "netcdfVariable=phase", "netcdfVariable=amplitude", "dataFormat=TimeIndependent"});
+		String[] exchangeItemIDs = dataObject.getExchangeItemIDs();
+		assertEquals(134, exchangeItemIDs.length);
+		for (int i = 0; i < exchangeItemIDs.length; i++) {
+			IExchangeItem ei = dataObject.getDataObjectExchangeItem(exchangeItemIDs[i]);
+			double[] values = ei.getValuesAsDoubles();
+			Arrays.fill(values, i);
+			ei.setValuesAsDoubles(values);
+		}
+		dataObject.finish();
+
+		DFlowFMNetcdfSampleFile dataObjectReloaded = new DFlowFMNetcdfSampleFile();
+		dataObjectReloaded.initialize(testRunDataRestartFileDir, new String[]{"ExampleTimeIndependent.nc", "idPrefix=prefix", "netcdfVariable=phase", "netcdfVariable=amplitude", "dataFormat=TimeIndependent"});
+		String[] exchangeItemIdsReloaded = dataObjectReloaded.getExchangeItemIDs();
+		assertEquals(134, exchangeItemIdsReloaded.length);
+		for (int i = 0; i < exchangeItemIdsReloaded.length; i++) {
+			IExchangeItem ei = dataObjectReloaded.getDataObjectExchangeItem(exchangeItemIdsReloaded[i]);
+			double[] values = ei.getValuesAsDoubles();
+			for (double value : values) {
+				assertEquals((double) i, value);
+			}
+		}
+		OpenDaTestSupport.compareNetcdfFiles(new File(testRunDataRestartFileDir, "ExampleTimeIndependent_Expected.nc"), new File(testRunDataRestartFileDir, "ExampleTimeIndependent.nc"));
+	}
+
+	public void testTimeConstant() throws IOException {
+		DFlowFMNetcdfSampleFile dataObject = new DFlowFMNetcdfSampleFile();
+		dataObject.initialize(testRunDataRestartFileDir, new String[]{"ExampleTimeConstant.nc", "idPrefix=prefix", "netcdfVariable=friction_coefficient", "dataFormat=TimeConstant"});
+		String[] exchangeItemIDs = dataObject.getExchangeItemIDs();
+		assertEquals(67, exchangeItemIDs.length);
+		for (int i = 0; i < exchangeItemIDs.length; i++) {
+			IExchangeItem ei = dataObject.getDataObjectExchangeItem(exchangeItemIDs[i]);
+			double[] values = ei.getValuesAsDoubles();
+			Arrays.fill(values, i);
+			ei.setValuesAsDoubles(values);
+		}
+		dataObject.finish();
+
+		DFlowFMNetcdfSampleFile dataObjectReloaded = new DFlowFMNetcdfSampleFile();
+		dataObjectReloaded.initialize(testRunDataRestartFileDir, new String[]{"ExampleTimeConstant.nc", "idPrefix=prefix", "netcdfVariable=friction_coefficient", "dataFormat=TimeConstant"});
+		String[] exchangeItemIdsReloaded = dataObjectReloaded.getExchangeItemIDs();
+		assertEquals(67, exchangeItemIdsReloaded.length);
+		for (int i = 0; i < exchangeItemIdsReloaded.length; i++) {
+			IExchangeItem ei = dataObjectReloaded.getDataObjectExchangeItem(exchangeItemIdsReloaded[i]);
+			double[] values = ei.getValuesAsDoubles();
+			for (double value : values) {
+				assertEquals((double) i, value);
+			}
+		}
+		OpenDaTestSupport.compareNetcdfFiles(new File(testRunDataRestartFileDir, "ExampleTimeConstant_Expected.nc"), new File(testRunDataRestartFileDir, "ExampleTimeConstant.nc"));
+	}
+}
