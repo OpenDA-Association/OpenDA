@@ -64,7 +64,6 @@ public class GridExchangeItemNetcdfWriter {
 
 		//create time dimension and variable.
 		Dimension timeDimension = NetcdfUtils.createTimeVariable(netcdfBuilder, NetcdfUtils.TIME_VARIABLE_NAME, -1, NetcdfUtils.createTimeUnitString());
-		timeVariable = netcdfBuilder.getRootGroup().build().findVariableOrInParent(NetcdfUtils.TIME_VARIABLE_NAME);
 
 		//create grid dimensions and variables.
 		//gather geometryInfos.
@@ -92,7 +91,7 @@ public class GridExchangeItemNetcdfWriter {
 		} catch (Exception e) {
 			throw new RuntimeException(getClass().getSimpleName() + ": Error while creating netcdf file " + outputFile.getAbsolutePath() + " Message was: " + e.getMessage(), e);
 		}
-
+		timeVariable = NetcdfWriter.findVariable(NetcdfUtils.TIME_VARIABLE_NAME);
 		//write grid variables values.
 		try {
 			NetcdfUtils.writeGridVariablesValues(NetcdfWriter, geometryInfoGridVariablePropertiesMap);
