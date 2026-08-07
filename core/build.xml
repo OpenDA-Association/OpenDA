@@ -126,26 +126,38 @@
         </manifest>
     </target>
 
-	<target name="copy-module-resources">
-		<!-- copy openda resources and additional binaries -->
+  <target name="copy-module-resources">
+    <!-- copy OS-independent resources -->
     <copy todir="${modulelibdir}" flatten="yes">
       <fileset dir="${resourcesdir}">
         <include name="**/*.jar"/>
-        <include name="**/*.dll"/>
-        <include name="**/*.DLL"/>
-        <include name="**/*.so"/>
         <include name="**/*.lic"/>
         <include name="**/*.LIC"/>
         <include name="**/*.xsd"/>
-        <include name="**/*.exe"/>
-        <include name="**/*.EXE"/>
-        <include name="**/*.bat"/>
-        <include name="**/*.BAT"/>
         <include name="**/*.test"/>
         <include name="**/openDA_castor_schemas.zip"/>
 
         <!-- exclude netcdf subdir from flattened copy -->
         <exclude name="**/netcdf/**"/>
+      </fileset>
+    </copy>
+
+    <!-- copy Linux native libs -->
+    <copy todir="${modulelibdir}/linux" flatten="yes">
+      <fileset dir="${resourcesdir}">
+        <include name="**/*.so"/>
+      </fileset>
+    </copy>
+
+    <!-- copy Windows native libs/tools -->
+    <copy todir="${modulelibdir}/windows" flatten="yes">
+      <fileset dir="${resourcesdir}">
+        <include name="**/*.dll"/>
+        <include name="**/*.DLL"/>
+        <include name="**/*.exe"/>
+        <include name="**/*.EXE"/>
+        <include name="**/*.bat"/>
+        <include name="**/*.BAT"/>
       </fileset>
     </copy>
 
@@ -155,24 +167,35 @@
         <include name="**/*"/>
       </fileset>
     </copy>
-		<copy todir="${modulebindir}" flatten="yes">
-			<fileset dir="${external}">
-				<include name="**/*.sh"/>
-				<include name="**/*.bat"/>
-				<include name="**/*.exe"/>
-				<include name="**/*.pl"/>
-                <include name="**/*.dll"/>
-			</fileset>
-		</copy>
-		<copy todir="${modulebindir}" flatten="no">
-			<fileset dir="${native_bin}">
-				<include name="**/*"/>
-				<exclude name="**/*.exp"/>
-			</fileset>
-		</copy>
-		<chmod dir="${modulebindir}" perm="ugo+rx" includes="**/*.sh"/>
-		<chmod dir="${modulebindir}" perm="ugo+rx" includes="**/*.pl"/>
-	</target>
+
+    <!-- external tools: Linux -->
+    <copy todir="${modulebindir}/linux" flatten="yes">
+      <fileset dir="${external}">
+        <include name="**/*.sh"/>
+        <include name="**/*.pl"/>
+      </fileset>
+    </copy>
+
+    <!-- external tools: Windows -->
+    <copy todir="${modulebindir}/windows" flatten="yes">
+      <fileset dir="${external}">
+        <include name="**/*.bat"/>
+        <include name="**/*.exe"/>
+        <include name="**/*.dll"/>
+      </fileset>
+    </copy>
+
+    <!-- native binaries: Linux -->
+    <copy todir="${modulebindir}/linux" flatten="no">
+      <fileset dir="${native_bin}">
+        <include name="**/*"/>
+        <exclude name="**/*.exp"/>
+      </fileset>
+    </copy>
+
+    <chmod dir="${modulebindir}/linux" perm="ugo+rx" includes="**/*.sh"/>
+    <chmod dir="${modulebindir}/linux" perm="ugo+rx" includes="**/*.pl"/>
+  </target>
 
 	<target name="validate-xml" >
 		<schemavalidate failonerror="false">
