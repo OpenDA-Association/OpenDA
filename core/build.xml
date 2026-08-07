@@ -128,24 +128,33 @@
 
 	<target name="copy-module-resources">
 		<!-- copy openda resources and additional binaries -->
-		<copy todir="${modulelibdir}" flatten="yes">
-			<!-- copy resources -->
-			<fileset dir="${resourcesdir}">
-				<include name="**/*.jar"/>
-				<include name="**/*.dll"/>
-				<include name="**/*.DLL"/>
-				<include name="**/*.so"/>
-				<include name="**/*.lic"/>
-				<include name="**/*.LIC"/>
-				<include name="**/*.xsd"/>
-				<include name="**/*.exe"/>
-				<include name="**/*.EXE"/>
-				<include name="**/*.bat"/>
-				<include name="**/*.BAT"/>
-				<include name="**/*.test"/>
-				<include name="**/openDA_castor_schemas.zip"/>
-			</fileset>
-		</copy>
+    <copy todir="${modulelibdir}" flatten="yes">
+      <fileset dir="${resourcesdir}">
+        <include name="**/*.jar"/>
+        <include name="**/*.dll"/>
+        <include name="**/*.DLL"/>
+        <include name="**/*.so"/>
+        <include name="**/*.lic"/>
+        <include name="**/*.LIC"/>
+        <include name="**/*.xsd"/>
+        <include name="**/*.exe"/>
+        <include name="**/*.EXE"/>
+        <include name="**/*.bat"/>
+        <include name="**/*.BAT"/>
+        <include name="**/*.test"/>
+        <include name="**/openDA_castor_schemas.zip"/>
+
+        <!-- exclude netcdf subdir from flattened copy -->
+        <exclude name="**/netcdf/**"/>
+      </fileset>
+    </copy>
+
+    <!-- copy excluded netcdf subdir without flattening -->
+    <copy todir="${modulelibdir}" flatten="no">
+      <fileset dir="${resourcesdir}/netcdf">
+        <include name="**/*"/>
+      </fileset>
+    </copy>
 		<copy todir="${modulebindir}" flatten="yes">
 			<fileset dir="${external}">
 				<include name="**/*.sh"/>
