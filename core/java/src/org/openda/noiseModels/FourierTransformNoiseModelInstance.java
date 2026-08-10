@@ -124,7 +124,8 @@ public class FourierTransformNoiseModelInstance extends Instance implements ISto
 
 	@Override
 	public void compute(ITime targetTime) {
-		// create realizations from stds and frequencies
+		// create realizations from stds and frequencies?
+		// apply time correlation?
 	}
 
 	@Override
@@ -191,6 +192,12 @@ public class FourierTransformNoiseModelInstance extends Instance implements ISto
 	public void initialize(File workingDir, String[] arguments) {
 		// read config
 		// Standard deviations per frequency?
-
+		// Power of 2 2D frequencies with Real and Imaginary numbers
+		// Read grid
+		// Read time horizon?
+		// Determine timeCorrelationScale?
+		// Create dummy exchange item
+		// Create FourierTransform stochVector
+		// Create state, vector with x and y sizes
 	}
 }
