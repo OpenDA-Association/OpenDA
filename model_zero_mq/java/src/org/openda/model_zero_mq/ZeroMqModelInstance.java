@@ -133,13 +133,14 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 
 			String[] modelStateExchangeItemIds = modelStateExchangeItemInfo.getModelStateExchangeItemIds();
 			for (String modelStateExchangeItemId : modelStateExchangeItemIds) {
-				createZeroMqOutputExchangeItem(missingValue, analysisExchangeItems, modelStateExchangeItemId, IExchangeItem.Role.Output, true);
+				analysisExchangeItems.add(createZeroMqTransformedGridExchangeItem(missingValue, modelStateExchangeItemId));
 			}
 			modelStateExchangeItems.put(stateId, new ZeroMqStateExchangeItem(modelStateExchangeItemIds, lowerLimits2D, upperLimits2D, this, missingValue));
 		}
-		exchangeItems = createExchangeItems(missingValue, analysisExchangeItems);
-
 		forcingExchangeItems = createForcingExchangeItems(modelConfigurations.getForcingConfiguration());
+
+
+		exchangeItems = createExchangeItems(missingValue, modelConfigurations.getTransformVariableIds());
 
 		this.analysisDataWriter = new AnalysisDataWriter(analysisExchangeItems, modelRunDir);
 	}
@@ -171,7 +172,7 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 	}
 
 
-	private Map<String, IExchangeItem> createExchangeItems(double modelMissingValue, ArrayList<IExchangeItem> analysisExchangeItems) {
+	private Map<String, IExchangeItem> createExchangeItems(double modelMissingValue, ArrayList<String> transformVariableIds) {
 		Set<String> inoutVars = new HashSet<>();
 
 		// first fill sets with input and output variables
@@ -191,32 +192,23 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 		Map<String, IExchangeItem> result = new HashMap<>();
 
 		for (String variable : inputVars) {
-			/*if (variable.endsWith("]")) continue;
-			if (variable.endsWith("vertical.z_layered")) continue;
-			if (variable.endsWith("lateral.subsurface.kh")) continue;*/
-			ZeroMqOutputExchangeItem item = createZeroMqOutputExchangeItem(modelMissingValue, analysisExchangeItems, variable, IExchangeItem.Role.Input, false);
+			IExchangeItem item = transformVariableIds.contains(variable) ? createZeroMqTransformedGridExchangeItem(modelMissingValue, variable) : createZeroMqOutputExchangeItem(modelMissingValue, variable, IExchangeItem.Role.Input);
 			result.put(variable, item);
 		}
 
 		for (String variable : outputVars) {
-			/*if (variable.endsWith("]")) continue;
-			if (variable.endsWith("vertical.z_layered")) continue;
-			if (variable.endsWith("lateral.subsurface.kh")) continue;*/
-			ZeroMqOutputExchangeItem item = createZeroMqOutputExchangeItem(modelMissingValue, analysisExchangeItems, variable, IExchangeItem.Role.Output, false);
+			IExchangeItem item = transformVariableIds.contains(variable) ? createZeroMqTransformedGridExchangeItem(modelMissingValue, variable) : createZeroMqOutputExchangeItem(modelMissingValue, variable, IExchangeItem.Role.Input);
 			result.put(variable, item);
 		}
 
 		for (String variable : inoutVars) {
-			/*if (variable.endsWith("]")) continue;
-			if (variable.endsWith("vertical.z_layered")) continue;
-			if (variable.endsWith("lateral.subsurface.kh")) continue;*/
-			ZeroMqOutputExchangeItem item = createZeroMqOutputExchangeItem(modelMissingValue, analysisExchangeItems, variable, IExchangeItem.Role.InOut, false);
+			IExchangeItem item = transformVariableIds.contains(variable) ? createZeroMqTransformedGridExchangeItem(modelMissingValue, variable) : createZeroMqOutputExchangeItem(modelMissingValue, variable, IExchangeItem.Role.Input);
 			result.put(variable, item);
 		}
 		return result;
 	}
 
-	private ZeroMqOutputExchangeItem createZeroMqOutputExchangeItem(double modelMissingValue, ArrayList<IExchangeItem> analysisExchangeItems, String variable, IExchangeItem.Role input, boolean addAnalysisItem) {
+	private IExchangeItem createZeroMqOutputExchangeItem(double modelMissingValue, String variable, IExchangeItem.Role input) {
 		int varGrid = getVarGrid(variable);
 
 		QuantityInfo quantityInfo = new QuantityInfo(variable.replaceAll("\\.", "_"), this.getVarUnits(variable));
@@ -227,16 +219,25 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 		double[] longitudes = new double[gridSize];
 		double[] longitudesForIndividualPoints = getGridX(varGrid, longitudes);
 
-		if (addAnalysisItem) {
-			ZeroMqAnalysisOutputExchangeItem analysisEI = createZeroMqAnalysisOutputExchangeItem(modelMissingValue, variable, quantityInfo, gridSize, latitudesForIndividualPoints, longitudesForIndividualPoints);
-			analysisExchangeItems.add(analysisEI);
-		}
-
 		IrregularGridGeometryInfo irregularGridGeometryInfo = new IrregularGridGeometryInfo(latitudesForIndividualPoints.length, latitudesForIndividualPoints, longitudesForIndividualPoints);
 		return new ZeroMqOutputExchangeItem(variable, input, this, modelMissingValue, irregularGridGeometryInfo, quantityInfo);
 	}
 
-	private ZeroMqAnalysisOutputExchangeItem createZeroMqAnalysisOutputExchangeItem(double modelMissingValue, String variable, QuantityInfo quantityInfo, int gridSize, double[] latitudesForIndividualPoints, double[] longitudesForIndividualPoints) {
+	private IExchangeItem createZeroMqTransformedGridExchangeItem(double modelMissingValue, String variable) {
+		int varGrid = getVarGrid(variable);
+
+		QuantityInfo quantityInfo = new QuantityInfo(variable.replaceAll("\\.", "_"), this.getVarUnits(variable));
+		int gridSize = getGridSize(varGrid);
+		double[] latitudes = new double[gridSize];
+		double[] latitudesForIndividualPoints = getGridY(varGrid, latitudes);
+
+		double[] longitudes = new double[gridSize];
+		double[] longitudesForIndividualPoints = getGridX(varGrid, longitudes);
+
+		return createZeroMqTransformedGridExchangeItem(modelMissingValue, variable, quantityInfo, gridSize, latitudesForIndividualPoints, longitudesForIndividualPoints);
+	}
+
+	private ZeroMqTransformedGridExchangeItem createZeroMqTransformedGridExchangeItem(double modelMissingValue, String variable, QuantityInfo quantityInfo, int gridSize, double[] latitudesForIndividualPoints, double[] longitudesForIndividualPoints) {
 		double[] deduplicatedSortedLatitudes = deduplicateAndSortArray(latitudesForIndividualPoints);
 		double[] deduplicatedSortedLongitudes = deduplicateAndSortArray(longitudesForIndividualPoints);
 
@@ -259,7 +260,7 @@ public class ZeroMqModelInstance extends Instance implements IModelInstance, IMo
 		IQuantityInfo latitudeQuantityInfo = new QuantityInfo("y coordinate according to model coordinate system", "meter");
 		IQuantityInfo longitudeQuantityInfo = new QuantityInfo("x coordinate according to model coordinate system", "meter");
 		ArrayGeometryInfo arrayGeometryInfo = new ArrayGeometryInfo(latitudeArray, latitudeValueIndices, latitudeQuantityInfo, longitudeArray, longitudeValueIndices, longitudeQuantityInfo, null, null, null, null);
-		return new ZeroMqAnalysisOutputExchangeItem(variable, arrayGeometryInfo, latitudeIndices, longitudeIndices, quantityInfo, this, modelMissingValue, longitudeArray.length());
+		return new ZeroMqTransformedGridExchangeItem(variable, arrayGeometryInfo, latitudeIndices, longitudeIndices, quantityInfo, this, modelMissingValue, longitudeArray.length());
 	}
 
 	private double[] deduplicateAndSortArray(double[] coordinateArray) {

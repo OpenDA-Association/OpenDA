@@ -10,7 +10,7 @@ import org.openda.interfaces.ITimeInfo;
 
 import java.util.Arrays;
 
-public class ZeroMqAnalysisOutputExchangeItem implements IExchangeItem {
+public class ZeroMqTransformedGridExchangeItem implements IExchangeItem {
 	private final String variable;
 	private final ArrayGeometryInfo arrayGeometryInfo;
 	private final int[] latitudeIndices;
@@ -22,7 +22,7 @@ public class ZeroMqAnalysisOutputExchangeItem implements IExchangeItem {
 	private final int longitudeLength;
 	private final double[] dummyValuesArray;
 
-	public ZeroMqAnalysisOutputExchangeItem(String variable, ArrayGeometryInfo arrayGeometryInfo, int[] latitudeIndices, int[] longitudeIndices, QuantityInfo quantityInfo, ZeroMqModelInstance zeroMqModelInstance, double modelMissingValue, int longitudeLength) {
+	public ZeroMqTransformedGridExchangeItem(String variable, ArrayGeometryInfo arrayGeometryInfo, int[] latitudeIndices, int[] longitudeIndices, QuantityInfo quantityInfo, ZeroMqModelInstance zeroMqModelInstance, double modelMissingValue, int longitudeLength) {
 		this.variable = variable;
 		this.arrayGeometryInfo = arrayGeometryInfo;
 		this.latitudeIndices = latitudeIndices;
@@ -98,7 +98,9 @@ public class ZeroMqAnalysisOutputExchangeItem implements IExchangeItem {
 
 	@Override
 	public void multiplyValues(double[] multiplicationFactors) {
-		throw new RuntimeException("org.openda.model_zero_mq.ZeroMqAnalysisOutputExchangeItem.multiplyValues() not implemented yet");
+		for (int i = 0; i < multiplicationFactors.length; i++) {
+			this.values[i] *= multiplicationFactors[i];
+		}
 	}
 
 	@Override

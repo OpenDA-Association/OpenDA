@@ -44,6 +44,11 @@
         </xs:annotation>
       </xs:element>
       <xs:element name="modelForcings" type="openda:ZeroMqModelForcingsConfigXML" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="gridTransformVariableId" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+          <xs:documentation>The name of a model exchange item that is used to transform the grid of the model state to a regular grid.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
       <xs:element name="spaceVaryingLimits" type="openda:ZeroMqModelForcingsConfigXML" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="zeroMqModelStateExchangeItems" type="openda:ZeroMqModelStateExchangeItemXML"/>
 			<xs:element name="missingValue" type="xs:double" minOccurs="0">

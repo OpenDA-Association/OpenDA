@@ -18,6 +18,7 @@ public class ZeroMqModelFactoryConfigReader {
 	private final String inputStateDirectory;
 	private final String outputStateDirectory;
 	private final double missingValue;
+	private ArrayList<String> transformVariableIds;
 	private List<ZeroMqModelFactory.ZeroMqModelStateExchangeItemsInfo> zeroMqModelStateExchangeItemInfos;
 	private ArrayList<ZeroMqModelForcingConfig> zeroMqModelForcingConfigs;
 	private ArrayList<ZeroMqModelForcingConfig> staticLimitDataConfigs;
@@ -41,37 +42,45 @@ public class ZeroMqModelFactoryConfigReader {
 		outputStateDirectory = castor.getOutputStateDirectory();
 		missingValue = castor.getMissingValue();
 
-		initializeMqModelForcingConfigs(configFile, castor);
-		initializeZeroMqModelForcingConfigs(configFile, castor);
+		initializeTransformVariableIds(castor);
+		initializeMqModelForcingConfigs(castor);
+		initializeZeroMqModelForcingConfigs(castor);
 		initializeZeroMqModelStateExchangeItemsInfos(castor);
 	}
 
-	private void initializeMqModelForcingConfigs(File configFile, ZeroMqModelFactoryConfigXML castor) {
-		zeroMqModelForcingConfigs = new ArrayList<>();
-		ZeroMqModelForcingsConfigXML[] zeroMqModelForcingsConfigXMLs = castor.getModelForcings();
-		for (ZeroMqModelForcingsConfigXML forcingsConfig : zeroMqModelForcingsConfigXMLs) {
-			addForcingConfig(forcingsConfig, configFile, zeroMqModelForcingConfigs);
+	private void initializeTransformVariableIds(ZeroMqModelFactoryConfigXML castor) {
+		transformVariableIds = new ArrayList<>();
+		for (int i = 0; i < castor.getGridTransformVariableIdCount(); i++) {
+			transformVariableIds.add(castor.getGridTransformVariableId(i));
 		}
 	}
 
-	private void initializeZeroMqModelForcingConfigs(File configFile, ZeroMqModelFactoryConfigXML castor) {
+	private void initializeMqModelForcingConfigs(ZeroMqModelFactoryConfigXML castor) {
+		zeroMqModelForcingConfigs = new ArrayList<>();
+		ZeroMqModelForcingsConfigXML[] zeroMqModelForcingsConfigXMLs = castor.getModelForcings();
+		for (ZeroMqModelForcingsConfigXML forcingsConfig : zeroMqModelForcingsConfigXMLs) {
+			addForcingConfig(forcingsConfig, zeroMqModelForcingConfigs);
+		}
+	}
+
+	private void initializeZeroMqModelForcingConfigs(ZeroMqModelFactoryConfigXML castor) {
 		staticLimitDataConfigs = new ArrayList<>();
 		int staticLimitDataObjectsCount = castor.getSpaceVaryingLimitsCount();
 		for (int i = 0; i < staticLimitDataObjectsCount; i++) {
 			ZeroMqModelForcingsConfigXML staticLimitConfig = castor.getSpaceVaryingLimits(i);
-			addForcingConfig(staticLimitConfig, configFile, staticLimitDataConfigs);
+			addForcingConfig(staticLimitConfig, staticLimitDataConfigs);
 		}
 	}
 
-	private void addForcingConfig(ZeroMqModelForcingsConfigXML staticLimitConfig, File configFile, ArrayList<ZeroMqModelForcingConfig> staticLimitDataConfigs) {
-		ForcingDataObjectXML dataObjectXML = staticLimitConfig.getDataObject();
+	private void addForcingConfig(ZeroMqModelForcingsConfigXML forcingConfig, ArrayList<ZeroMqModelForcingConfig> modelForcings) {
+		ForcingDataObjectXML dataObjectXML = forcingConfig.getDataObject();
 
 		String dataObjectClassName = dataObjectXML.getClassName();
 		String fileName = dataObjectXML.getFile();
 		String[] dataObjectArguments = dataObjectXML.getArg();
 
-		ZeroMqModelForcingConfig zeroMqModelForcingConfig = new ZeroMqModelForcingConfig(dataObjectClassName, configFile.getParentFile(), fileName, dataObjectArguments);
-		staticLimitDataConfigs.add(zeroMqModelForcingConfig);
+		ZeroMqModelForcingConfig zeroMqModelForcingConfig = new ZeroMqModelForcingConfig(dataObjectClassName, fileName, dataObjectArguments);
+		modelForcings.add(zeroMqModelForcingConfig);
 	}
 
 	private void initializeZeroMqModelStateExchangeItemsInfos(ZeroMqModelFactoryConfigXML castor) {
@@ -166,5 +175,9 @@ public class ZeroMqModelFactoryConfigReader {
 
 	public ArrayList<ZeroMqModelForcingConfig> getStaticLimitDataConfigs() {
 		return staticLimitDataConfigs;
+	}
+
+	public ArrayList<String> getTransformVariableIds() {
+		return transformVariableIds;
 	}
 }
