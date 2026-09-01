@@ -96,7 +96,14 @@ public class ZeroMqTransformedGridExchangeItem implements IExchangeItem {
 
 	@Override
 	public void axpyOnValues(double alpha, double[] axpyValues) {
-		throw new RuntimeException("org.openda.model_zero_mq.ZeroMqAnalysisOutputExchangeItem.axpyOnValues() not implemented yet");
+		for (int i = 0; i < values.length; i++) {
+			values[i] += alpha * axpyValues[i];
+		}
+		if (!passViaZeroMq) return;
+		for (int i = 0; i < longitudeLength; i++) {
+			dummyValuesArray[i] = this.values[latitudeIndices[i] * longitudeLength + longitudeIndices[i]];
+		}
+		model.setValue(variable, dummyValuesArray);
 	}
 
 	@Override
