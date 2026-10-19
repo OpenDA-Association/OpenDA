@@ -1,6 +1,7 @@
 package org.openda.model_dflowfm;
 
 import org.openda.exchange.AbstractDataObject;
+import org.openda.utils.Results;
 import org.openda.utils.generalJavaUtils.StringUtilities;
 import ucar.ma2.ArrayFloat;
 import ucar.nc2.NetcdfFile;
@@ -46,19 +47,7 @@ public class DFlowFMNetcdfSampleFile extends AbstractDataObject {
 			if (keyValue == null || keyValue.length != 2) throw new RuntimeException(String.format("Invalid key=value pair: %s", argument));
 			String key = keyValue[0];
 			String value = keyValue[1];
-			switch (key) {
-				case ID_PREFIX:
-					idPrefix = value;
-					continue;
-				case NETCDF_VARIABLE:
-					variablesForExchangeItems.add(value);
-					continue;
-				case DATA_FORMAT:
-					dataFormat = DataFormat.valueOf(value);
-					continue;
-				default:
-					throw new RuntimeException(String.format("Unknown key %s. Please only specify [%s, %s, %s] as key=value pairs", key, ID_PREFIX, NETCDF_VARIABLE, DATA_FORMAT));
-			}
+			processKeyValueArgument(key, value);
 		}
 		if (idPrefix == null || variablesForExchangeItems.isEmpty() || dataFormat == null)
 			throw new RuntimeException(String.format("Arguments missing. Please specify [%s, %s, %s] as key=value pairs", ID_PREFIX, NETCDF_VARIABLE, DATA_FORMAT));
@@ -97,8 +86,24 @@ public class DFlowFMNetcdfSampleFile extends AbstractDataObject {
 			try {
 				if (netcdfFile != null) netcdfFile.close();
 			} catch (IOException e) {
-				throw new RuntimeException(e);
+				Results.putMessage(String.format("Failed to close netCDF file %s: %s", this.file.getAbsolutePath(), e.getMessage()));
 			}
+		}
+	}
+
+	private void processKeyValueArgument(String key, String value) {
+		switch (key) {
+			case ID_PREFIX:
+				idPrefix = value;
+				return;
+			case NETCDF_VARIABLE:
+				variablesForExchangeItems.add(value);
+				return;
+			case DATA_FORMAT:
+				dataFormat = DataFormat.valueOf(value);
+				return;
+			default:
+				throw new RuntimeException(String.format("Unknown key %s. Please only specify [%s, %s, %s] as key=value pairs", key, ID_PREFIX, NETCDF_VARIABLE, DATA_FORMAT));
 		}
 	}
 
@@ -140,7 +145,7 @@ public class DFlowFMNetcdfSampleFile extends AbstractDataObject {
 			try {
 				if (netcdfFileWriter != null) netcdfFileWriter.close();
 			} catch (IOException e) {
-				throw new RuntimeException(e);
+				Results.putMessage(String.format("Failed to close netCDF file %s: %s", this.file.getAbsolutePath(), e.getMessage()));
 			}
 		}
 	}
