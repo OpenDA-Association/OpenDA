@@ -37,6 +37,7 @@ public class ZeroMqModelFactory implements IModelFactory {
 	private List<ZeroMqModelStateExchangeItemsInfo> modelStateExchangeItemInfos;
 	private ArrayList<ZeroMqModelForcingConfig> staticLimitConfiguration;
 	private ArrayList<ZeroMqModelForcingConfig> forcingConfiguration;
+	private ArrayList<String> transformVariableIds;
 
 	@Override
 	public IModelInstance getInstance(String[] arguments, IStochModelFactory.OutputLevel outputLevel) {
@@ -67,7 +68,7 @@ public class ZeroMqModelFactory implements IModelFactory {
 			socket.connect(addressBuilder.toString());
 
 			ModelDirectories modelDirectories = new ModelDirectories(instanceDirectory, inputStateDirectory, outputStateDirectory);
-			ModelConfigurations modelConfigurations = new ModelConfigurations(modelConfigFile, forcingConfiguration, staticLimitConfiguration);
+			ModelConfigurations modelConfigurations = new ModelConfigurations(modelConfigFile, forcingConfiguration, staticLimitConfiguration, transformVariableIds);
 			return new ZeroMqModelInstance(this.currentModelInstanceNumber.val(), socket, modelDirectories, modelConfigurations, missingValue, modelStateExchangeItemInfos);
 		} catch (Exception e) {
 			LOGGER.error("failed to create instance", e);
@@ -126,6 +127,7 @@ public class ZeroMqModelFactory implements IModelFactory {
 		// currently unused
 		modelTemplateDirectory = configReader.getModelTemplateDirectory();
 		instanceDirectoryWithoutPostfix = new File(this.modelTemplateDirectory.getParentFile(), "work");
+		transformVariableIds = configReader.getTransformVariableIds();
 		forcingConfiguration = configReader.getZeroMqModelForcingConfigs();
 		staticLimitConfiguration = configReader.getStaticLimitDataConfigs();
 		modelStateExchangeItemInfos = configReader.getZeroMqModelStateExchangeItemInfos();
