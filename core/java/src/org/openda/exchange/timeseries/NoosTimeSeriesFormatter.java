@@ -57,6 +57,7 @@ public final class NoosTimeSeriesFormatter extends TimeSeriesFormatter {
 
    public static final String PROPERTY_ANALTIME = "analTime";
    public static final String PROPERTY_TIMEZONE = "timeZone";
+   public static final String PROPERTY_STATUS = "status";
 
    
    public TimeSeries read(InputStream in) {
@@ -75,6 +76,7 @@ public final class NoosTimeSeriesFormatter extends TimeSeriesFormatter {
       String quantity = ""; // Unit : waterlevel_astro !!! Note different label
       String analTime = ""; // Analyse time: most recent
       TimeZone timeZone = TimeZone.getTimeZone("GMT"); // Timezone : GMT
+	   String status = "use";
       double times[] = null;
       double values[] = null;
       double analTimes[] = null;
@@ -151,6 +153,9 @@ public final class NoosTimeSeriesFormatter extends TimeSeriesFormatter {
                   }
                   if (property.equalsIgnoreCase("TimeZone")) {
                      timeZone = TimeZone.getTimeZone(value);
+                  }
+                  if (property.equalsIgnoreCase("status")) {
+                     status = value;
                   }
                }
                else {
@@ -234,6 +239,7 @@ public final class NoosTimeSeriesFormatter extends TimeSeriesFormatter {
       result.setSource(source);
       result.setProperty(PROPERTY_ANALTIME, analTime);
       result.setProperty(PROPERTY_TIMEZONE, timeZone.getID());
+      result.setProperty(PROPERTY_STATUS, status);
       result.setDescription(description);
       return result;
    }

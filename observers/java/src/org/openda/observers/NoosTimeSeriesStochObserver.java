@@ -94,7 +94,7 @@ public class NoosTimeSeriesStochObserver extends TimeSeriesStochObserver {
 	public void initialize(File workingDir, String[] arguments){
 		String fileName = arguments[0];
 		file = new File(workingDir,fileName);
-		TimeSeries seriesArray[] = null;
+		List<TimeSeries> seriesList;
 		// read config file
 		if(file.exists()){
 			ConfigTree config = new ConfigTree(workingDir,fileName);
@@ -103,7 +103,7 @@ public class NoosTimeSeriesStochObserver extends TimeSeriesStochObserver {
 				Results.putMessage("WARNING : Noos stoch. observ. configuration does not contain time series: " + file.getAbsolutePath());
 			}
 			TimeSeriesFormatter noosFormatter = new NoosTimeSeriesFormatter();
-			seriesArray = new TimeSeries[seriesTrees.length];
+			seriesList = new ArrayList<>();
 			for(int i=0;i<seriesTrees.length;i++){
 				// read content
 				String seriesFileName = seriesTrees[i].getContentString("");
@@ -127,12 +127,12 @@ public class NoosTimeSeriesStochObserver extends TimeSeriesStochObserver {
 					stringValue = tempSeries.getStringProperty(keyword,stringValue);
 					stringValue = seriesTrees[i].getAsString("@"+keyword, stringValue);
 					stringValue=stringValue.trim();
+					if (stringValue.toLowerCase().contentEquals("ignore")) continue;
                     if (!(stringValue.toLowerCase().contentEquals("use")
                             | stringValue.toLowerCase().contentEquals("assimilation")
                             | stringValue.toLowerCase().contentEquals("assimilate")
                             | stringValue.toLowerCase().contentEquals("validation")
-                            | stringValue.toLowerCase().contentEquals("validate")
-                            | stringValue.toLowerCase().contentEquals("ignore"))){
+                            | stringValue.toLowerCase().contentEquals("validate"))){
                         throw new RuntimeException("Field 'status' in not valid. Possible values are use (assimilate), validate, or ignore");
                     }
 					System.out.println(""+keyword+"="+stringValue);
@@ -308,13 +308,13 @@ public class NoosTimeSeriesStochObserver extends TimeSeriesStochObserver {
 				}else{
 					throw new RuntimeException("Could not find file "+seriesFile.getAbsolutePath());
 				}
-				seriesArray[i] = tempSeries; 
+				seriesList.add(tempSeries);
 			}
 		}else{
             throw new RuntimeException("Could not find file "+file.getAbsolutePath());
 		}
 		// everything is there, now fill the fields
-		setSeries(seriesArray);
+		setSeries(seriesList.toArray(new TimeSeries[0]));
 	}
 
 	public IStochObserver createSelection(Type observationType) {
