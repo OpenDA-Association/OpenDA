@@ -98,15 +98,21 @@ public class SimulationKwadraticCostFunction implements LeastSquaresCostFunction
 			double factor,
 			boolean addBackgroundTerm,
 			boolean useAnnounceObs,
-			IStochVector observationUncertainty){
+			IStochVector observationUncertainty,
+			boolean biasRemoval,
+			boolean stdRemoval,
+			boolean tryParallel) {
 		this.modFac = modFac;
-		this.obs    = obs;
+		this.obs = obs;
 		this.parameterUncertainty = parameterUncertainty;
 		this.obsSelection = obsSelection;
 		this.factor = factor;
 		this.addBackgroundTerm = addBackgroundTerm;
 		this.useAnnounceObs = useAnnounceObs;
 		this.observationUncertainty = observationUncertainty;
+		this.biasRemoval = biasRemoval;
+		this.stdRemoval = stdRemoval;
+		this.tryParallel = tryParallel;
 	}
 
 	public void setDebugFilePathPrefix(String debugFilePathPrefix) {
@@ -783,9 +789,10 @@ public class SimulationKwadraticCostFunction implements LeastSquaresCostFunction
 	}
 
 	public LeastSquaresCostFunction clone(){
+
 		SimulationKwadraticCostFunction result = new SimulationKwadraticCostFunction(
 				modFac, obs, parameterUncertainty, obsSelection, factor, addBackgroundTerm,
-				useAnnounceObs, observationUncertainty);
+				useAnnounceObs, observationUncertainty, biasRemoval, stdRemoval, tryParallel);
 		return result;
 	}
 
