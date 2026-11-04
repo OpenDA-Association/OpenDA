@@ -58,24 +58,26 @@ public class DFlowFMSpatialRoughnessFileTest extends TestCase {
 		x0.setValuesAsDoubles(new double[]{0.031});
 		IExchangeItem x0q0 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-ChainageAndDischargeDependent-x0-q0", new double[]{0.11});
 		x0q0.setValuesAsDoubles(new double[]{0.111});
-		IExchangeItem x0q1 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-ChainageAndDischargeDependent-x0-q1", new double[]{0.12});
+		IExchangeItem x0q1 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-ChainageAndDischargeDependent-x0-q1", new double[]{1.11});
 		x0q1.setValuesAsDoubles(new double[]{0.122});
-		IExchangeItem x0q2 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-ChainageAndDischargeDependent-x0-q2", new double[]{0.13});
+		IExchangeItem x0q2 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-ChainageAndDischargeDependent-x0-q2", new double[]{2.11});
 		x0q2.setValuesAsDoubles(new double[]{0.133});
-		IExchangeItem x0q3 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-ChainageAndDischargeDependent-x0-q3", new double[]{0.14});
+		IExchangeItem x0q3 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-ChainageAndDischargeDependent-x0-q3", new double[]{3.11});
 		x0q3.setValuesAsDoubles(new double[]{0.144});
-		IExchangeItem x0q4 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-ChainageAndDischargeDependent-x0-q4", new double[]{0.15});
+		IExchangeItem x0q4 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-ChainageAndDischargeDependent-x0-q4", new double[]{4.11});
 		x0q4.setValuesAsDoubles(new double[]{0.155});
-		IExchangeItem x500q0 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-ChainageAndDischargeDependent-x500-q0", new double[]{1.11, 2.11});
+		IExchangeItem x500q0 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-ChainageAndDischargeDependent-x500-q0", new double[]{0.12, 0.13});
 		x500q0.setValuesAsDoubles(new double[]{1.111, 2.111});
-		IExchangeItem x500q1 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-ChainageAndDischargeDependent-x500-q1", new double[]{1.12, 2.12});
+		IExchangeItem x500q1 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-ChainageAndDischargeDependent-x500-q1", new double[]{1.12, 1.13});
 		x500q1.setValuesAsDoubles(new double[]{1.122, 2.122});
-		IExchangeItem x500q2 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-ChainageAndDischargeDependent-x500-q2", new double[]{1.13, 2.13});
+		IExchangeItem x500q2 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-ChainageAndDischargeDependent-x500-q2", new double[]{2.12, 2.13});
 		x500q2.setValuesAsDoubles(new double[]{1.133, 2.133});
-		IExchangeItem x500q3 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-ChainageAndDischargeDependent-x500-q3", new double[]{1.14, 2.14});
+		IExchangeItem x500q3 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-ChainageAndDischargeDependent-x500-q3", new double[]{3.12, 3.13});
 		x500q3.setValuesAsDoubles(new double[]{1.144, 2.144});
-		IExchangeItem x500q4 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-ChainageAndDischargeDependent-x500-q4", new double[]{1.15, 2.15});
+		IExchangeItem x500q4 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-ChainageAndDischargeDependent-x500-q4", new double[]{4.12, 4.13});
 		x500q4.setValuesAsDoubles(new double[]{1.155, 2.155});
+		IExchangeItem x0h5 = checkEI(dFlowFMSpatialRoughnessFile, "Main-Manning-ChainageAndWaterlevelDependent-x0-h5", new double[]{5.1, 5.2, 5.3, 5.4, 5.5});
+		x0h5.setValuesAsDoubles(new double[]{5.11, 5.22, 5.33, 5.44, 5.55});
 
 		dFlowFMSpatialRoughnessFile.finish();
 
@@ -96,8 +98,11 @@ public class DFlowFMSpatialRoughnessFileTest extends TestCase {
 
 /*	public void testReadAndWriteOlof() {
 		DFlowFMSpatialRoughnessFile dFlowFMSpatialRoughnessFile = new DFlowFMSpatialRoughnessFile();
-		dFlowFMSpatialRoughnessFile.initialize(testRunDataDir, new String[]{"roughness-Main_Olof.ini", "observationFile=ObservationPoints_Olof.ini"});
+		dFlowFMSpatialRoughnessFile.initialize(testRunDataDir, new String[]{"roughness-Main_olof.ini", "observationFile=obsFile1D_obs_olof.ini"});
 		String[] exchangeItemIDs = dFlowFMSpatialRoughnessFile.getExchangeItemIDs();
+		IExchangeItem exchangeItem = dFlowFMSpatialRoughnessFile.getDataObjectExchangeItem("Main-Manning-Waal_1-x16852-q0");
+		exchangeItem.setValuesAsDoubles(new double[]{33.333});
+		dFlowFMSpatialRoughnessFile.finish();
 		assertEquals(10, exchangeItemIDs.length);
 	}*/
 }
