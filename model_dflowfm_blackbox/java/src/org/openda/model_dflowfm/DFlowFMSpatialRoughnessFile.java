@@ -162,8 +162,8 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 			return;
 		}
 
-		for (int chainageIndex = 0; chainageIndex < chainages.length; chainageIndex++) {
-			for (int levelIndex = 0; levelIndex < exchangeItemLevels.length; levelIndex++) {
+		for (int levelIndex = 0; levelIndex < exchangeItemLevels.length; levelIndex++) {
+			for (int chainageIndex = 0; chainageIndex < chainages.length; chainageIndex++) {
 				builder.append(" ").append(frictionValues[levelIndex][chainageIndex]);
 			}
 			builder.append('\n');
@@ -396,7 +396,7 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 			String[] splitFrictionValues = value.trim().split(" ");
 			for (int i = 0; i < splitFrictionValues.length; i++) {
 				String splitFrictionValue = splitFrictionValues[i];
-				frictionValues[index][i] = Double.parseDouble(splitFrictionValue);
+				frictionValues[i][index] = Double.parseDouble(splitFrictionValue);
 			}
 			index++;
 			value = lineReader.readLine();
