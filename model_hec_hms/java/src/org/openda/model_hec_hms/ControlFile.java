@@ -6,24 +6,19 @@ import org.openda.interfaces.IDataObject;
 import org.openda.interfaces.IExchangeItem;
 
 import java.io.*;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class ControlFile implements IDataObject {
 	private static final String[] EMPTY_STRING_ARRAY = new String[0];
 	private static final String START_TIME = "start_time";
 	private static final String END_TIME = "end_time";
+	public static final String DATE_FORMAT = "dd MMMMM yyyy";
+	public static final String TIME_FORMAT = "KK:mm";
 	private File workingDirectory;
 	private String filename = null;
 
 	private final Map<String, DoubleExchangeItem> exchangeItems = new HashMap<>();
-	private String timeZoneId = null;
 
 	private final Map<Integer, String> lines = new LinkedHashMap<>();
 	private final Map<Integer, String> valuesToUpdate = new HashMap<>();
@@ -47,15 +42,6 @@ public class ControlFile implements IDataObject {
 	public void finish() {
 		File outputFile = new File(workingDirectory, filename);
 
-		ZoneId zoneId = ZoneId.of(timeZoneId);
-		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy").withZone(zoneId);
-		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm").withZone(zoneId);
-
-		ZoneId utcZoneId = ZoneId.of("UTC");
-
-		LocalDateTime startDateTime = getDateTime(utcZoneId, START_TIME);
-		LocalDateTime endDateTime = getDateTime(utcZoneId, END_TIME);
-
 		try (FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
 			 OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream);
 			 BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter)) {
@@ -69,16 +55,16 @@ public class ControlFile implements IDataObject {
 
 					switch (label.trim()) {
 						case "Start Date":
-							value = dateFormatter.format(startDateTime);
+							value = getDateTimeString(START_TIME, DATE_FORMAT);
 							break;
 						case "Start Time":
-							value = timeFormatter.format(startDateTime);
+							value = getDateTimeString(START_TIME, TIME_FORMAT);
 							break;
 						case "End Date":
-							value = dateFormatter.format(endDateTime);
+							value = getDateTimeString(END_TIME, DATE_FORMAT);
 							break;
 						case "End Time":
-							value = timeFormatter.format(endDateTime);
+							value = getDateTimeString(END_TIME, TIME_FORMAT);
 							break;
 						default:
 							// Do nothing with other labels
@@ -97,12 +83,10 @@ public class ControlFile implements IDataObject {
 		}
 	}
 
-	private LocalDateTime getDateTime(ZoneId utcZoneId, String timeId) {
-		DoubleExchangeItem dateTimeExchangeItem = exchangeItems.get(timeId);
+	private String getDateTimeString(String timeEIId, String dateFormat) {
+		DoubleExchangeItem dateTimeExchangeItem = exchangeItems.get(timeEIId);
 		double mjdDateTime = dateTimeExchangeItem.getValue();
-		Date dateTime = TimeUtils.mjdToDate(mjdDateTime);
-		dateTime.setHours((int) Math.round((mjdDateTime % 1) * 24));
-		return dateTime.toInstant().atZone(utcZoneId).toLocalDateTime();
+		return TimeUtils.mjdToString(mjdDateTime, dateFormat, TimeZone.getTimeZone("UTC"), Locale.US);
 	}
 
 	@Override
@@ -156,9 +140,6 @@ public class ControlFile implements IDataObject {
 					String label = labelAndValue[0].trim();
 
 					switch (label) {
-						case "Time Zone ID":
-							timeZoneId = labelAndValue[1].trim();
-							break;
 						case "Start Date":
 							valuesToUpdate.put(lineNumber, label);
 							startDate = labelAndValue[1].trim();
@@ -183,22 +164,21 @@ public class ControlFile implements IDataObject {
 				line = bufferedReader.readLine();
 				lineNumber++;
 			}
+			String pattern = DATE_FORMAT + TIME_FORMAT;
+			SimpleDateFormat format = new SimpleDateFormat(pattern, Locale.US);
+			format.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyyHH:mmVV");
-
-			ZonedDateTime startDateTime = ZonedDateTime.parse(startDate + startTime + timeZoneId, dateTimeFormatter);
-			long startDateTimeMillis = startDateTime.toInstant().toEpochMilli();
+			long startDateTimeMillis = format.parse(startDate + startTime).getTime();
 			double startMjdDateTime = TimeUtils.date2Mjd(new Date(startDateTimeMillis));
 			DoubleExchangeItem startMjdDateTimeExchangeItem = new DoubleExchangeItem(START_TIME, IExchangeItem.Role.InOut, startMjdDateTime);
 			exchangeItems.putIfAbsent(START_TIME, startMjdDateTimeExchangeItem);
 
-			ZonedDateTime endDateTime = ZonedDateTime.parse(endDate + endTime + timeZoneId, dateTimeFormatter);
-			long endDateTimeMillis = endDateTime.toInstant().toEpochMilli();
+			long endDateTimeMillis = format.parse(endDate + endTime).getTime();
 			double endMjdDateTime = TimeUtils.date2Mjd(new Date(endDateTimeMillis));
 			DoubleExchangeItem endMjdDateTimeExchangeItem = new DoubleExchangeItem(END_TIME, IExchangeItem.Role.InOut, endMjdDateTime);
 			exchangeItems.putIfAbsent(END_TIME, endMjdDateTimeExchangeItem);
-		} catch (IOException ioException) {
-			throw new RuntimeException(ioException);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 }

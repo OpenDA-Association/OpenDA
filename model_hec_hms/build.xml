@@ -1,4 +1,4 @@
-<project xmlns:if="ant:if" name="openDA" default="help" basedir=".">
+<project xmlns:if="ant:if" name="model_hec_hms" default="help" basedir=".">
   <!--
   ================================================================================
     Ant build file for openda java code
@@ -126,14 +126,9 @@
   </target>
 
   <target name="copy-module-resources">
-    <!-- copy openda resources and additional binaries -->
     <copy todir="${modulelibdir}" flatten="yes">
-      <!-- copy resources -->
       <fileset dir="${resourcesdir}">
         <include name="**/*.jar"/>
-        <include name="**/*.dll"/>
-        <include name="**/*.DLL"/>
-        <include name="**/*.so"/>
         <include name="**/*.lic"/>
         <include name="**/*.LIC"/>
         <include name="**/*.xsd"/>
@@ -144,11 +139,24 @@
         <include name="**/*.test"/>
       </fileset>
     </copy>
+    <mkdir dir="${modulelibdir}/${winnativelibdir}"/>
+    <mkdir dir="${modulelibdir}/${linuxnativelibdir}"/>
+    <copy todir="${modulelibdir}/${winnativelibdir}" flatten="yes">
+      <fileset dir="${resourcesdir}">
+        <include name="**/*.dll"/>
+      </fileset>
+    </copy>
+    <copy todir="${modulelibdir}/${linuxnativelibdir}" flatten="yes">
+      <fileset dir="${resourcesdir}">
+        <include name="**/*.so"/>
+      </fileset>
+    </copy>
     <copy todir="${modulebindir}" flatten="yes">
       <fileset dir="${external}">
         <include name="**/*"/>
       </fileset>
     </copy>
+
     <chmod dir="${modulebindir}" perm="ugo+rx" includes="**/*.sh"/>
   </target>
 </project>
