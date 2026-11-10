@@ -22,9 +22,11 @@ import org.openda.exchange.TimeInfo;
 import org.openda.exchange.dataobjects.NetcdfUtils;
 import org.openda.interfaces.*;
 import ucar.ma2.Array;
+import ucar.ma2.DataType;
 import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFile;
-import ucar.nc2.NetcdfFileWriter;
+import ucar.nc2.dataset.NetcdfDatasets;
+import ucar.nc2.write.NetcdfFormatWriter;
 import ucar.nc2.Variable;
 
 import java.io.File;
@@ -60,7 +62,7 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 
 		File netcdfFilePath = new File(workingDir, arguments[0]);
 		try {
-			netcdfFile = NetcdfFile.open(netcdfFilePath.getAbsolutePath());
+			netcdfFile = NetcdfDatasets.openFile(netcdfFilePath.getAbsolutePath(), new NetcdfUtils.MyCancelTask());
 		} catch (IOException e) {
 			throw new RuntimeException("NetcdfD3dHisDataObject could not open netcdf file " + netcdfFilePath.getAbsolutePath());
 		}
@@ -100,7 +102,7 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 	private void readNetCdfVariables() {
 
 		//in most netcdfFiles the time and spatial coordinate variables are shared between multiple data variables.
-		//Therefore cache timeInfo objects so that time coordinate variables are never read more than once.
+		//Therefore, cache timeInfo objects so that time coordinate variables are never read more than once.
 		Map<Variable, IArrayTimeInfo> timeInfoCache = new HashMap<Variable, IArrayTimeInfo>();
 
 		// Loading of variable containing stations names
@@ -116,7 +118,7 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 			e.printStackTrace();
 		}
 		// Extraction of station names
-		char[] nameCharArray = (char[]) stationNamesChar.get1DJavaArray(char.class);
+		char[] nameCharArray = (char[]) stationNamesChar.get1DJavaArray(DataType.CHAR);
 		int stringLength=stationNamesChar.getShape()[1];
 
 		for (Variable variable : this.netcdfFile.getVariables()) {
@@ -140,7 +142,7 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 						throw new RuntimeException("NetcdfD3dHisDataObject could not read time variable " + timeVariable.getShortName() +
 								"from netcdf file " + netcdfFile.getLocation());
 					}
-					timesInNetcdfFile = (double[]) timesArray.get1DJavaArray(double.class);
+					timesInNetcdfFile = (double[]) timesArray.get1DJavaArray(DataType.DOUBLE);
 				}
 				timeInfoForAllTimeDepVars = new TimeInfo(timesInNetcdfFile);
 
@@ -217,7 +219,7 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 						throw new RuntimeException("NetcdfD3dHisDataObject could not read time variable " + timeVariable.getShortName() +
 							"from netcdf file " + netcdfFile.getLocation());
 					}
-					timesInNetcdfFile = (double[]) timesArray.get1DJavaArray(double.class);
+					timesInNetcdfFile = (double[]) timesArray.get1DJavaArray(DataType.DOUBLE);
 				}
 				timeInfoForAllTimeDepVars = new TimeInfo(timesInNetcdfFile);
 
@@ -422,7 +424,7 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 
 		NetcdfFile netcdfHisFile;
 		try {
-			netcdfHisFile = NetcdfFile.open(netcdfFilePath.getAbsolutePath());
+			netcdfHisFile = NetcdfDatasets.openFile(netcdfFilePath.getAbsolutePath(), new NetcdfUtils.MyCancelTask());
 		} catch (IOException e) {
 			throw new RuntimeException("NetcdfD3dHisDataObject could not open netcdf file " + netcdfFilePath.getAbsolutePath());
 		}
@@ -502,17 +504,17 @@ public class NetcdfD3dHisDataObject implements IDataObject {
 		}
 
 
-		NetcdfFileWriter netcdfFileWriter = null;
+		NetcdfFormatWriter NetcdfWriter = null;
 		try {
-			netcdfFileWriter = NetcdfFileWriter.openExisting(netcdfFilePath.getAbsolutePath());
+			NetcdfWriter = (NetcdfFormatWriter.openExisting(netcdfFilePath.getAbsolutePath())).build();
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 
-		NetcdfUtils.writeSelectedData(netcdfFileWriter,variable, origin, sizeArray, stationValues);
+		NetcdfUtils.writeSelectedData(NetcdfWriter,variable, origin, sizeArray, stationValues);
 
 		try {
-			netcdfFileWriter.close();
+			NetcdfWriter.close();
 			netcdfHisFile.close();
 		} catch (IOException e) {
 			e.printStackTrace();

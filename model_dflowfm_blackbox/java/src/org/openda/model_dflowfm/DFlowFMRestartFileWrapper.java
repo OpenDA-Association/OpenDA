@@ -30,7 +30,12 @@ import org.openda.utils.generalJavaUtils.StringUtilities;
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
 import ucar.ma2.InvalidRangeException;
-import ucar.nc2.*;
+import ucar.nc2.NetcdfFile;
+import ucar.nc2.Attribute;
+import ucar.nc2.Variable;
+import ucar.nc2.dataset.NetcdfDatasets;
+import ucar.nc2.write.NetcdfFileFormat;
+import ucar.nc2.write.NetcdfFormatWriter;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,7 +72,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 	int time_index = 0;
 	String netcdffileName = null;
 	HashMap<String,DFlowFMMetaExchangeItem> ExchangeItems = new LinkedHashMap<String,DFlowFMMetaExchangeItem>();
-
+	NetcdfFileFormat netcdfFormat = NetcdfFileFormat.NETCDF3;
 
 	/**
 	 * Initialize.
@@ -92,6 +97,9 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 					case EXCHANGE_ITEM_ID_POST_FIX:
 						exchangeItemIdPostFix = value;
 						continue;
+					case NetcdfUtils.NETCDF_FORMAT:
+						this.netcdfFormat = NetcdfFileFormat.valueOf(value);
+						continue;
 					default:
 						throw new RuntimeException("Unknown key " + key + ". Please specify only " + EXCHANGE_ITEM_ID_POST_FIX + " as key=value pair");
 				}
@@ -102,7 +110,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 		try{
 			File fileNameFull = getNetcdfFile(workingDir);
 			netcdffileName = fileNameFull.getAbsolutePath();
-			inputFile = NetcdfFile.open(netcdffileName, null);
+			inputFile = NetcdfDatasets.openFile(netcdffileName, new NetcdfUtils.MyCancelTask());
 		} catch (Exception e) {
 			throw new RuntimeException("DFlowFMRestartFileWrapper: problem opening file "+ this.fileName + " due to " + e.getMessage(), e);
 		}
@@ -325,8 +333,10 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 	// Write the NetCDF restart file
 	public void finish() {
 		try {
-			NetcdfFileWriter netcdfFileWriter= NetcdfFileWriter.openExisting(netcdffileName);
-			netcdfFileWriter.setFill(true);
+			NetcdfFormatWriter.Builder NetcdfBuilder= NetcdfFormatWriter.openExisting(netcdffileName);
+			NetcdfBuilder.setFormat(this.netcdfFormat);
+			NetcdfBuilder.setFill(true);
+			NetcdfFormatWriter NetcdfWriter = NetcdfBuilder.build();
 
 			//Loop over all exchangeItems
 			Set<String> keys = this.ExchangeItems.keySet();
@@ -351,9 +361,9 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 						for (int i=0; i<vals.length; i++){
 							array.setDouble(i + offset, vals[i]);
 						}
-						Variable myVar =  netcdfFileWriter.findVariable(this.ExchangeItems.get(key).shortName);
+						Variable myVar =  NetcdfWriter.findVariable(this.ExchangeItems.get(key).shortName);
 						try {
-							netcdfFileWriter.write(myVar,array);
+							NetcdfWriter.write(myVar,array);
 						} catch (InvalidRangeException e) {
 							throw new RuntimeException("Error writing to NetCDF file " + netcdffileName + " due to " + e.getMessage(), e);
 						}
@@ -365,7 +375,7 @@ public class DFlowFMRestartFileWrapper implements IDataObject {
 				}
 
 			}
-			netcdfFileWriter.close();
+			NetcdfWriter.close();
 
 		} catch (IOException e) {
 			throw new RuntimeException("Error writing to NetCDF file " + netcdffileName + " due to " + e.getMessage(), e);
