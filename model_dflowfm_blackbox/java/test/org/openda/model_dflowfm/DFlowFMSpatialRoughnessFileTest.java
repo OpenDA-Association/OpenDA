@@ -98,10 +98,10 @@ public class DFlowFMSpatialRoughnessFileTest extends TestCase {
 
 /*	public void testReadAndWriteOlof() {
 		DFlowFMSpatialRoughnessFile dFlowFMSpatialRoughnessFile = new DFlowFMSpatialRoughnessFile();
-		dFlowFMSpatialRoughnessFile.initialize(testRunDataDir, new String[]{"roughness-Main_olof.ini", "observationFile=obsFile1D_obs_olof.ini"});
+		dFlowFMSpatialRoughnessFile.initialize(testRunDataDir, new String[]{"roughness-Main-Olof.ini", "observationFile=ObservationPoints-Olof.ini"});
 		String[] exchangeItemIDs = dFlowFMSpatialRoughnessFile.getExchangeItemIDs();
-		IExchangeItem exchangeItem = dFlowFMSpatialRoughnessFile.getDataObjectExchangeItem("Main-Manning-Waal_1-x16852-q0");
-		exchangeItem.setValuesAsDoubles(new double[]{33.333});
+		IExchangeItem exchangeItem = dFlowFMSpatialRoughnessFile.getDataObjectExchangeItem("Main-Chezy-ARK_Betuwepand-x411-h252");
+		exchangeItem.getValuesAsDoubles()[25] = 55.55;
 		dFlowFMSpatialRoughnessFile.finish();
 		assertEquals(10, exchangeItemIDs.length);
 	}*/
