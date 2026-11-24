@@ -162,8 +162,8 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 			return;
 		}
 
-		for (int chainageIndex = 0; chainageIndex < chainages.length; chainageIndex++) {
-			for (int levelIndex = 0; levelIndex < exchangeItemLevels.length; levelIndex++) {
+		for (int levelIndex = 0; levelIndex < exchangeItemLevels.length; levelIndex++) {
+			for (int chainageIndex = 0; chainageIndex < chainages.length; chainageIndex++) {
 				builder.append(" ").append(frictionValues[levelIndex][chainageIndex]);
 			}
 			builder.append('\n');
@@ -390,17 +390,24 @@ public class DFlowFMSpatialRoughnessFile implements IDataObject {
 	}
 
 	private String fillFrictionValues(BufferedReader lineReader, double[][] frictionValues) throws IOException {
+		int locations = frictionValues.length;
+		int expected = locations * frictionValues[0].length;
 		int index = 0;
 		String value = readKeyValueLine(lineReader.readLine())[1];
-		while (value != null && !value.isEmpty() && !value.trim().equalsIgnoreCase(BRANCH)) {
-			String[] splitFrictionValues = value.trim().split(" ");
-			for (int i = 0; i < splitFrictionValues.length; i++) {
-				String splitFrictionValue = splitFrictionValues[i];
-				frictionValues[index][i] = Double.parseDouble(splitFrictionValue);
+		while (value != null && !value.trim().startsWith("[")) {
+			String trimmed = value.trim();
+			if (!trimmed.isEmpty()) {
+				for (String token : trimmed.split("\\s+")) {
+					if (index >= expected) throw new IOException("Too many frictionValues; expected " + expected);
+					double coefficient = Double.parseDouble(token);
+					if (!Double.isFinite(coefficient)) throw new IOException("frictionValues must be finite: " + token);
+					frictionValues[index % locations][index / locations] = coefficient;
+					index++;
+				}
 			}
-			index++;
 			value = lineReader.readLine();
 		}
+		if (index != expected) throw new IOException("Expected " + expected + " frictionValues, found " + index);
 		return value;
 	}
 
