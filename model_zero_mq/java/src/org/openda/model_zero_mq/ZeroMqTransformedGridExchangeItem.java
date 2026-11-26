@@ -10,7 +10,7 @@ import org.openda.interfaces.ITimeInfo;
 
 import java.util.Arrays;
 
-public class ZeroMqAnalysisOutputExchangeItem implements IExchangeItem {
+public class ZeroMqTransformedGridExchangeItem implements IExchangeItem {
 	private final String variable;
 	private final ArrayGeometryInfo arrayGeometryInfo;
 	private final int[] latitudeIndices;
@@ -20,9 +20,10 @@ public class ZeroMqAnalysisOutputExchangeItem implements IExchangeItem {
 	private final double[] values;
 	private final double modelMissingValue;
 	private final int longitudeLength;
+	private final boolean passViaZeroMq;
 	private final double[] dummyValuesArray;
 
-	public ZeroMqAnalysisOutputExchangeItem(String variable, ArrayGeometryInfo arrayGeometryInfo, int[] latitudeIndices, int[] longitudeIndices, QuantityInfo quantityInfo, ZeroMqModelInstance zeroMqModelInstance, double modelMissingValue, int longitudeLength) {
+	public ZeroMqTransformedGridExchangeItem(String variable, ArrayGeometryInfo arrayGeometryInfo, int[] latitudeIndices, int[] longitudeIndices, QuantityInfo quantityInfo, ZeroMqModelInstance zeroMqModelInstance, double modelMissingValue, int longitudeLength, boolean passViaZeroMq) {
 		this.variable = variable;
 		this.arrayGeometryInfo = arrayGeometryInfo;
 		this.latitudeIndices = latitudeIndices;
@@ -32,10 +33,12 @@ public class ZeroMqAnalysisOutputExchangeItem implements IExchangeItem {
 		values = new double[arrayGeometryInfo.getCellCount()];
 		this.modelMissingValue = modelMissingValue;
 		this.longitudeLength = longitudeLength;
+		this.passViaZeroMq = passViaZeroMq;
 		Arrays.fill(values, Double.NaN);
 		int bytesPerItem = this.model.getVarItemSize(variable);
 		int totalBytes = this.model.getVarNBytes(variable);
 		dummyValuesArray = new double[totalBytes / bytesPerItem];
+		getValuesAsDoubles();
 	}
 
 	@Override
@@ -45,7 +48,7 @@ public class ZeroMqAnalysisOutputExchangeItem implements IExchangeItem {
 
 	@Override
 	public String getId() {
-		throw new RuntimeException("org.openda.model_zero_mq.ZeroMqAnalysisOutputExchangeItem.getId() not implemented yet");
+		return variable;
 	}
 
 	@Override
@@ -93,12 +96,26 @@ public class ZeroMqAnalysisOutputExchangeItem implements IExchangeItem {
 
 	@Override
 	public void axpyOnValues(double alpha, double[] axpyValues) {
-		throw new RuntimeException("org.openda.model_zero_mq.ZeroMqAnalysisOutputExchangeItem.axpyOnValues() not implemented yet");
+		for (int i = 0; i < values.length; i++) {
+			values[i] += alpha * axpyValues[i];
+		}
+		if (!passViaZeroMq) return;
+		for (int i = 0; i < longitudeLength; i++) {
+			dummyValuesArray[i] = this.values[latitudeIndices[i] * longitudeLength + longitudeIndices[i]];
+		}
+		model.setValue(variable, dummyValuesArray);
 	}
 
 	@Override
 	public void multiplyValues(double[] multiplicationFactors) {
-		throw new RuntimeException("org.openda.model_zero_mq.ZeroMqAnalysisOutputExchangeItem.multiplyValues() not implemented yet");
+		for (int i = 0; i < multiplicationFactors.length; i++) {
+			this.values[i] *= multiplicationFactors[i];
+		}
+		if (!passViaZeroMq) return;
+		for (int i = 0; i < longitudeLength; i++) {
+			dummyValuesArray[i] = this.values[latitudeIndices[i] * longitudeLength + longitudeIndices[i]];
+		}
+		model.setValue(variable, dummyValuesArray);
 	}
 
 	@Override
@@ -111,6 +128,11 @@ public class ZeroMqAnalysisOutputExchangeItem implements IExchangeItem {
 		for (int i = 0; i < setValues.length; i++) {
 			this.values[latitudeIndices[i] * longitudeLength + longitudeIndices[i]] = setValues[i];
 		}
+		if (!passViaZeroMq) return;
+		for (int i = 0; i < longitudeLength; i++) {
+			dummyValuesArray[i] = this.values[latitudeIndices[i] * longitudeLength + longitudeIndices[i]];
+		}
+		model.setValue(variable, dummyValuesArray);
 	}
 
 	public double[] getTimes() {
