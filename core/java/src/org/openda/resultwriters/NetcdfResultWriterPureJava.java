@@ -12,18 +12,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by nils on 13/11/15.
+ * @author nils on 13/11/15.
  */
 public class NetcdfResultWriterPureJava implements IResultWriter {
 
-	private int defaultMaxSize = Integer.MAX_VALUE;
-	private String netcdfnameprefix;
-	private Map<String,NetCDFFile> netcdfFiles = new HashMap<String, NetCDFFile>();
-	private Map<String,Integer> notSupportedObjects = new HashMap<String, Integer>();
-	private Map<String, Integer> timeIndex = new HashMap<String, Integer>();
-
-
-	private File workingDir;
+	private final String netcdfnameprefix;
+	private final Map<String,NetCDFFile> netcdfFiles = new HashMap<>();
+	private final Map<String,Integer> notSupportedObjects = new HashMap<>();
+	private final Map<String, Integer> timeIndex = new HashMap<>();
 
 
 	public NetcdfResultWriterPureJava(File workingDir, String configString) {
@@ -36,12 +32,11 @@ public class NetcdfResultWriterPureJava implements IResultWriter {
 				throw new RuntimeException(error);
 			}
 		}
-		else{
+		else {
 			workingDir.mkdir();
 		}
-		this.workingDir = workingDir;
 
-        //Check the config string
+		//Check the config string
 		if (configString.startsWith("<xml")) {  // TODO: right prefix
 			// TODO: read from config file
 			throw new RuntimeException("The configuration string should not be the name of an xml-file. I'm expecting a prefix for the generated in the format 'some_prefix_.nc'"
@@ -61,7 +56,7 @@ public class NetcdfResultWriterPureJava implements IResultWriter {
 		return new File(netcdfnameprefix+id+".nc");
 	}
 
-	private NetCDFFile getNetCDFFile(String id){
+	private NetCDFFile getNetCDFFile(String id) throws SecurityException {
 		//Check whether this is the first write for this id
 		if (this.netcdfFiles.containsKey(id)){
 			return netcdfFiles.get(id);
@@ -118,17 +113,15 @@ public class NetcdfResultWriterPureJava implements IResultWriter {
 		if (result instanceof IVector){
 			double[] values = ((IVector) result).getValues();
 			NetCDFFile file = this.getNetCDFFile(id);
-			int [] dimensions = new int[1];
-			dimensions[0]=values.length;
 			try {
 				//Time Index of array
-				Integer iTime=0;
+				int iTime = 0;
 				if (timeIndex.containsKey(id)) {
 					iTime = timeIndex.get(id) + 1;
 				}
 				timeIndex.put(id,iTime);
 				//Write data:
-				file.writeArray(values,dimensions,iTime,id);
+				file.writeArray(values,iTime,id);
 			} catch (IOException e) {
 				throw new RuntimeException("Something went wrong while writing data with ID="+id+" to the NetCDF file"+this.idToFile(id)+"\nWe get an IOException :"+e.getMessage());
 			} catch (InvalidRangeException e) {
@@ -164,7 +157,7 @@ public class NetcdfResultWriterPureJava implements IResultWriter {
 	 */
 	@Override
 	public int getDefaultMaxSize() {
-		return this.defaultMaxSize;
+		return Integer.MAX_VALUE;
 	}
 
 	/**

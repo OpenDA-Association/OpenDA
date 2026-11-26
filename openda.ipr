@@ -489,9 +489,9 @@
     </library>
     <library name="netcdf">
       <CLASSES>
-        <root url="jar://$PROJECT_DIR$/core/java/resources/netcdf/netcdf-4.3.23.jar!/" />
         <root url="jar://$PROJECT_DIR$/core/java/resources/jodatime/joda-time-2.9.6.jar!/" />
         <root url="jar://$PROJECT_DIR$/core/java/resources/udunits/udunits-4.6.6.jar!/" />
+        <root url="jar://$PROJECT_DIR$/core/java/resources/netcdf/netcdfAll-5.9.1.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />

@@ -228,33 +228,6 @@ public class DataCopier implements IConfigurable {
 		outputExchangeItem.copyValuesFromItem(inputExchangeItem);
 	}
 
-//	/**
-//	 * Copies the values from the exchangeItems with the given inputExchangeItemIds from the input IDataObject
-//	 * to the exchangeItems with the given outputExchangeItemIds in the output IDataObject.
-//	 */
-//	private void copyValuesForNamedItems(String[] inputExchangeItemIds, String[] outputExchangeItemIds) {
-//		if (inputExchangeItemIds.length != outputExchangeItemIds.length) {
-//			throw new RuntimeException(getClass().getSimpleName() + ": inputExchangeItemIds length (" +
-//					inputExchangeItemIds.length + ") and outputExchangeItemIds length (" +
-//					outputExchangeItemIds.length + ") should be the same.");
-//		}
-//
-//		//copy exchangeItems.
-//		for (int n = 0; n < inputExchangeItemIds.length; n++) {
-//			copyValuesForNamedItem(inputExchangeItemIds[n], outputExchangeItemIds[n]);
-//		}
-//	}
-//
-//	/**
-//	 * Copy the values for the exchangeItems with the given ids from input to output IDataObject.
-//	 */
-//	private void copyValuesForNamedItems(String[] exchangeItemIds) {
-//		//copy exchangeItems.
-//		for (String exchangeItemId : exchangeItemIds) {
-//			copyValuesForNamedItem(exchangeItemId, exchangeItemId);
-//		}
-//	}
-
 	/**
 	 * Copies all exchangeItems from the input dataObject to the output dataObject.
 	 */
@@ -322,11 +295,11 @@ public class DataCopier implements IConfigurable {
 
 	/**
 	 * Help text for the command line
-	 * @return
+	 * @return text string
 	 */
 	private static String getUsageMessage() {
-		StringBuffer message = new StringBuffer();
-        if (BBUtils.RUNNING_ON_LINUX) {
+		StringBuilder message = new StringBuilder();
+		if (BBUtils.RUNNING_ON_LINUX) {
 			message.append("NAME\n"
 				+ "\t oda_copy.sh - a tool for copying data between OpenDA data-objects\n");
 		} else {
@@ -354,7 +327,7 @@ public class DataCopier implements IConfigurable {
 
 	/**
 	 * Gathers the following variables from the given arguments.
-	 *
+	 * <p>
 	 * inputFilePath: full pathname of input file.
 	 * inputClassName: fully qualified class name of input IDataObject to use to read data from the input file.
 	 * inputArguments: optional one or more arguments that are passed to the input IDataObject initialize method.
@@ -372,7 +345,7 @@ public class DataCopier implements IConfigurable {
 		inputClassName=null;
 		inputArgs=new String[0];
 		while(nextArg.startsWith("-")){
-			String argValue=null;
+			String argValue;
 			if((argIndex+1)<arguments.length){
 				argValue=arguments[argIndex+1];
 			}else{
@@ -381,8 +354,7 @@ public class DataCopier implements IConfigurable {
 			if(nextArg.toLowerCase().startsWith("-c")){
 				inputClassName=argValue;
 			}else if(nextArg.toLowerCase().startsWith("-a")){
-				String inputArgsAsOne=argValue;
-				inputArgs=inputArgsAsOne.split(" ");
+				inputArgs=argValue.split(" ");
 			}
 			argIndex+=2;
 			if(argIndex<arguments.length){
@@ -403,7 +375,7 @@ public class DataCopier implements IConfigurable {
 		outputClassName=null;
 		outputArgs=new String[0];
 		while(nextArg.startsWith("-")){
-			String argValue=null;
+			String argValue;
 			if((argIndex+1)<arguments.length){
 				argValue=arguments[argIndex+1];
 			}else{
@@ -412,8 +384,7 @@ public class DataCopier implements IConfigurable {
 			if(nextArg.toLowerCase().startsWith("-c")){
 				outputClassName=argValue;
 			}else if(nextArg.toLowerCase().startsWith("-a")){
-				String outputArgsAsOne=argValue;
-				outputArgs=outputArgsAsOne.split(" ");
+				outputArgs=argValue.split(" ");
 			}
 			argIndex+=2;
 			if(argIndex<arguments.length){
@@ -424,11 +395,6 @@ public class DataCopier implements IConfigurable {
 		}
 		// 4) DEST
 		outputFileName=nextArg;
-		argIndex++;
-		// 5) ITEM OPTIONS
-		if(argIndex<arguments.length){
-			//TODO more options were given
-		}
 
 		//
 		// Check input
@@ -439,12 +405,12 @@ public class DataCopier implements IConfigurable {
 				throw new RuntimeException("Could not find code to read input file.");
 			}
 		}
-		String message = "input\n";
-		message += "\t file: " + inputFileName + "\n";
-		message += "\t class: " + inputClassName + "\n";
-		message += "\t args: ";
+		StringBuilder message = new StringBuilder("input\n");
+		message.append("\t file: ").append(inputFileName).append("\n");
+		message.append("\t class: ").append(inputClassName).append("\n");
+		message.append("\t args: ");
 		for (String inputArg : inputArgs) {
-			message += inputArg + " ";
+			message.append(inputArg).append(" ");
 		}
 		System.out.println(message);
 		Results.putMessage(getClass().getSimpleName() + ": " + message);
@@ -458,12 +424,12 @@ public class DataCopier implements IConfigurable {
 				throw new RuntimeException("Could not find code to read output file.");
 			}
 		}
-		message = "output\n";
-		message += "\t file: " + outputFileName + "\n";
-		message += "\t class: " + outputClassName + "\n";
-		message += "\t args: ";
+		message = new StringBuilder("output\n");
+		message.append("\t file: ").append(outputFileName).append("\n");
+		message.append("\t class: ").append(outputClassName).append("\n");
+		message.append("\t args: ");
 		for (String outputArg : outputArgs) {
-			message += outputArg + " ";
+			message.append(outputArg).append(" ");
 		}
 		System.out.println(message);
 		Results.putMessage(getClass().getSimpleName() + ": " + message);
@@ -473,7 +439,7 @@ public class DataCopier implements IConfigurable {
 	 * For each exchangeItemId in the given list the outputExchangeItem is retrieved from the given outputDataObject,
 	 * and the corresponding inputExchangeItem is retrieved from one of the given inputDataObjects.
 	 * Then the outputExchangeItem is asked to copy all value(s) that it currently needs from the corresponding inputExchangeItem.
-	 *
+	 * <p>
 	 * Depending on the nature of the input/output exchangeItems, different value(s) are copied.
 	 * If e.g an outputExchangeItem can only store value(s) for a single time and the corresponding inputExchangeItem stores
 	 * values for an entire time series, then when this method is called the outputExchangeItem only copies the value(s) for the

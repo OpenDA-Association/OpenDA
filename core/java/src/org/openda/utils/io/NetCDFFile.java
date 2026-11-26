@@ -20,25 +20,23 @@
 package org.openda.utils.io;
 
 import ucar.ma2.*;
-import ucar.nc2.*;
+import ucar.nc2.Dimension;
+import ucar.nc2.Variable;
+import ucar.nc2.write.NetcdfFormatWriter;
 
 import java.io.IOException;
 import java.io.File;
 
 /**
- * Created by nils van Velzen on 25/09/15.
- *
  * This is a simple utility class to write variables to NetCDF. The current implementation is extremely simple but can/will be extended in the future.
  *
+ * @author nils van Velzen on 25/09/15.
  */
 
 public class NetCDFFile {
-	private File fileName;
-	private NetcdfFileWriter netcdfFileWriter;
+	private final File fileName;
 	private boolean fileIsNotCreated=true;
     private Dimension nDim;
-	private Dimension timeDim;
-	private Variable variable;
 
 
 	//Create and initialize a new NetCDFFile. Nothing happens yet (no files are created)
@@ -47,32 +45,33 @@ public class NetCDFFile {
 	}
 
 
-	//Write an array to file. Currently we only support a single array per file. The timeindex species the additional axis along we can extend the array in an existing NetCDF file
-	public void writeArray(double[] vals, int[] nDims, int iTime, String shortName) throws IOException, InvalidRangeException {
-        //Check wether we have to define de header and create the file on first write
+	//Write an array to file. Currently, we only support a single array per file. The time-index specifies the additional axis along we can extend the array in an existing NetCDF file
+	public void writeArray(double[] vals, int iTime, String shortName) throws IOException, InvalidRangeException {
+        //Check whether we have to define de header and create the file on first write
 
         int n=vals.length;
-		NetcdfFileWriter netcdfFileWriter;
-
-
+		NetcdfFormatWriter.Builder NetcdfBuilder;
+		NetcdfFormatWriter NetcdfWriter;
 		Variable myVar;
+
     	if (this.fileIsNotCreated){
 			// Create a new file
-			netcdfFileWriter = NetcdfFileWriter.createNew(NetcdfFileWriter.Version.netcdf3, fileName.getAbsolutePath());
+			NetcdfBuilder = NetcdfFormatWriter.createNewNetcdf3(fileName.getAbsolutePath());
 
 			// Setup Header
-			this.nDim  = netcdfFileWriter.addDimension(null,"n", n);
-			this.timeDim = netcdfFileWriter.addUnlimitedDimension("time");
-			myVar = netcdfFileWriter.addVariable(null, shortName, DataType.DOUBLE, "time n");
+			this.nDim  = NetcdfBuilder.addDimension("n", n);
+			NetcdfBuilder.addUnlimitedDimension("time");
+			NetcdfBuilder.addVariable(shortName, DataType.DOUBLE, "time n");
 
 			// create the file
-			netcdfFileWriter.create();
+			NetcdfWriter = NetcdfBuilder.build();
 			this.fileIsNotCreated=false;
 		}
 		else {
-			netcdfFileWriter = NetcdfFileWriter.openExisting(this.fileName.getAbsolutePath());
-			myVar = netcdfFileWriter.findVariable(shortName);
+			NetcdfBuilder = NetcdfFormatWriter.openExisting(this.fileName.getAbsolutePath());
+			NetcdfWriter = NetcdfBuilder.build();
 		}
+		myVar = NetcdfWriter.findVariable(shortName);
 
 		ArrayDouble.D2 values = new ArrayDouble.D2(1, nDim.getLength());
         // Copy the values
@@ -82,10 +81,10 @@ public class NetCDFFile {
 
 		int[] origin = new int[]{iTime, 0};
 
-		netcdfFileWriter.write(myVar, origin, values);
+		NetcdfWriter.write(myVar, origin, values);
 
         //Always close
-		netcdfFileWriter.close();
+		NetcdfWriter.close();
 	}
 }
 
